@@ -7,19 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('detail_pembelian', function (Blueprint $table) {
+        Schema::create('pembelian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
             $table->foreignId('pelanggan_id')->constrained('pelanggan')->onDelete('cascade');
-            $table->foreignId('petugas_id')->constrained('petugas')->onDelete('cascade');
-            $table->integer('jumlah');
-            $table->integer('total_harga');
+            $table->bigInteger('total_belanja');
+            $table->bigInteger('total_bayar');
+            $table->dateTime('tanggal_pembelian');
             $table->timestamps();
-        });         
+        });
     }
 
     public function down()
     {
-        Schema::dropIfExists('detail_pembelian');
+        Schema::dropIfExists('pembelian');
     }
 };
