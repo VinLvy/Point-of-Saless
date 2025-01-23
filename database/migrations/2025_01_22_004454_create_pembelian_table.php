@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('pelanggan_id')->constrained('pelanggan')->onDelete('cascade');
             $table->bigInteger('total_belanja');
             $table->bigInteger('total_bayar');
+            $table->integer('poin_digunakan')->default(0); // Menambahkan kolom poin digunakan
             $table->dateTime('tanggal_pembelian');
             $table->timestamps();
         });

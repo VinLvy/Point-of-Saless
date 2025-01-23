@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->string('email')->unique()->nullable();
             $table->string('no_hp');
             $table->text('alamat')->nullable();
+            $table->integer('poin')->default(0); // Menambahkan kolom poin
             $table->timestamps();
         });
     }
