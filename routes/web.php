@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -15,9 +16,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Dashboard untuk setiap role
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return 'Selamat datang di dashboard Administrator';
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/petugas/dashboard', function () {
         return 'Selamat datang di dashboard Petugas';
