@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
+        // Buat tabel kategori terlebih dahulu
+        Schema::create('kategori', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_kategori')->unique();
+            $table->text('deskripsi')->nullable();
+            $table->timestamps();
+        });
+
+        // Buat tabel produk dengan foreign key ke kategori
         Schema::create('produk', function (Blueprint $table) {
             $table->id();
             $table->string('nama_produk');
@@ -14,6 +23,8 @@ return new class extends Migration {
             $table->integer('harga');
             $table->integer('stok');
             $table->text('deskripsi')->nullable();
+            $table->string('gambar')->nullable();
+            $table->foreignId('kategori_id')->nullable()->constrained('kategori')->onDelete('set null');
             $table->timestamps();
         });
     }
@@ -21,5 +32,6 @@ return new class extends Migration {
     public function down()
     {
         Schema::dropIfExists('produk');
+        Schema::dropIfExists('kategori');
     }
 };
