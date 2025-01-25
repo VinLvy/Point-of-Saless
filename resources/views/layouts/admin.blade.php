@@ -48,7 +48,7 @@
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-        <a href="#">Pengguna</a>
+        <a href="{{ route('admin.petugas.index') }}">Pengguna</a>
         <a href="#">Laporan</a>
         <a href="#">Pengaturan</a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
