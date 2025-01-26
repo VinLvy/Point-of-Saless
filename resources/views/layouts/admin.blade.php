@@ -38,9 +38,9 @@
             background: #555;
         }
         .content {
-            margin-left: 280px; /* Tambahkan lebih banyak margin agar tidak tertutup sidebar */
+            margin-left: 280px;
             padding: 20px;
-            width: calc(100% - 280px); /* Pastikan lebar menyesuaikan */
+            width: calc(100% - 280px);
             box-sizing: border-box;
         }
     </style>
@@ -50,7 +50,7 @@
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-        <a href="{{ route('admin.petugas.index') }}">Pengguna</a>
+        <a href="{{ route('admin.petugas.index') }}">Petugas</a>
         <a href="#">Laporan</a>
         <a href="#">Pengaturan</a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

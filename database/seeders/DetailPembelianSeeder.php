@@ -11,9 +11,9 @@ class DetailPembelianSeeder extends Seeder
     {
         DB::table('detail_pembelian')->insert([
             [
-                'produk_id' => 1,  // Sesuaikan dengan produk yang sudah di-insert
-                'pelanggan_id' => 1,  // Sesuaikan dengan pelanggan yang sudah di-insert
-                'petugas_id' => 1,  // Sesuaikan dengan petugas yang sudah di-insert
+                'produk_id' => 1,
+                'pelanggan_id' => 1,
+                'petugas_id' => 1,
                 'jumlah' => 3,
                 'total_harga' => 1500000,
                 'created_at' => now(),

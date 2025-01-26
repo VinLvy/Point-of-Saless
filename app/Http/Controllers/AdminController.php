@@ -21,7 +21,7 @@ class AdminController extends Controller
             ->toArray();
 
         if (empty($incomeData)) {
-            $incomeData = [];  // Pastikan selalu ada nilai default
+            $incomeData = [];
         }
 
         $labels = array_keys($incomeData);
