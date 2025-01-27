@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
+use App\Http\Controllers\Admin\LaporanController;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -35,4 +36,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/petugas/{id}', [PetugasController::class, 'destroy'])->name('petugas.destroy');
 
     Route::resource('pelanggan', PelangganController::class);
+
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
 });

@@ -52,8 +52,7 @@
         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
         <a href="{{ route('admin.petugas.index') }}">Petugas</a>
         <a href="{{ route('admin.pelanggan.index') }}">Pelanggan</a>
-        <a href="#">Laporan</a>
-        <a href="#">Pengaturan</a>
+        <a href="{{ route('admin.laporan.index') }}">Laporan</a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
