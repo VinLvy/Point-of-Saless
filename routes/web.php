@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PetugasController;
+use App\Http\Controllers\Admin\PelangganController;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -32,4 +33,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/petugas', [PetugasController::class, 'index'])->name('petugas.index');
     Route::post('/petugas', [PetugasController::class, 'store'])->name('petugas.store');
     Route::delete('/petugas/{id}', [PetugasController::class, 'destroy'])->name('petugas.destroy');
+
+    Route::resource('pelanggan', PelangganController::class);
 });
