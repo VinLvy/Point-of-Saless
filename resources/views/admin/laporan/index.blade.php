@@ -29,7 +29,7 @@
         <tbody>
             @foreach($laporan as $item)
             <tr>
-                <td>{{ $item->pelanggan->nama_pelanggan }}</td>
+                <td>{{ $item->pembelian->pelanggan->nama_pelanggan }}</td>
                 <td>{{ $item->produk->nama_produk }}</td>
                 <td>{{ $item->jumlah }}</td>
                 <td>{{ $item->total_harga }}</td>
@@ -39,7 +39,7 @@
                 </td>
             </tr>
             @endforeach
-        </tbody>
+        </tbody>        
     </table>
 </div>
 @endsection

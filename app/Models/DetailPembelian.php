@@ -10,16 +10,15 @@ class DetailPembelian extends Model
     use HasFactory;
 
     protected $table = 'detail_pembelian';
-    protected $fillable = ['produk_id', 'pelanggan_id', 'petugas_id', 'jumlah', 'total_harga'];
+
+    public function pembelian()
+    {
+        return $this->belongsTo(Pembelian::class);
+    }
 
     public function produk()
     {
         return $this->belongsTo(Produk::class);
-    }
-
-    public function pelanggan()
-    {
-        return $this->belongsTo(Pelanggan::class);
     }
 
     public function petugas()
