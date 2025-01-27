@@ -5,10 +5,10 @@
     <form method="GET" action="{{ route('admin.laporan.index') }}">
         <div class="row">
             <div class="col-md-4">
-                <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
+                <input type="date" name="start_date" value="{{ date('Y-m-d', strtotime($startDate)) }}" class="form-control">
             </div>
             <div class="col-md-4">
-                <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
+                <input type="date" name="end_date" value="{{ date('Y-m-d', strtotime($endDate)) }}" class="form-control">
             </div>
             <div class="col-md-4">
                 <button type="submit" class="btn btn-primary">Filter</button>
