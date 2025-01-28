@@ -49,7 +49,7 @@
     <div class="sidebar">
         <h2>Kasir Panel</h2>
         <a href="{{ route('kasir.dashboard') }}">Dashboard</a>
-        <a href="#">Transaksi</a>
+        <a href="{{ route('kasir.pembelian.index') }}">Pembelian</a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>

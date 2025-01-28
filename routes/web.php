@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\KasirController;
+use App\Http\Controllers\Kasir\PembelianController;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -36,4 +37,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
+});
+
+Route::middleware(['auth'])->prefix('kasir')->name('kasir.')->group(function () {
+    Route::get('/pembelian', [PembelianController::class, 'pembelianForm'])->name('pembelian.index');
+    Route::post('/pembelian', [PembelianController::class, 'prosesPembelian'])->name('pembelian.proses');
 });
