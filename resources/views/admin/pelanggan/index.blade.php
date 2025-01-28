@@ -23,6 +23,9 @@
                 <td>{{ $p->alamat }}</td>
                 <td>{{ $p->poin }}</td>
                 <td>
+                    <a href="{{ route('admin.pelanggan.edit', $pelanggan->id) }}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
                     <form action="{{ route('admin.pelanggan.destroy', $p->id) }}" method="POST">
                         @csrf
                         @method('DELETE')

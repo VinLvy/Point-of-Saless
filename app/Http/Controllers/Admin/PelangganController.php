@@ -33,6 +33,25 @@ class PelangganController extends Controller
         return redirect()->route('admin.pelanggan.index')->with('success', 'Pelanggan berhasil ditambahkan.');
     }
 
+    public function edit(Pelanggan $pelanggan)
+    {
+        return view('admin.pelanggan.edit', compact('pelanggan'));
+    }
+
+    public function update(Request $request, Pelanggan $pelanggan)
+    {
+        $request->validate([
+            'nama_pelanggan' => 'required',
+            'email' => 'nullable|email|unique:pelanggan,email,' . $pelanggan->id,
+            'no_hp' => 'required',
+            'alamat' => 'nullable',
+            'poin' => 'integer|min:0'
+        ]);
+
+        $pelanggan->update($request->all());
+        return redirect()->route('admin.pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
+    }
+
     public function destroy(Pelanggan $pelanggan)
     {
         $pelanggan->delete();
