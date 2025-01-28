@@ -13,7 +13,7 @@ class ProdukSeeder extends Seeder
             [
                 'nama_produk' => 'Laptop',
                 'kode_produk' => 'LPT123',
-                'harga' => 5000000,
+                'harga' => 10000000,
                 'stok' => 10,
                 'deskripsi' => 'Laptop gaming dengan spesifikasi tinggi',
                 'created_at' => now(),
