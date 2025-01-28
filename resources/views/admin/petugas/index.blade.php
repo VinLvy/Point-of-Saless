@@ -65,6 +65,9 @@
                                     <span class="badge bg-info">{{ ucfirst($p->role) }}</span>
                                 </td>
                                 <td>
+                                    <a href="{{ route('admin.petugas.edit', $p->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
                                     <form action="{{ route('admin.petugas.destroy', $p->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -72,9 +75,6 @@
                                             <i class="bi bi-trash"></i> Hapus
                                         </button>
                                     </form>
-                                    <a href="{{ route('admin.petugas.edit', $p->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </a>
                                 </td>                                
                             </tr>
                         @endforeach

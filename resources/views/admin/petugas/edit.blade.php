@@ -45,7 +45,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-        <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary">Batal</a>
+        <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
 @endsection
