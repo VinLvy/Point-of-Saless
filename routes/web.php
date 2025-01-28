@@ -31,9 +31,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/petugas', [PetugasController::class, 'index'])->name('petugas.index');
-    Route::post('/petugas', [PetugasController::class, 'store'])->name('petugas.store');
-    Route::delete('/petugas/{id}', [PetugasController::class, 'destroy'])->name('petugas.destroy');
+    Route::resource('petugas', PetugasController::class)->except(['show']);
 
     Route::resource('pelanggan', PelangganController::class);
 

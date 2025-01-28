@@ -34,6 +34,36 @@ class PetugasController extends Controller
         return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil ditambahkan.');
     }
 
+    public function edit($id)
+    {
+        $petugas = Petugas::findOrFail($id); // Cari petugas berdasarkan ID
+
+        return view('admin.petugas.edit', compact('petugas'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $petugas = Petugas::findOrFail($id); // Cari petugas berdasarkan ID
+
+        // Validasi input
+        $request->validate([
+            'nama_petugas' => 'required|string|max:255',
+            'email' => 'required|email|unique:petugas,email,' . $petugas->id, // Abaikan email petugas saat ini
+            'password' => 'nullable|min:6', // Password opsional
+            'role' => 'required|in:petugas,kasir',
+        ]);
+
+        // Update data petugas
+        $petugas->update([
+            'nama_petugas' => $request->nama_petugas,
+            'email' => $request->email,
+            'role' => $request->role,
+            'password' => $request->password ? Hash::make($request->password) : $petugas->password, // Update password jika ada
+        ]);
+
+        return redirect()->route('admin.petugas.index')->with('success', 'Data petugas berhasil diperbarui.');
+    }
+
     public function destroy($id)
     {
         $petugas = Petugas::findOrFail($id);

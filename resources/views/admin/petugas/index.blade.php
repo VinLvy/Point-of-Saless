@@ -72,7 +72,10 @@
                                             <i class="bi bi-trash"></i> Hapus
                                         </button>
                                     </form>
-                                </td>
+                                    <a href="{{ route('admin.petugas.edit', $p->id) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                </td>                                
                             </tr>
                         @endforeach
                     </tbody>
