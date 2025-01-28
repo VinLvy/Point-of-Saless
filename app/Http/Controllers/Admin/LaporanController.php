@@ -16,16 +16,16 @@ class LaporanController extends Controller
         $startDate = date('Y-m-d 00:00:00', strtotime($startDate));
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
-        $laporan = DetailPembelian::with('pembelian.pelanggan', 'produk')
-        ->whereBetween('created_at', [$startDate, $endDate])
-        ->get();
-    
+        $laporan = DetailPembelian::with('pembelian.pelanggan')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
         return view('admin.laporan.index', compact('laporan', 'startDate', 'endDate'));
     }
 
     public function show($id)
     {
-        $detail = DetailPembelian::findOrFail($id);
+        $detail = DetailPembelian::with('pembelian.pelanggan')->findOrFail($id);
         return view('admin.laporan.detail', compact('detail'));
     }
 }

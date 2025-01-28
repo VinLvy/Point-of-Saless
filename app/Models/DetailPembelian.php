@@ -29,7 +29,7 @@ class DetailPembelian extends Model
      */
     public function getProdukAttribute($value)
     {
-        return json_decode($value, true);
+        return json_decode($value, true) ?? [];
     }
 
     /**
