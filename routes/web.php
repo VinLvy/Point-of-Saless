@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\KasirController;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -21,13 +22,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+    Route::get('/kasir/dashboard', [KasirController::class, 'dashboard'])->name('kasir.dashboard');
+
     Route::get('/petugas/dashboard', function () {
         return 'Selamat datang di dashboard Petugas';
     })->name('petugas.dashboard');
-
-    Route::get('/kasir/dashboard', function () {
-        return 'Selamat datang di dashboard Kasir';
-    })->name('kasir.dashboard');
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
