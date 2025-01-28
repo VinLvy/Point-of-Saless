@@ -9,20 +9,34 @@ class DetailPembelian extends Model
 {
     use HasFactory;
 
-    protected $table = 'detail_pembelian';
+    protected $table = 'detail_pembelian'; // Nama tabel
+    protected $fillable = [
+        'pembelian_id',
+        'produk',
+        'total_harga',
+    ];
 
+    /**
+     * Relasi ke model Pembelian.
+     */
     public function pembelian()
     {
-        return $this->belongsTo(Pembelian::class);
+        return $this->belongsTo(Pembelian::class, 'pembelian_id');
     }
 
-    public function produk()
+    /**
+     * Mendekode kolom JSON produk.
+     */
+    public function getProdukAttribute($value)
     {
-        return $this->belongsTo(Produk::class);
+        return json_decode($value, true);
     }
 
-    public function petugas()
+    /**
+     * Encode data produk sebelum disimpan.
+     */
+    public function setProdukAttribute($value)
     {
-        return $this->belongsTo(Petugas::class);
+        $this->attributes['produk'] = json_encode($value);
     }
 }
