@@ -24,10 +24,12 @@ return new class extends Migration {
         Schema::create('detail_pembelian', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pembelian_id')->constrained('pembelian')->onDelete('cascade'); // Relasi ke tabel pembelian
-            $table->json('produk'); // JSON untuk menyimpan detail produk dalam satu baris
-            $table->integer('total_harga'); // Total harga dari semua produk dalam transaksi
+            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');       // Relasi ke tabel produk
+            $table->integer('jumlah');                                                        // Jumlah produk yang dibeli
+            $table->integer('harga');                                                         // Harga satuan produk
+            $table->integer('total_harga');                                                   // Total harga per produk (jumlah x harga satuan)
             $table->timestamps();
-        });
+        });        
     }
 
     public function down()
