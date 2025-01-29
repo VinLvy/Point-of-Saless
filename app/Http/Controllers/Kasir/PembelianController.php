@@ -50,7 +50,12 @@ class PembelianController extends Controller
             $totalBelanja += $subtotal;
         }
 
-        // Hitung kembalian
+        // Validasi agar total_bayar lebih besar atau sama dengan totalBelanja
+        if ($request->total_bayar < $totalBelanja) {
+            return redirect()->back()->with('error', ' Jumlah pembayaran tidak mencukupi.');
+        }
+
+        // Hitung kembalian jika ada
         $kembalian = $request->total_bayar - $totalBelanja;
 
         // Simpan transaksi pembelian
@@ -58,7 +63,7 @@ class PembelianController extends Controller
             'pelanggan_id' => $request->pelanggan_id,
             'total_belanja' => $totalBelanja,
             'total_bayar' => $request->total_bayar,
-            'kembalian' => $kembalian > 0 ? $kembalian : 0,
+            'kembalian' => $kembalian >= 0 ? $kembalian : 0, // Pastikan kembalian tidak negatif
             'tanggal_pembelian' => now(),
             'petugas_id' => Auth::id(), // ID petugas
         ]);

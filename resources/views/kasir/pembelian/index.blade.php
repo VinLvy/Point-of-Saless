@@ -42,6 +42,12 @@
         <button type="submit" class="btn btn-primary">Proses Transaksi</button>
     </form>
 
+    @if (session('error'))
+        <div class="alert alert-danger" style="border-left: 5px solid #dc3545; background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px; margin-top: 10px;">
+            <strong>Peringatan!</strong> {{ session('error') }}
+        </div>
+    @endif
+
     <script>
         document.getElementById('add-produk').addEventListener('click', function () {
             const wrapper = document.getElementById('produk-wrapper');
