@@ -45,7 +45,7 @@ class PelangganController extends Controller
             'email' => 'nullable|email|unique:pelanggan,email,' . $pelanggan->id,
             'no_hp' => 'required',
             'alamat' => 'nullable',
-            'poin' => 'integer|min:0'
+            'poin_membership' => 'integer|min:0'
         ]);
 
         $pelanggan->update($request->all());

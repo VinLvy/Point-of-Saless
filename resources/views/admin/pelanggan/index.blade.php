@@ -21,7 +21,7 @@
                 <td>{{ $p->email }}</td>
                 <td>{{ $p->no_hp }}</td>
                 <td>{{ $p->alamat }}</td>
-                <td>{{ $p->poin }}</td>
+                <td>{{ $p->poin_membership }}</td>
                 <td>
                     <a href="{{ route('admin.pelanggan.edit', $p->id) }}" class="btn btn-primary btn-sm">
                         <i class="bi bi-pencil"></i> Edit
