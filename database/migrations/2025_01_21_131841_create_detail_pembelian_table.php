@@ -25,7 +25,7 @@ return new class extends Migration {
         Schema::create('detail_laporan_penjualan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('laporan_penjualan_id')->constrained('laporan_penjualan')->onDelete('cascade'); // Relasi ke laporan penjualan
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade'); // Relasi ke produk
+            $table->foreignId('produk_id')->constrained('item_barang')->onDelete('cascade'); // Relasi ke produk
             $table->integer('jumlah');
             $table->integer('harga'); 
             $table->integer('total_harga');
