@@ -23,9 +23,9 @@ return new class extends Migration {
             $table->date('tanggal_kedaluarsa');
             $table->date('tanggal_pembelian');
             $table->integer('harga_beli');
-            // $table->integer('harga_jual_1'); // HPP + 10%
-            // $table->integer('harga_jual_2'); // HPP + 20%
-            // $table->integer('harga_jual_3'); // HPP + 30%
+            $table->integer('harga_jual_1'); // HPP + 10%
+            $table->integer('harga_jual_2'); // HPP + 20%
+            $table->integer('harga_jual_3'); // HPP + 30%
             $table->integer('stok');
             $table->integer('minimal_stok');
             $table->foreignId('kategori_id')->constrained('kategori_barang')->onDelete('cascade');

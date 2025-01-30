@@ -18,12 +18,6 @@ class PetugasSeeder extends Seeder
                 'role' => 'administrator',
             ],
             [
-                'nama_petugas' => 'Petugas',
-                'email' => 'petugas@gmail.com',
-                'password' => Hash::make('petugas123'),
-                'role' => 'petugas',
-            ],
-            [
                 'nama_petugas' => 'Kasir',
                 'email' => 'kasir@gmail.com',
                 'password' => Hash::make('kasir123'),
