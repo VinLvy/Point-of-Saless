@@ -3,82 +3,78 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pelanggan;
-use App\Models\Produk;
-use App\Models\Pembelian;
-use App\Models\DetailPembelian;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Pelanggan;
+use App\Models\ItemBarang;
+use App\Models\LaporanPenjualan;
+use App\Models\DetailLaporanPenjualan;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
 {
-    public function pembelianForm()
+    public function create()
     {
         $pelanggan = Pelanggan::all();
-        $produk = Produk::all();
-
+        $produk = ItemBarang::all();
         return view('kasir.pembelian.index', compact('pelanggan', 'produk'));
     }
 
-    public function prosesPembelian(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'pelanggan_id' => 'required|exists:pelanggan,id',
+            'pelanggan_id' => 'required',
             'produk_id' => 'required|array',
-            'produk_id.*' => 'exists:produk,id',
             'jumlah' => 'required|array',
-            'jumlah.*' => 'integer|min:1',
-            'total_bayar' => 'required|integer|min:0',
+            'total_bayar' => 'required|numeric|min:0',
         ]);
 
-        $totalBelanja = 0;
-        $produkDetails = [];
+        DB::beginTransaction();
+        try {
+            $pelanggan = Pelanggan::findOrFail($request->pelanggan_id);
+            $totalBelanja = 0;
+            $items = [];
 
-        foreach ($request->produk_id as $index => $produkId) {
-            $produk = Produk::findOrFail($produkId);
-            $jumlah = $request->jumlah[$index];
-            $subtotal = $produk->harga * $jumlah;
+            foreach ($request->produk_id as $index => $produkId) {
+                $produk = ItemBarang::findOrFail($produkId);
+                $jumlah = $request->jumlah[$index];
+                
+                // Tentukan harga berdasarkan tipe pelanggan
+                $hargaJual = match ($pelanggan->tipe_pelanggan) {
+                    'tipe 1' => $produk->harga_jual_1,
+                    'tipe 2' => $produk->harga_jual_2,
+                    'tipe 3' => $produk->harga_jual_3,
+                };
 
-            // Simpan detail produk untuk pembelian
-            $produkDetails[] = [
-                'produk_id' => $produk->id,
-                'jumlah' => $jumlah,
-                'harga' => $produk->harga,
-                'total_harga' => $subtotal,
-            ];
+                $totalHarga = $hargaJual * $jumlah;
+                $totalBelanja += $totalHarga;
 
-            $totalBelanja += $subtotal;
-        }
+                $items[] = new DetailLaporanPenjualan([
+                    'produk_id' => $produk->id,
+                    'jumlah' => $jumlah,
+                    'harga' => $hargaJual,
+                    'total_harga' => $totalHarga,
+                ]);
+            }
 
-        // Validasi agar total_bayar lebih besar atau sama dengan totalBelanja
-        if ($request->total_bayar < $totalBelanja) {
-            return redirect()->back()->with('error', ' Jumlah pembayaran tidak mencukupi.');
-        }
-
-        // Hitung kembalian jika ada
-        $kembalian = $request->total_bayar - $totalBelanja;
-
-        // Simpan transaksi pembelian
-        $pembelian = Pembelian::create([
-            'pelanggan_id' => $request->pelanggan_id,
-            'total_belanja' => $totalBelanja,
-            'total_bayar' => $request->total_bayar,
-            'kembalian' => $kembalian >= 0 ? $kembalian : 0, // Pastikan kembalian tidak negatif
-            'tanggal_pembelian' => now(),
-            'petugas_id' => Auth::id(), // ID petugas
-        ]);
-
-        // Simpan detail produk yang dibeli
-        foreach ($produkDetails as $detail) {
-            DetailPembelian::create([
-                'pembelian_id' => $pembelian->id,
-                'produk_id' => $detail['produk_id'],
-                'jumlah' => $detail['jumlah'],
-                'harga' => $detail['harga'],
-                'total_harga' => $detail['total_harga'],
+            $laporan = new LaporanPenjualan([
+                'pelanggan_id' => $pelanggan->id,
+                'petugas_id' => auth()->id(),
+                'tipe_pelanggan' => $pelanggan->tipe_pelanggan,
+                'total_belanja' => $totalBelanja,
+                'diskon' => 0,
+                'poin_digunakan' => 0,
+                'total_akhir' => $totalBelanja,
+                'tanggal_transaksi' => Carbon::now(),
             ]);
-        }
+            $laporan->save();
+            $laporan->detail()->saveMany($items);
 
-        return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil disimpan!');
+            DB::commit();
+            return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan saat memproses transaksi.');
+        }
     }
 }

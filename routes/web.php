@@ -24,10 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/kasir/dashboard', [KasirController::class, 'dashboard'])->name('kasir.dashboard');
-
-    Route::get('/petugas/dashboard', function () {
-        return 'Selamat datang di dashboard Petugas';
-    })->name('petugas.dashboard');
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -40,6 +36,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 });
 
 Route::middleware(['auth'])->prefix('kasir')->name('kasir.')->group(function () {
-    Route::get('/pembelian', [PembelianController::class, 'pembelianForm'])->name('pembelian.index');
-    Route::post('/pembelian', [PembelianController::class, 'prosesPembelian'])->name('pembelian.proses');
+    Route::get('/pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
+    Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
 });

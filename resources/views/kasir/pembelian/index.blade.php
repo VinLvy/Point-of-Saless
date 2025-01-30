@@ -1,89 +1,102 @@
 @extends('layouts.kasir')
 
 @section('content')
-    <h1>Form Pembelian</h1>
+<div class="container">
+    <h2 class="mb-4">Transaksi Pembelian</h2>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
+    @elseif(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    <form action="{{ route('kasir.pembelian.proses') }}" method="POST">
+    <form action="{{ route('kasir.pembelian.store') }}" method="POST">
         @csrf
+        
         <div class="mb-3">
             <label for="pelanggan_id" class="form-label">Pilih Pelanggan</label>
-            <select name="pelanggan_id" id="pelanggan_id" class="form-select" required>
+            <select name="pelanggan_id" id="pelanggan_id" class="form-control" required>
                 <option value="">-- Pilih Pelanggan --</option>
                 @foreach($pelanggan as $p)
                     <option value="{{ $p->id }}">{{ $p->nama_pelanggan }}</option>
                 @endforeach
             </select>
         </div>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Produk</th>
+                    <th>Jumlah</th>
+                    <th>Harga</th>
+                    <th>Total</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="produk-list">
+                <tr>
+                    <td>
+                        <select name="produk_id[]" class="form-control produk-select" required>
+                            <option value="">-- Pilih Produk --</option>
+                            @foreach($produk as $pr)
+                                <option value="{{ $pr->id }}" data-harga="{{ $pr->harga_jual_1 }}">{{ $pr->nama_barang }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
+                    <td class="harga">0</td>
+                    <td class="total">0</td>
+                    <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
+                </tr>
+            </tbody>
+        </table>
 
-        <div id="produk-wrapper">
-            <div class="mb-3 produk-item">
-                <label class="form-label">Pilih Produk</label>
-                <select name="produk_id[]" class="form-select produk-select" required>
-                    <option value="">-- Pilih Produk --</option>
-                    @foreach($produk as $p)
-                        <option value="{{ $p->id }}" data-harga="{{ $p->harga }}">
-                            {{ $p->nama_produk }} - Rp{{ number_format($p->harga, 0, ',', '.') }}
-                        </option>
-                    @endforeach
-                </select>
-                <input type="number" name="jumlah[]" class="form-control mt-2 jumlah-input" placeholder="Jumlah" min="1" required>
-            </div>
-        </div>
+        <button type="button" id="tambah-produk" class="btn btn-primary">Tambah Produk</button>
 
-        <button type="button" class="btn btn-secondary" id="add-produk">Tambah Produk</button>
-
-        <div class="mb-3 mt-3">
-            <h5>Total Harga: <span id="total-harga">Rp 0</span></h5>
-        </div>
-
-        <div class="mb-3">
+        <div class="mt-3">
             <label for="total_bayar" class="form-label">Total Bayar</label>
-            <input type="number" name="total_bayar" id="total_bayar" class="form-control" placeholder="Masukkan jumlah uang" required>
+            <input type="number" name="total_bayar" id="total_bayar" class="form-control" readonly>
         </div>
 
-        <button type="submit" class="btn btn-primary">Proses Transaksi</button>
+        <button type="submit" class="btn btn-success mt-3">Simpan Transaksi</button>
     </form>
+</div>
 
-    @if (session('error'))
-        <div class="alert alert-danger" style="border-left: 5px solid #dc3545; background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px; margin-top: 10px;">
-            <strong>Peringatan!</strong> {{ session('error') }}
-        </div>
-    @endif
-
-    <script>
-        function updateTotalHarga() {
-            let total = 0;
-            document.querySelectorAll('.produk-item').forEach(item => {
-                const select = item.querySelector('.produk-select');
-                const jumlah = item.querySelector('.jumlah-input');
-                const harga = select.options[select.selectedIndex].dataset.harga || 0;
-
-                total += (parseInt(jumlah.value) || 0) * parseInt(harga);
-            });
-
-            document.getElementById('total-harga').textContent = 'Rp ' + total.toLocaleString('id-ID');
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function updateTotal() {
+        let totalBayar = 0;
+        document.querySelectorAll("#produk-list tr").forEach(function(row) {
+            let jumlah = row.querySelector(".jumlah").value || 0;
+            let harga = row.querySelector(".produk-select").selectedOptions[0].dataset.harga || 0;
+            let total = jumlah * harga;
+            row.querySelector(".harga").innerText = harga;
+            row.querySelector(".total").innerText = total;
+            totalBayar += total;
+        });
+        document.querySelector("#total_bayar").value = totalBayar;
+    }
+    
+    document.querySelector("#tambah-produk").addEventListener("click", function() {
+        let row = document.querySelector("#produk-list tr").cloneNode(true);
+        row.querySelector(".jumlah").value = "";
+        row.querySelector(".harga").innerText = "0";
+        row.querySelector(".total").innerText = "0";
+        document.querySelector("#produk-list").appendChild(row);
+    });
+    
+    document.addEventListener("change", function(event) {
+        if (event.target.matches(".produk-select, .jumlah")) {
+            updateTotal();
         }
-
-        document.getElementById('add-produk').addEventListener('click', function () {
-            const wrapper = document.getElementById('produk-wrapper');
-            const newProduct = wrapper.children[0].cloneNode(true);
-            newProduct.querySelector('.jumlah-input').value = '';
-            wrapper.appendChild(newProduct);
-
-            // Tambahkan event listener ke elemen baru
-            newProduct.querySelector('.produk-select').addEventListener('change', updateTotalHarga);
-            newProduct.querySelector('.jumlah-input').addEventListener('input', updateTotalHarga);
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.produk-select, .jumlah-input').forEach(element => {
-                element.addEventListener('change', updateTotalHarga);
-                element.addEventListener('input', updateTotalHarga);
-            });
-        });
-    </script>
+    });
+    
+    document.addEventListener("click", function(event) {
+        if (event.target.matches(".remove-row")) {
+            event.target.closest("tr").remove();
+            updateTotal();
+        }
+    });
+});
+</script>
 @endsection
