@@ -10,5 +10,17 @@ class Pelanggan extends Model
     use HasFactory;
 
     protected $table = 'pelanggan';
-    protected $fillable = ['nama_pelanggan', 'email', 'no_hp', 'alamat', 'poin'];
+    protected $fillable = [
+        'nama_pelanggan',
+        'email',
+        'no_telp',
+        'alamat',
+        'tipe_pelanggan',
+        'poin_membership',
+    ];
+
+    public function laporanPenjualan()
+    {
+        return $this->hasMany(LaporanPenjualan::class, 'pelanggan_id');
+    }
 }
