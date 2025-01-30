@@ -38,12 +38,12 @@ class PembelianController extends Controller
             foreach ($request->produk_id as $index => $produkId) {
                 $produk = ItemBarang::findOrFail($produkId);
                 $jumlah = $request->jumlah[$index];
-                
-                // Tentukan harga berdasarkan tipe pelanggan
+
+                // Perbaikan logika pemilihan harga
                 $hargaJual = match ($pelanggan->tipe_pelanggan) {
-                    'tipe 1' => $produk->harga_jual_1,
-                    'tipe 2' => $produk->harga_jual_2,
-                    'tipe 3' => $produk->harga_jual_3,
+                    'tipe 1' => $produk->harga_jual_3, // Tipe 1 mendapatkan harga jual 3
+                    'tipe 2' => $produk->harga_jual_2, // Tipe 2 mendapatkan harga jual 2
+                    'tipe 3' => $produk->harga_jual_1, // Tipe 3 mendapatkan harga jual 1
                 };
 
                 $totalHarga = $hargaJual * $jumlah;
@@ -76,5 +76,23 @@ class PembelianController extends Controller
             DB::rollBack();
             return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan saat memproses transaksi.');
         }
+    }
+
+    public function getHargaPelanggan($pelanggan_id)
+    {
+        $pelanggan = Pelanggan::findOrFail($pelanggan_id);
+        $produk = ItemBarang::all();
+
+        $hargaProduk = [];
+        foreach ($produk as $p) {
+            $hargaProduk[$p->id] = match ($pelanggan->tipe_pelanggan) {
+                'tipe 1' => $p->harga_jual_3,
+                'tipe 2' => $p->harga_jual_2,
+                'tipe 3' => $p->harga_jual_1,
+                default => $p->harga_jual_1, // Jika tidak ada tipe, gunakan harga default
+            };
+        }
+
+        return response()->json($hargaProduk);
     }
 }
