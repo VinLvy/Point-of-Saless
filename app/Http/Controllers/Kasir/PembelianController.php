@@ -77,22 +77,4 @@ class PembelianController extends Controller
             return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan saat memproses transaksi.');
         }
     }
-
-    public function getHargaPelanggan($pelanggan_id)
-    {
-        $pelanggan = Pelanggan::findOrFail($pelanggan_id);
-        $produk = ItemBarang::all();
-
-        $hargaProduk = [];
-        foreach ($produk as $p) {
-            $hargaProduk[$p->id] = match ($pelanggan->tipe_pelanggan) {
-                'tipe 1' => $p->harga_jual_3,
-                'tipe 2' => $p->harga_jual_2,
-                'tipe 3' => $p->harga_jual_1,
-                default => $p->harga_jual_1, // Jika tidak ada tipe, gunakan harga default
-            };
-        }
-
-        return response()->json($hargaProduk);
-    }
 }

@@ -38,5 +38,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 Route::middleware(['auth'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
     Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
-    Route::get('/pembelian/get-jenis-harga/{pelanggan_id}', [PembelianController::class, 'getHargaPelanggan']);
 });
