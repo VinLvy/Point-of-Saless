@@ -31,15 +31,15 @@
                    'tipe_3' => $p->harga_jual_1
                ]])) }}">
 
-        <table class="table table-bordered">
+        <table class="table table-bordered table-fixed">
             <thead>
                 <tr>
-                    <th>Produk</th>
-                    <th>Stok Tersedia</th>
-                    <th>Jumlah</th>
-                    <th>Harga</th>
-                    <th>Total</th>
-                    <th>Aksi</th>
+                    <th style="width: 30%;">Produk</th>
+                    <th style="width: 15%;">Stok Tersedia</th>
+                    <th style="width: 15%;">Jumlah</th>
+                    <th style="width: 15%;">Harga</th>
+                    <th style="width: 15%;">Total</th>
+                    <th style="width: 10%;">Aksi</th>
                 </tr>
             </thead>
             <tbody id="produk-list"></tbody>
@@ -49,8 +49,9 @@
 
         <div class="mt-3">
             <label for="total_bayar" class="form-label">Total Bayar</label>
-            <input type="number" name="total_bayar" id="total_bayar" class="form-control" readonly>
-        </div>
+            <span id="total_bayar_display" class="form-control">Rp 0</span>
+            <input type="hidden" name="total_bayar" id="total_bayar">
+        </div>        
 
         <button type="submit" class="btn btn-success mt-3">Simpan Transaksi</button>
     </form>
@@ -60,6 +61,14 @@
     document.addEventListener("DOMContentLoaded", function () {
         let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
 
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+            }).format(angka);
+        }
+
         function updateTotal() {
             let totalBayar = 0;
             document.querySelectorAll("#produk-list tr").forEach(function(row) {
@@ -67,10 +76,12 @@
                 let harga = parseFloat(row.querySelector(".harga").dataset.harga) || 0;
                 let total = jumlah * harga;
 
-                row.querySelector(".harga").innerText = harga.toLocaleString();
-                row.querySelector(".total").innerText = total.toLocaleString();
+                row.querySelector(".harga").innerText = formatRupiah(harga);
+                row.querySelector(".total").innerText = formatRupiah(total);
                 totalBayar += total;
             });
+            document.querySelector("#total_bayar_display").innerText = formatRupiah(totalBayar);
+
             document.querySelector("#total_bayar").value = totalBayar;
         }
 
