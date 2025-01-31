@@ -39,15 +39,24 @@ class PembelianController extends Controller
                 $produk = ItemBarang::findOrFail($produkId);
                 $jumlah = $request->jumlah[$index];
 
-                // Perbaikan logika pemilihan harga
+                // Cek stok barang
+                if ($produk->stok < $jumlah) {
+                    throw new \Exception("Stok barang '{$produk->nama_barang}' tidak mencukupi!");
+                }
+
+                // Pilih harga sesuai tipe pelanggan
                 $hargaJual = match ($pelanggan->tipe_pelanggan) {
-                    'tipe 1' => $produk->harga_jual_3, // Tipe 1 mendapatkan harga jual 3
-                    'tipe 2' => $produk->harga_jual_2, // Tipe 2 mendapatkan harga jual 2
-                    'tipe 3' => $produk->harga_jual_1, // Tipe 3 mendapatkan harga jual 1
+                    'tipe 1' => $produk->harga_jual_3,
+                    'tipe 2' => $produk->harga_jual_2,
+                    'tipe 3' => $produk->harga_jual_1,
                 };
 
                 $totalHarga = $hargaJual * $jumlah;
                 $totalBelanja += $totalHarga;
+
+                // Kurangi stok barang
+                $produk->stok -= $jumlah;
+                $produk->save();
 
                 $items[] = new DetailLaporanPenjualan([
                     'produk_id' => $produk->id,
@@ -57,6 +66,7 @@ class PembelianController extends Controller
                 ]);
             }
 
+            // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => auth()->id(),
@@ -72,9 +82,10 @@ class PembelianController extends Controller
 
             DB::commit();
             return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan saat memproses transaksi.');
+            return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }
