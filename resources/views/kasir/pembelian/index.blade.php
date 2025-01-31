@@ -25,15 +25,17 @@
 
         <input type="hidden" id="harga_produk_json" 
                value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
+                   'stok' => $p->stok,
                    'tipe_1' => $p->harga_jual_3, 
                    'tipe_2' => $p->harga_jual_2, 
                    'tipe_3' => $p->harga_jual_1
                ]])) }}">
-        
+
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Produk</th>
+                    <th>Stok Tersedia</th>
                     <th>Jumlah</th>
                     <th>Harga</th>
                     <th>Total</th>
@@ -64,7 +66,7 @@
                 let jumlah = parseFloat(row.querySelector(".jumlah").value) || 0;
                 let harga = parseFloat(row.querySelector(".harga").dataset.harga) || 0;
                 let total = jumlah * harga;
-    
+
                 row.querySelector(".harga").innerText = harga.toLocaleString();
                 row.querySelector(".total").innerText = total.toLocaleString();
                 totalBayar += total;
@@ -79,10 +81,13 @@
                     <select name="produk_id[]" class="form-control produk-select" required>
                         <option value="">-- Pilih Produk --</option>
                         @foreach($produk as $pr)
-                            <option value="{{ $pr->id }}">{{ $pr->nama_barang }}</option>
+                            <option value="{{ $pr->id }}" data-stok="{{ $pr->stok }}">
+                                {{ $pr->nama_barang }}
+                            </option>
                         @endforeach
                     </select>
                 </td>
+                <td class="stok-terpakai">-</td>
                 <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
                 <td class="harga" data-harga="0">0</td>
                 <td class="total">0</td>
@@ -100,11 +105,23 @@
                 let pelangganId = document.querySelector("#pelanggan_id").value;
                 let tipeHarga = pelangganId ? "tipe_" + pelangganId : "tipe_1";
                 let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
-                
+                let stok = hargaProduk[produkId]?.stok || 0;
+
                 row.querySelector(".harga").dataset.harga = harga;
+                row.querySelector(".stok-terpakai").innerText = stok;
+                row.querySelector(".jumlah").setAttribute("max", stok);
                 updateTotal();
             }
+
             if (event.target.matches(".jumlah")) {
+                let row = event.target.closest("tr");
+                let jumlahInput = event.target;
+                let stokTersedia = parseInt(row.querySelector(".stok-terpakai").innerText) || 0;
+                let jumlah = parseInt(jumlahInput.value) || 0;
+
+                if (jumlah > stokTersedia) {
+                    jumlahInput.value = stokTersedia;
+                }
                 updateTotal();
             }
         });
@@ -115,7 +132,7 @@
                 updateTotal();
             }
         });
-        
+
         document.querySelector("#pelanggan_id").addEventListener("change", function () {
             document.querySelector("#produk-list").innerHTML = ""; 
             updateTotal();
