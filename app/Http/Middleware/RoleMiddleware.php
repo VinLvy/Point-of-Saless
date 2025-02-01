@@ -10,10 +10,26 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
     {
-        if (Auth::check() && Auth::user()->role == $role) {
-            return $next($request);
+        // Jika pengguna belum login, arahkan ke halaman login
+        if (!Auth::check()) {
+            return redirect()->route('login')->withErrors('Silakan login terlebih dahulu.');
         }
 
-        return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        // Ambil role pengguna
+        $userRole = Auth::user()->role;
+
+        // Jika role tidak sesuai, arahkan ke dashboard masing-masing
+        if ($userRole !== $role) {
+            if ($userRole == 'administrator') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($userRole == 'kasir') {
+                return redirect()->route('kasir.dashboard');
+            } else {
+                Auth::logout();
+                return redirect()->route('login')->withErrors('Akses ditolak.');
+            }
+        }
+
+        return $next($request);
     }
 }

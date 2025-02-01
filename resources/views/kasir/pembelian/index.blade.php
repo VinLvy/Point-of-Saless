@@ -131,7 +131,7 @@
             alert("Diskon harus antara 0% - 100%");
             return;
         }
-            updateTotal();     
+        updateTotal();     
     });
 
     document.addEventListener("change", function(event) {
