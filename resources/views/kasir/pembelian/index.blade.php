@@ -66,7 +66,7 @@
         </div>
         
         <div class="mt-3">
-            <label for="total_akhir_display" class="form-label">Total Akhir</label>
+            <label for="total_akhir_display" class="form-label">Total Akhir (PPN 12%)</label>
             <span id="total_akhir_display" class="form-control">Rp 0</span>
         </div>
         
@@ -109,9 +109,11 @@
             totalBayar += total;
         });
 
-        let diskonPersen = parseFloat(diskonInput.value) || 0;
+        let diskonPersen = parseFloat(document.querySelector("#diskon").value) || 0;
         let diskonNominal = (diskonPersen / 100) * totalBayar;
-        let totalAkhir = totalBayar - diskonNominal;
+        let totalSetelahDiskon = totalBayar - diskonNominal;
+
+        let totalAkhir = totalSetelahDiskon * 1.12;
 
         document.querySelector("#total_bayar_display").innerText = formatRupiah(totalBayar);
         document.querySelector("#total_diskon_display").innerText = formatRupiah(diskonNominal);
@@ -129,10 +131,7 @@
             alert("Diskon harus antara 0% - 100%");
             return;
         }
-
-        if (confirm("Apakah Anda yakin ingin menerapkan diskon " + diskonPersen + "%?")) {
-            updateTotal();
-        }
+            updateTotal();     
     });
 
     document.addEventListener("change", function(event) {
