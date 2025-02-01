@@ -27,6 +27,7 @@ class PembelianController extends Controller
             'produk_id' => 'required|array',
             'jumlah' => 'required|array',
             'total_bayar' => 'required|numeric|min:0',
+            'diskon' => 'nullable|numeric|min:0|max:100',
         ]);
 
         DB::beginTransaction();
@@ -66,15 +67,20 @@ class PembelianController extends Controller
                 ]);
             }
 
+            // Hitung diskon
+            $diskonPersen = $request->diskon ?? 0;
+            $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
+            $totalAkhir = $totalBelanja - $diskonNominal;
+
             // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => auth()->id(),
                 'tipe_pelanggan' => $pelanggan->tipe_pelanggan,
                 'total_belanja' => $totalBelanja,
-                'diskon' => 0,
+                'diskon' => $diskonPersen,
                 'poin_digunakan' => 0,
-                'total_akhir' => $totalBelanja,
+                'total_akhir' => $totalAkhir,
                 'tanggal_transaksi' => Carbon::now(),
             ]);
             $laporan->save();
@@ -82,7 +88,6 @@ class PembelianController extends Controller
 
             DB::commit();
             return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
