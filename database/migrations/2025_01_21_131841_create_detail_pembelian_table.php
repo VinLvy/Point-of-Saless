@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->bigInteger('diskon')->default(0); // Diskon dalam Rp
             $table->integer('poin_digunakan')->default(0); // Poin yang digunakan pelanggan
             $table->bigInteger('total_akhir'); // Total akhir setelah diskon dan poin
+            $table->bigInteger('uang_dibayar'); // Jumlah uang yang diberikan pelanggan
+            $table->bigInteger('kembalian'); // Kembalian yang diberikan ke pelanggan
             $table->dateTime('tanggal_transaksi'); 
             $table->timestamps();
         });
