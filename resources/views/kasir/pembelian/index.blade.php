@@ -26,9 +26,9 @@
         <input type="hidden" id="harga_produk_json" 
                value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
                    'stok' => $p->stok,
-                   'tipe_1' => $p->harga_jual_3, 
+                   'tipe_1' => $p->harga_jual_1, 
                    'tipe_2' => $p->harga_jual_2, 
-                   'tipe_3' => $p->harga_jual_1
+                   'tipe_3' => $p->harga_jual_3
                ]])) }}">
 
         <table class="table table-bordered table-fixed">
@@ -68,6 +68,16 @@
         <div class="mt-3">
             <label for="total_akhir_display" class="form-label">Total Akhir (PPN 12%)</label>
             <span id="total_akhir_display" class="form-control">Rp 0</span>
+        </div>
+
+        <div class="mt-3">
+            <label for="uang_dibayar" class="form-label">Uang Dibayarkan</label>
+            <input type="number" name="uang_dibayar" id="uang_dibayar" class="form-control" min="0" required>
+        </div>
+
+        <div class="mt-3">
+            <label for="kembalian_display" class="form-label">Kembalian</label>
+            <span id="kembalian_display" class="form-control">Rp 0</span>
         </div>
         
         <input type="hidden" name="total_bayar" id="total_bayar">
@@ -124,14 +134,28 @@
         document.querySelector("#total_akhir").value = totalAkhir;
     }
 
-    konfirmasiDiskonBtn.addEventListener("click", function () {
-        let diskonPersen = parseFloat(diskonInput.value) || 0;
+    document.querySelector("#uang_dibayar").addEventListener("input", function () {
+        let uangDibayar = parseFloat(this.value) || 0;
+        let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
+        let kembalian = uangDibayar - totalAkhir;
 
+        document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
+    });
+
+
+    konfirmasiDiskonBtn.addEventListener("click", function () {
+        let adaProduk = document.querySelector("#produk-list tr") !== null;
+        if (!adaProduk) {
+            alert("Tambahkan produk terlebih dahulu sebelum memberikan diskon!");
+            return;
+        }
+
+        let diskonPersen = parseFloat(diskonInput.value) || 0;
         if (diskonPersen < 0 || diskonPersen > 100) {
             alert("Diskon harus antara 0% - 100%");
             return;
         }
-        updateTotal();     
+        updateTotal();
     });
 
     document.addEventListener("change", function(event) {

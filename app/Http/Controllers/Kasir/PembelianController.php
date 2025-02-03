@@ -28,6 +28,7 @@ class PembelianController extends Controller
             'jumlah' => 'required|array',
             'total_bayar' => 'required|numeric|min:0',
             'diskon' => 'nullable|numeric|min:0|max:100',
+            'uang_dibayar' => 'required|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -47,9 +48,9 @@ class PembelianController extends Controller
 
                 // Pilih harga sesuai tipe pelanggan
                 $hargaJual = match ($pelanggan->tipe_pelanggan) {
-                    'tipe 1' => $produk->harga_jual_3,
+                    'tipe 1' => $produk->harga_jual_1,
                     'tipe 2' => $produk->harga_jual_2,
-                    'tipe 3' => $produk->harga_jual_1,
+                    'tipe 3' => $produk->harga_jual_3,
                 };
 
                 $totalHarga = $hargaJual * $jumlah;
@@ -71,6 +72,15 @@ class PembelianController extends Controller
             $diskonPersen = $request->diskon ?? 0;
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
             $totalAkhir = $totalBelanja - $diskonNominal;
+            $totalAkhir *= 1.12;
+
+            // Validasi uang dibayar
+            if ($request->uang_dibayar < $totalAkhir) {
+                throw new \Exception("Uang yang dibayar tidak cukup untuk transaksi ini!");
+            }
+
+            // Hitung kembalian
+            $kembalian = $request->uang_dibayar - $totalAkhir;
 
             // Simpan transaksi
             $laporan = new LaporanPenjualan([
@@ -81,6 +91,8 @@ class PembelianController extends Controller
                 'diskon' => $diskonPersen,
                 'poin_digunakan' => 0,
                 'total_akhir' => $totalAkhir,
+                'uang_dibayar' => $request->uang_dibayar,
+                'kembalian' => $kembalian,
                 'tanggal_transaksi' => Carbon::now(),
             ]);
             $laporan->save();
