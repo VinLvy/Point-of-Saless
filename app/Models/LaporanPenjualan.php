@@ -18,6 +18,8 @@ class LaporanPenjualan extends Model
         'diskon',
         'poin_digunakan',
         'total_akhir',
+        'uang_dibayar',
+        'kembalian',
         'tanggal_transaksi',
     ];
 

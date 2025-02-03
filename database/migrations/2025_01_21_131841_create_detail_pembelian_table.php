@@ -14,14 +14,14 @@ return new class extends Migration {
             $table->foreignId('petugas_id')->constrained('petugas')->onDelete('cascade');
             $table->string('tipe_pelanggan');
             $table->bigInteger('total_belanja'); 
-            $table->bigInteger('diskon')->default(0); // Diskon dalam Rp
-            $table->integer('poin_digunakan')->default(0); // Poin yang digunakan pelanggan
-            $table->bigInteger('total_akhir'); // Total akhir setelah diskon dan poin
-            $table->bigInteger('uang_dibayar'); // Jumlah uang yang diberikan pelanggan
-            $table->bigInteger('kembalian'); // Kembalian yang diberikan ke pelanggan
+            $table->bigInteger('diskon')->default(0);
+            $table->integer('poin_digunakan')->default(0);
+            $table->bigInteger('total_akhir');
+            $table->bigInteger('uang_dibayar')->default(0);
+            $table->bigInteger('kembalian')->default(0);
             $table->dateTime('tanggal_transaksi'); 
             $table->timestamps();
-        });
+        });        
 
         // Tabel detail laporan penjualan untuk mencatat produk yang dibeli per transaksi
         Schema::create('detail_laporan_penjualan', function (Blueprint $table) {
