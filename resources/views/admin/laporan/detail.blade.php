@@ -2,37 +2,43 @@
 
 @section('content')
 <div class="container">
-    <h1>Detail Pembelian</h1>
+    <h1>Detail Laporan Penjualan</h1>
 
-    <h4>Informasi Pembelian</h4>
-    <ul>
-        <li>Pelanggan: {{ $detail->pembelian->pelanggan->nama_pelanggan ?? 'N/A' }}</li>
-        <li>Kasir: {{ $detail->pembelian->petugas->nama_petugas ?? 'N/A' }}</li>
-        <li>Tanggal: {{ $detail->created_at->format('d-m-Y H:i') }}</li>
-        <li>Total Harga: {{ number_format($detail->total_harga, 0, ',', '.') }}</li>
-    </ul>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Informasi Transaksi</h5>
+            <p><strong>Tanggal Transaksi:</strong> {{ $laporan->created_at->format('d-m-Y H:i') }}</p>
+            <p><strong>Pelanggan:</strong> {{ $laporan->pelanggan->nama_pelanggan ?? 'N/A' }}</p>
+            <p><strong>Total Belanja:</strong> Rp {{ number_format($laporan->total_belanja, 0, ',', '.') }}</p>
+            <p><strong>Diskon:</strong> {{ number_format($laporan->diskon, 0, ',', '.') }}%</p>
+            <p><strong>Total Akhir (PPN: 12%):</strong> Rp {{ number_format($laporan->total_akhir, 0, ',', '.') }}</p>
+            <p><strong>Uang Dibayar:</strong> Rp {{ number_format($laporan->uang_dibayar, 0, ',', '.') }}</p>
+            <p><strong>Kembalian:</strong> Rp {{ number_format($laporan->kembalian, 0, ',', '.') }}</p>
+        </div>
+    </div>
 
-    <h4>Produk</h4>
+    <h5>Barang yang Dibeli</h5>
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Nama Produk</th>
-                <th>Harga</th>
+                <th>#</th>
+                <th>Nama Barang</th>
                 <th>Jumlah</th>
-                <th>Subtotal</th>
+                <th>Harga Satuan</th>
+                <th>Total Harga</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($detail->produk as $produk)
+            @foreach ($laporan->detail as $detail)
             <tr>
-                <td>{{ $produk['nama'] ?? 'N/A' }}</td>
-                <td>{{ isset($produk['harga_satuan']) ? number_format($produk['harga_satuan'], 0, ',', '.') : 'N/A' }}</td>
-                <td>{{ $produk['jumlah'] ?? 0 }}</td>
-                <td>{{ isset($produk['total_harga']) ? number_format($produk['total_harga'], 0, ',', '.') : 'N/A' }}</td>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $detail->produk->nama_barang }}</td>
+                <td>{{ $detail->jumlah }}</td>
+                <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
+                <td>Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary">Kembali</a>
 </div>
 @endsection

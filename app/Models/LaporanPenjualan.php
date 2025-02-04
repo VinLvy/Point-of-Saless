@@ -31,7 +31,7 @@ class LaporanPenjualan extends Model
 
     public function petugas()
     {
-        return $this->belongsTo(User::class, 'petugas_id'); // Sesuai dengan model User di Laravel
+        return $this->belongsTo(User::class, 'petugas_id');
     }
 
     public function detail()
