@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('pelanggan_id')->constrained('pelanggan')->onDelete('cascade');
             $table->foreignId('petugas_id')->constrained('petugas')->onDelete('cascade');
+            $table->string('kode_transaksi')->unique();
             $table->string('tipe_pelanggan');
             $table->bigInteger('total_belanja'); 
             $table->bigInteger('diskon')->default(0);

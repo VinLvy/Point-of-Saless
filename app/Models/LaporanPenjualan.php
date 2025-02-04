@@ -22,7 +22,19 @@ class LaporanPenjualan extends Model
         'uang_dibayar',
         'kembalian',
         'tanggal_transaksi',
+        'kode_transaksi',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($transaksi) {
+            $lastTransaction = DB::table('laporan_penjualan')->latest('id')->first();
+            $nextNumber = $lastTransaction ? intval(substr($lastTransaction->kode_transaksi, 2)) + 1 : 1;
+            $transaksi->kode_transaksi = 'PB' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        });
+    }
 
     public function pelanggan()
     {
