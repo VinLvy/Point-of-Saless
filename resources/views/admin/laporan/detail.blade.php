@@ -40,5 +40,6 @@
             @endforeach
         </tbody>
     </table>
+    <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary">Kembali</a>
 </div>
 @endsection

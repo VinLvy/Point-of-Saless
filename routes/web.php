@@ -22,7 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rute untuk admin
 Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::resource('petugas', PetugasController::class)->except(['show']);
+    Route::resource('petugas', PetugasController::class);
     Route::resource('pelanggan', PelangganController::class);
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
