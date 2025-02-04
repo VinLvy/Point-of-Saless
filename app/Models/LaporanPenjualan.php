@@ -17,6 +17,7 @@ class LaporanPenjualan extends Model
         'total_belanja',
         'diskon',
         'poin_digunakan',
+        'poin_didapat',
         'total_akhir',
         'uang_dibayar',
         'kembalian',
