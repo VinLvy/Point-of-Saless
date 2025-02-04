@@ -41,12 +41,10 @@ class PembelianController extends Controller
                 $produk = ItemBarang::findOrFail($produkId);
                 $jumlah = $request->jumlah[$index];
 
-                // Cek stok barang
                 if ($produk->stok < $jumlah) {
-                    throw new \Exception("Stok barang '{$produk->nama_barang}' tidak mencukupi!");
+                    return redirect()->route('kasir.pembelian.index')->with('error', "Stok barang '{$produk->nama_barang}' tidak mencukupi!");
                 }
 
-                // Pilih harga sesuai tipe pelanggan
                 $hargaJual = match ($pelanggan->tipe_pelanggan) {
                     'tipe 1' => $produk->harga_jual_1,
                     'tipe 2' => $produk->harga_jual_2,
@@ -56,33 +54,26 @@ class PembelianController extends Controller
                 $totalHarga = $hargaJual * $jumlah;
                 $totalBelanja += $totalHarga;
 
-                // Kurangi stok barang
-                $produk->stok -= $jumlah;
-                $produk->save();
-
-                $items[] = new DetailLaporanPenjualan([
+                $items[] = [
                     'produk_id' => $produk->id,
                     'jumlah' => $jumlah,
                     'harga' => $hargaJual,
                     'total_harga' => $totalHarga,
-                ]);
+                ];
             }
 
-            // Hitung diskon
             $diskonPersen = $request->diskon ?? 0;
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
-            $totalAkhir = $totalBelanja - $diskonNominal;
-            $totalAkhir *= 1.12;
+            $totalAkhir = ($totalBelanja - $diskonNominal) * 1.12;
 
-            // Validasi uang dibayar
             if ($request->uang_dibayar < $totalAkhir) {
-                throw new \Exception("Uang yang dibayar tidak cukup untuk transaksi ini!");
-            }
+                return redirect()->back()
+                    ->withInput($request->all()) // Menyimpan input sebelumnya
+                    ->with('warning', 'Uang tidak cukup!');
+            }            
 
-            // Hitung kembalian
             $kembalian = $request->uang_dibayar - $totalAkhir;
 
-            // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => auth()->id(),
@@ -93,10 +84,16 @@ class PembelianController extends Controller
                 'total_akhir' => $totalAkhir,
                 'uang_dibayar' => $request->uang_dibayar,
                 'kembalian' => $kembalian,
-                'tanggal_transaksi' => Carbon::now(),
+                'tanggal_transaksi' => now(),
             ]);
             $laporan->save();
-            $laporan->detail()->saveMany($items);
+            $laporan->detail()->createMany($items);
+
+            foreach ($request->produk_id as $index => $produkId) {
+                $produk = ItemBarang::findOrFail($produkId);
+                $produk->stok -= $request->jumlah[$index];
+                $produk->save();
+            }
 
             DB::commit();
             return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');

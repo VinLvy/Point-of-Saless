@@ -8,6 +8,8 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @elseif(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
+    @elseif(session('warning'))
+        <div class="alert alert-warning">{{ session('warning') }}</div>
     @endif
 
     <form action="{{ route('kasir.pembelian.store') }}" method="POST">
@@ -84,7 +86,14 @@
         <input type="hidden" name="total_diskon" id="total_diskon">
         <input type="hidden" name="total_akhir" id="total_akhir">        
 
-        <button type="submit" class="btn btn-success mt-3">Simpan Transaksi</button>
+        <div class="mb-3">
+            <small id="error-uang-dibayar" class="text-danger d-block mt-2"></small>
+        </div>
+        
+        <div class="mb-3">
+            <button id="proses-transaksi" class="btn btn-success mt-2 w-100" disabled>Proses Transaksi</button>
+        </div>
+               
     </form>
 </div>
 
@@ -135,12 +144,25 @@
     }
 
     document.querySelector("#uang_dibayar").addEventListener("input", function () {
-        let uangDibayar = parseFloat(this.value) || 0;
-        let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
-        let kembalian = uangDibayar - totalAkhir;
+    let uangDibayar = parseFloat(this.value) || 0;
+    let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
+    let kembalian = uangDibayar - totalAkhir;
 
-        document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
-    });
+    // Menampilkan kembalian (jika positif) atau 0 jika kurang dari total
+    document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
+
+    // Validasi: Jika uang dibayar kurang dari total akhir, tampilkan peringatan dan disable tombol submit
+    let submitButton = document.querySelector("#proses-transaksi");
+    if (uangDibayar < totalAkhir) {
+        document.querySelector("#uang_dibayar").classList.add("is-invalid");
+        document.querySelector("#error-uang-dibayar").innerText = "Uang yang dibayarkan tidak mencukupi!";
+        submitButton.setAttribute("disabled", "disabled");
+    } else {
+        document.querySelector("#uang_dibayar").classList.remove("is-invalid");
+        document.querySelector("#error-uang-dibayar").innerText = "";
+        submitButton.removeAttribute("disabled");
+    }
+});
 
 
     konfirmasiDiskonBtn.addEventListener("click", function () {
