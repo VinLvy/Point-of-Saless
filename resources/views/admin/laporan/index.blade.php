@@ -24,11 +24,12 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Tanggal</th>
+                <th>Kode Transaksi</th>
                 <th>Pelanggan</th>
                 <th>Total Belanja</th>
                 <th>Diskon</th>
                 <th>Total Akhir (PPN: 12%)</th>
+                <th>Tanggal</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -36,11 +37,12 @@
             @foreach ($laporan as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
+                <td>{{ $item->kode_transaksi ?? 'N/A' }}</td>
                 <td>{{ $item->pelanggan->nama_pelanggan ?? 'N/A' }}</td>
                 <td>{{ number_format($item->total_belanja, 0, ',', '.') }}</td>
-                <td>{{ number_format($item->diskon, 0, ',', '.') }}</td>
+                <td>{{ number_format($item->diskon, 0, ',', '.') }}%</td>
                 <td>{{ number_format($item->total_akhir, 0, ',', '.') }}</td>
+                <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
                 <td>
                     <a href="{{ route('admin.laporan.show', $item->id) }}" class="btn btn-sm btn-info">Detail</a>
                 </td>

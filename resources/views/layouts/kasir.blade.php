@@ -13,7 +13,7 @@
             font-family: Arial, sans-serif;
         }
         .sidebar {
-            width: 222px;
+            width: 250px;
             height: 100vh;
             background: #333;
             color: #fff;
