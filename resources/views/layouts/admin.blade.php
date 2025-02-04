@@ -11,56 +11,84 @@
         body {
             display: flex;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
         }
         .sidebar {
-            width: 250px;
+            width: 244px;
             height: 100vh;
-            background: #333;
+            background: #222;
             color: #fff;
-            padding: 20px;
+            padding-top: 20px;
             position: fixed;
+            transition: all 0.3s;
         }
         .sidebar h2 {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #555;
+            border-bottom: 1px solid #444;
             padding-bottom: 10px;
+            font-size: 20px;
         }
         .sidebar a {
-            display: block;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            color: #ddd;
             text-decoration: none;
-            padding: 10px 0;
-            border-bottom: 1px solid #555;
+            padding: 12px 20px;
+            font-size: 16px;
+            transition: background 0.3s;
         }
-        .sidebar a:hover {
-            background: #555;
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: #007bff;
+            color: #fff;
+        }
+        .logout {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
         }
         .content {
-            margin-left: 280px;
+            margin-left: 250px;
             padding: 20px;
-            width: calc(100% - 280px);
+            width: calc(100% - 250px);
             box-sizing: border-box;
+        }
+        /* Responsif: Sidebar bisa ditutup di mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .sidebar.open {
+                width: 250px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>Admin Panel</h2>
-        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-        <a href="{{ route('admin.petugas.index') }}">Petugas</a>
-        <a href="{{ route('admin.pelanggan.index') }}">Pelanggan</a>
-        <a href="{{ route('admin.laporan.index') }}">Laporan</a>
+        <h2><i class="bi bi-speedometer2"></i> Admin Panel</h2>
+        <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
+        <a href="{{ route('admin.petugas.index') }}"><i class="bi bi-person-badge"></i> Petugas</a>
+        <a href="{{ route('admin.pelanggan.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
+        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan</a>
+        
+        <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
-        
-        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            Logout
-        </a>
-        
     </div>
 
     <div class="content">
