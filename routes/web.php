@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\KategoriBarangController;
+use App\Http\Controllers\Admin\ItemBarangController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
 
@@ -30,6 +31,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::resource('kategori', KategoriBarangController::class);
+    Route::resource('barang', ItemBarangController::class);
 });
 
 // Rute untuk kasir
