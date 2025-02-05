@@ -15,6 +15,18 @@ class KategoriBarang extends Model
         'nama_kategori',
     ];
 
+    public static function generateKodeKategori()
+    {
+        $latest = self::latest()->first();
+        if (!$latest) {
+        return 'KTG001';
+    }
+
+        $lastNumber = (int) substr($latest->kode_kategori, 3);
+        return 'KTG' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    }
+
+
     public function itemBarang()
     {
         return $this->hasMany(ItemBarang::class, 'kategori_id');

@@ -1,13 +1,16 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\KategoriBarangController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
+
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -26,6 +29,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::resource('pelanggan', PelangganController::class);
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
+    Route::resource('kategori', KategoriBarangController::class);
 });
 
 // Rute untuk kasir
