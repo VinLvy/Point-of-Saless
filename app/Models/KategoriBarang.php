@@ -15,15 +15,19 @@ class KategoriBarang extends Model
         'nama_kategori',
     ];
 
-    public static function generateKodeKategori()
+    protected static function boot()
     {
-        $latest = self::latest()->first();
-        if (!$latest) {
-        return 'KTG001';
-    }
+        parent::boot();
 
-        $lastNumber = (int) substr($latest->kode_kategori, 3);
-        return 'KTG' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        static::creating(function ($kategori) {
+            // Ambil kode kategori terakhir
+            $lastKategori = self::orderBy('id', 'desc')->first();
+            $lastCode = $lastKategori ? $lastKategori->kode_kategori : 'KTG000';
+
+            // Generate kode kategori baru
+            $number = (int) substr($lastCode, 3) + 1;
+            $kategori->kode_kategori = 'KTG' . str_pad($number, 3, '0', STR_PAD_LEFT);
+        });
     }
 
 
