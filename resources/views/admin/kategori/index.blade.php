@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-box-seam-fill"></i> Daftar Kategori Barang</h4>
+            <h4 class="mb-0"><i class="bi bi-journal-check"></i> Daftar Kategori Barang</h4>
         </div>
         <div class="card-body">
             {{-- Alert pesan sukses --}}
