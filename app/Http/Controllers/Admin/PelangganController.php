@@ -22,14 +22,18 @@ class PelangganController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pelanggan' => 'required',
+            'nama_pelanggan' => 'required|string|max:255',
             'email' => 'nullable|email|unique:pelanggan,email',
-            'no_hp' => 'required',
-            'alamat' => 'nullable',
-            'poin' => 'integer|min:0'
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'nullable|string',
+            'poin_membership' => 'integer|min:0',
+            'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
         ]);
 
-        Pelanggan::create($request->all());
+        Pelanggan::create($request->only([
+            'nama_pelanggan', 'email', 'no_hp', 'alamat', 'poin_membership', 'tipe_pelanggan'
+        ]));
+
         return redirect()->route('admin.pelanggan.index')->with('success', 'Pelanggan berhasil ditambahkan.');
     }
 
@@ -41,14 +45,18 @@ class PelangganController extends Controller
     public function update(Request $request, Pelanggan $pelanggan)
     {
         $request->validate([
-            'nama_pelanggan' => 'required',
+            'nama_pelanggan' => 'required|string|max:255',
             'email' => 'nullable|email|unique:pelanggan,email,' . $pelanggan->id,
-            'no_hp' => 'required',
-            'alamat' => 'nullable',
-            'poin_membership' => 'integer|min:0'
+            'no_hp' => 'required|string|max:20',
+            'alamat' => 'nullable|string',
+            'poin_membership' => 'integer|min:0',
+            'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
         ]);
 
-        $pelanggan->update($request->all());
+        $pelanggan->update($request->only([
+            'nama_pelanggan', 'email', 'no_hp', 'alamat', 'poin_membership', 'tipe_pelanggan'
+        ]));
+
         return redirect()->route('admin.pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }
 

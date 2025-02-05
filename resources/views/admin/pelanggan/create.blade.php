@@ -21,8 +21,16 @@
             <textarea name="alamat" class="form-control"></textarea>
         </div>
         <div class="mb-3">
-            <label class="form-label">Poin</label>
-            <input type="number" name="poin" class="form-control" value="0">
+            <label class="form-label">Poin Membership</label>
+            <input type="number" name="poin_membership" class="form-control" value="0" min="0">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tipe Pelanggan</label>
+            <select name="tipe_pelanggan" class="form-control" required>
+                <option value="tipe 1">Tipe 1</option>
+                <option value="tipe 2">Tipe 2</option>
+                {{-- <option value="tipe 3">Tipe 3</option> --}}
+            </select>
         </div>
         <button type="submit" class="btn btn-success">Simpan</button>
     </form>
