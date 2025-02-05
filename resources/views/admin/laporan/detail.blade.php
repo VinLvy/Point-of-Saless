@@ -12,6 +12,7 @@
                     <p><strong>Kode Transaksi:</strong> <span class="badge bg-primary">{{ $laporan->kode_transaksi }}</span></p>
                     <p><strong>Tanggal Transaksi:</strong> {{ $laporan->created_at->format('d-m-Y H:i') }}</p>
                     <p><strong>Pelanggan:</strong> {{ $laporan->pelanggan->nama_pelanggan ?? 'N/A' }}</p>
+                    <p><strong>Petugas:</strong> {{ $laporan->petugas->nama_petugas }}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Total Belanja:</strong> <span class="text-success fw-bold">Rp {{ number_format($laporan->total_belanja, 0, ',', '.') }}</span></p>

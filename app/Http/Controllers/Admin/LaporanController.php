@@ -29,7 +29,7 @@ class LaporanController extends Controller
     public function show($id)
     {
         // Ambil detail laporan penjualan berdasarkan ID dengan relasi pelanggan dan detail penjualan
-        $laporan = LaporanPenjualan::with(['pelanggan', 'detail.produk'])
+        $laporan = LaporanPenjualan::with(['pelanggan', 'detail.produk', 'Petugas'])
             ->findOrFail($id);
 
         return view('admin.laporan.detail', compact('laporan'));

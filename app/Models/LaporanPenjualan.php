@@ -44,7 +44,7 @@ class LaporanPenjualan extends Model
 
     public function petugas()
     {
-        return $this->belongsTo(User::class, 'petugas_id');
+        return $this->belongsTo(Petugas::class, 'petugas_id');
     }
 
     public function detail()
