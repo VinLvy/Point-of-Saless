@@ -23,8 +23,7 @@
                 <th>#</th>
                 <th>Petugas</th>
                 <th>Aksi</th>
-                <th>Model</th>
-                <th>Model ID</th>
+                <th>Deskripsi Aktivitas</th>
                 <th>IP Address</th>
                 <th>Waktu</th>
             </tr>
@@ -49,8 +48,7 @@
                         <span class="badge bg-secondary">{{ ucfirst($log->action) }}</span>
                     @endif
                 </td>
-                <td>{{ $log->model ?? '-' }}</td>
-                <td>{{ $log->model_id ?? '-' }}</td>
+                <td>{{ $log->getDeskripsi() }}</td>
                 <td>{{ $log->ip_address }}</td>
                 <td>{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
             </tr>

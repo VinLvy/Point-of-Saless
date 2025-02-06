@@ -29,4 +29,27 @@ class ActivityLog extends Model
     {
         return $this->belongsTo(Petugas::class, 'petugas_id');
     }
+
+    public function getDeskripsi()
+    {
+        $petugas = $this->petugas->nama_petugas ?? 'Petugas Tidak Diketahui';
+        $model = ucfirst($this->model ?? '-');
+        $model_id = $this->model_id ?? '-';
+        $nama_data = $this->new_data['nama_barang'] ?? $this->new_data['nama_kategori'] ?? 'Data';
+
+        switch ($this->action) {
+            case 'tambah':
+                return "$petugas menambahkan $model $nama_data";
+            case 'edit':
+                return "$petugas mengedit $model $nama_data";
+            case 'hapus':
+                return "$petugas menghapus $model $nama_data";
+            case 'login':
+                return "$petugas melakukan login";
+            case 'logout':
+                return "$petugas melakukan logout";
+            default:
+                return "$petugas melakukan aksi $this->action pada $model $model_id";
+        }
+    }
 }
