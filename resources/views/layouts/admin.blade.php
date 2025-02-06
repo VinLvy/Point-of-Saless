@@ -84,7 +84,7 @@
         <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan</a>
         <a href="{{ route('admin.kategori.index') }}"><i class="bi bi bi-journal-check"></i> Kategori Barang</a>
         <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
-        <a href="#"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
+        <a href="{{ route('admin.logs.index') }}"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
         <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>

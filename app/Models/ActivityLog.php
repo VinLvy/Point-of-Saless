@@ -24,4 +24,9 @@ class ActivityLog extends Model
         'old_data' => 'array',
         'new_data' => 'array',
     ];
+
+    public function petugas()
+    {
+        return $this->belongsTo(Petugas::class, 'petugas_id');
+    }
 }

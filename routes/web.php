@@ -9,9 +9,10 @@ use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\KategoriBarangController;
 use App\Http\Controllers\Admin\ItemBarangController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
-
+use App\Models\ActivityLog;
 
 // Redirect ke halaman login saat mengakses root URL
 Route::get('/', function () {
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::resource('kategori', KategoriBarangController::class);
     Route::resource('barang', ItemBarangController::class);
+    Route::resource('logs', ActivityLogController::class);
 });
 
 // Rute untuk kasir
