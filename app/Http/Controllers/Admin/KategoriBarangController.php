@@ -59,13 +59,15 @@ class KategoriBarangController extends Controller
     {
         $kategori = KategoriBarang::findOrFail($id);
         $oldData = $kategori->toArray(); // Simpan data sebelum dihapus
-
+        $namaKategori = $kategori->nama_kategori; // Simpan nama kategori sebelum dihapus
+    
         $kategori->delete();
-
-        $this->logActivity('hapus', 'kategori_barang', $id, $oldData, null);
-
+    
+        // Kirimkan $namaKategori sebagai bagian dari old_data agar tetap bisa diakses
+        $this->logActivity('hapus', 'kategori_barang', $id, ['nama_kategori' => $namaKategori], null);
+    
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus!');
-    }
+    }    
 
     private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)
     {

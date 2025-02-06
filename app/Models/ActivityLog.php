@@ -33,17 +33,22 @@ class ActivityLog extends Model
     public function getDeskripsi()
     {
         $petugas = $this->petugas->nama_petugas ?? 'Petugas Tidak Diketahui';
-        $model = ucfirst($this->model ?? '-');
+        $model = ucwords(str_replace('_', ' ', $this->model ?? '-'));
         $model_id = $this->model_id ?? '-';
-        $nama_data = $this->new_data['nama_barang'] ?? $this->new_data['nama_kategori'] ?? 'Data';
+        
+            // Ambil nama dari new_data atau old_data jika aksi adalah "hapus"
+        $nama_data = $this->new_data['nama_barang'] 
+        ?? $this->new_data['nama_kategori'] 
+        ?? $this->old_data['nama_kategori'] // Ambil dari old_data jika dihapus
+        ?? 'Data';
 
         switch ($this->action) {
             case 'tambah':
-                return "$petugas menambahkan $model $nama_data";
+                return "$petugas menambahkan $nama_data pada $model";
             case 'edit':
-                return "$petugas mengedit $model $nama_data";
+                return "$petugas mengedit $nama_data pada $model";
             case 'hapus':
-                return "$petugas menghapus $model $nama_data";
+                return "$petugas menghapus $nama_data pada $model";
             case 'login':
                 return "$petugas melakukan login";
             case 'logout':
