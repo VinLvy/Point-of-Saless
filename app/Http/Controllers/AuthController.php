@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Petugas;
+use App\Services\ActivityLogService;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            ActivityLogService::log('login');
             $user = Auth::user();
 
             // Redirect berdasarkan role
@@ -40,6 +42,7 @@ class AuthController extends Controller
 
     public function logout()
     {
+        ActivityLogService::log('logout');
         Auth::logout();
         return redirect()->route('login');
     }
