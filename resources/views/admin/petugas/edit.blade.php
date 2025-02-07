@@ -36,7 +36,7 @@
         <div class="mb-3">
             <label for="role" class="form-label">Role</label>
             <select class="form-select @error('role') is-invalid @enderror" id="role" name="role">
-                <option value="petugas" {{ old('role', $petugas->role) == 'petugas' ? 'selected' : '' }}>Petugas</option>
+                {{-- <option value="petugas" {{ old('role', $petugas->role) == 'petugas' ? 'selected' : '' }}>Petugas</option> --}}
                 <option value="kasir" {{ old('role', $petugas->role) == 'kasir' ? 'selected' : '' }}>Kasir</option>
             </select>
             @error('role')

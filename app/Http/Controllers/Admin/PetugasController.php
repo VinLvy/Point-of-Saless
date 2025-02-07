@@ -17,6 +17,11 @@ class PetugasController extends Controller
         return view('admin.petugas.index', compact('petugas'));
     }
 
+    public function create()
+    {
+        return view('admin.petugas.create'); // Menampilkan halaman tambah petugas
+    }
+
     public function store(Request $request)
     {
         $request->validate([
