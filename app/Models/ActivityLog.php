@@ -39,6 +39,7 @@ class ActivityLog extends Model
             // Ambil nama dari new_data atau old_data jika aksi adalah "hapus"
         $nama_data = $this->new_data['nama_barang'] ?? $this->old_data['nama_barang']
         ?? $this->new_data['nama_kategori'] ?? $this->old_data['nama_kategori']
+        ?? $this->new_data['nama_pelanggan'] ?? $this->old_data['nama_pelanggan']
         ?? 'Data';
 
         switch ($this->action) {
