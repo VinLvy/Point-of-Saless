@@ -64,9 +64,10 @@
         </table>
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-        {{ $logs->links() }}
-    </div>
+<!-- Pagination -->
+<div class="d-flex justify-content-center mt-3">
+    {{ $logs->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
+</div>
+
 </div>
 @endsection
