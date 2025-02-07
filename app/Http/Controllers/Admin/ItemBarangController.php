@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ItemBarang;
 use App\Models\KategoriBarang;
 use Illuminate\Http\Request;
+use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Auth;
 
 class ItemBarangController extends Controller
 {
@@ -41,7 +43,7 @@ class ItemBarangController extends Controller
         $harga_jual_3 = round($harga_beli * 1.3); // HPP + 30%
 
         // Simpan ke database
-        ItemBarang::create([
+        $barang = ItemBarang::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
             'tanggal_kedaluarsa' => $request->tanggal_kedaluarsa,
@@ -54,6 +56,9 @@ class ItemBarangController extends Controller
             'minimal_stok' => $request->minimal_stok,
             'kategori_id' => $request->kategori_id,
         ]);
+
+        // Simpan log aktivitas
+        $this->logActivity('tambah', 'item_barang', $barang->id, null, $barang->toArray());
 
         return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
@@ -78,6 +83,7 @@ class ItemBarangController extends Controller
         ]);
 
         $barang = ItemBarang::findOrFail($id);
+        $oldData = $barang->toArray(); // Simpan data sebelum diupdate
 
         $harga_beli = $request->harga_beli;
 
@@ -99,6 +105,9 @@ class ItemBarangController extends Controller
             'kategori_id' => $request->kategori_id,
         ]);
 
+        // Simpan log aktivitas
+        $this->logActivity('edit', 'item_barang', $id, $oldData, $barang->toArray());
+
         return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 
@@ -111,8 +120,28 @@ class ItemBarangController extends Controller
     public function destroy($id)
     {
         $barang = ItemBarang::findOrFail($id);
+        $oldData = $barang->toArray(); // Simpan data sebelum dihapus
+        $namaBarang = $barang->nama_barang; // Simpan nama barang sebelum dihapus
+
         $barang->delete();
 
+        // Simpan log aktivitas
+        $this->logActivity('hapus', 'item_barang', $id, ['nama_barang' => $namaBarang], null);
+
         return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil dihapus!');
+    }
+
+    private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)
+    {
+        ActivityLog::create([
+            'petugas_id' => Auth::id(),
+            'action' => $action,
+            'model' => $model,
+            'model_id' => $model_id,
+            'old_data' => $oldData,
+            'new_data' => $newData,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent'),
+        ]);
     }
 }
