@@ -7,14 +7,14 @@
             <h4 class="mb-0">Edit Data Pelanggan</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('kasir.member.update', $pelanggan->id) }}" method="POST">
+            <form action="{{ route('kasir.member.update', $member->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
                     <label for="nama_pelanggan" class="form-label">Nama Pelanggan</label>
                     <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="form-control @error('nama_pelanggan') is-invalid @enderror" 
-                        value="{{ old('nama_pelanggan', $pelanggan->nama_pelanggan) }}" required>
+                        value="{{ old('nama_pelanggan', $member->nama_pelanggan) }}" required>
                     @error('nama_pelanggan')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -23,7 +23,7 @@
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" 
-                        value="{{ old('email', $pelanggan->email) }}">
+                        value="{{ old('email', $member->email) }}">
                     @error('email')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -32,7 +32,7 @@
                 <div class="mb-3">
                     <label for="no_hp" class="form-label">Nomor HP</label>
                     <input type="text" name="no_hp" id="no_hp" class="form-control @error('no_hp') is-invalid @enderror" 
-                        value="{{ old('no_hp', $pelanggan->no_hp) }}" required>
+                        value="{{ old('no_hp', $member->no_hp) }}" required>
                     @error('no_hp')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -40,7 +40,7 @@
 
                 <div class="mb-3">
                     <label for="alamat" class="form-label">Alamat</label>
-                    <textarea name="alamat" id="alamat" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat', $pelanggan->alamat) }}</textarea>
+                    <textarea name="alamat" id="alamat" class="form-control @error('alamat') is-invalid @enderror">{{ old('alamat', $member->alamat) }}</textarea>
                     @error('alamat')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -49,7 +49,7 @@
                 <div class="mb-3">
                     <label for="poin_membership" class="form-label">Poin Membership</label>
                     <input type="number" name="poin_membership" id="poin_membership" class="form-control @error('poin_membership') is-invalid @enderror" 
-                        value="{{ old('poin_membership', $pelanggan->poin_membership) }}">
+                        value="{{ old('poin_membership', $member->poin_membership) }}">
                     @error('poin_membership')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -58,9 +58,9 @@
                 <div class="mb-3">
                     <label for="tipe_pelanggan" class="form-label">Tipe Pelanggan</label>
                     <select name="tipe_pelanggan" id="tipe_pelanggan" class="form-control @error('tipe_pelanggan') is-invalid @enderror" required>
-                        <option value="tipe 1" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 1' ? 'selected' : '' }}>Tipe 1</option>
-                        <option value="tipe 2" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 2' ? 'selected' : '' }}>Tipe 2</option>
-                        <option value="tipe 3" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 3' ? 'selected' : '' }}>Tipe 3</option>
+                        <option value="tipe 1" {{ old('tipe_pelanggan', $member->tipe_pelanggan) == 'tipe 1' ? 'selected' : '' }}>Tipe 1</option>
+                        <option value="tipe 2" {{ old('tipe_pelanggan', $member->tipe_pelanggan) == 'tipe 2' ? 'selected' : '' }}>Tipe 2</option>
+                        <option value="tipe 3" {{ old('tipe_pelanggan', $member->tipe_pelanggan) == 'tipe 3' ? 'selected' : '' }}>Tipe 3</option>
                     </select>
                     @error('tipe_pelanggan')
                         <div class="invalid-feedback">{{ $message }}</div>

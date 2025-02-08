@@ -23,7 +23,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($pelanggan as $p)
+                    @foreach($member as $p)
                     <tr>
                         <td>{{ $p->nama_pelanggan }}</td>
                         <td>{{ $p->email ?? '-' }}</td>
