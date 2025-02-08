@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\Admin\ItemBarangController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
+use App\Http\Controllers\Kasir\MemberController;
 use App\Models\ActivityLog;
 
 // Redirect ke halaman login saat mengakses root URL
@@ -41,5 +41,5 @@ Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->grou
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
     Route::get('pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
     Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
-    Route::resource('pelanggan', PelangganController::class);
+    Route::resource('member', MemberController::class);
 });
