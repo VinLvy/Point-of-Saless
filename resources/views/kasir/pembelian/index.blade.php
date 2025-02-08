@@ -20,18 +20,20 @@
             <select name="pelanggan_id" id="pelanggan_id" class="form-control" required>
                 <option value="">-- Pilih Pelanggan --</option>
                 @foreach($pelanggan as $p)
-                    <option value="{{ $p->id }}">{{ $p->nama_pelanggan }} (Pelanggan {{ $p->tipe_pelanggan }})</option>
+                    <option value="{{ $p->id }}" data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}">
+                        {{ $p->nama_pelanggan }} (Pelanggan {{ $p->tipe_pelanggan }})
+                    </option>
                 @endforeach
             </select>
         </div>
-
+        
         <input type="hidden" id="harga_produk_json" 
                value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
                    'stok' => $p->stok,
                    'tipe_1' => $p->harga_jual_1, 
                    'tipe_2' => $p->harga_jual_2, 
                    'tipe_3' => $p->harga_jual_3
-               ]])) }}">
+               ]])) }}">        
 
         <table class="table table-bordered table-fixed">
             <thead>
@@ -179,17 +181,40 @@
     });
 
     document.addEventListener("change", function(event) {
+        let pelangganSelect = document.querySelector("#pelanggan_id");
+        let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
+        let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
+
+        // Jika yang diubah adalah produk yang dipilih
         if (event.target.matches(".produk-select")) {
             let row = event.target.closest("tr");
             let produkId = event.target.value;
-            let pelangganId = document.querySelector("#pelanggan_id").value;
-            let tipeHarga = pelangganId ? "tipe_" + pelangganId : "tipe_1";
+
+            let tipeHarga = pelangganTipe;
             let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
             let stok = hargaProduk[produkId]?.stok || 0;
 
             row.querySelector(".harga").dataset.harga = harga;
             row.querySelector(".stok-terpakai").innerText = stok;
             row.querySelector(".jumlah").setAttribute("max", stok);
+            updateTotal();
+        }
+
+        // Jika pelanggan berubah, update semua harga produk yang dipilih
+        if (event.target.matches("#pelanggan_id")) {
+            document.querySelectorAll(".produk-select").forEach(select => {
+                let row = select.closest("tr");
+                let produkId = select.value;
+
+                let tipeHarga = pelangganTipe;
+                let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
+                let stok = hargaProduk[produkId]?.stok || 0;
+
+                row.querySelector(".harga").dataset.harga = harga;
+                row.querySelector(".stok-terpakai").innerText = stok;
+                row.querySelector(".jumlah").setAttribute("max", stok);
+            });
+
             updateTotal();
         }
 
