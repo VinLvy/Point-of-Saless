@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
 // Rute untuk kasir
 Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
-    Route::get('/pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
-    Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::get('pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
+    Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::resource('pelanggan', PelangganController::class);
 });
