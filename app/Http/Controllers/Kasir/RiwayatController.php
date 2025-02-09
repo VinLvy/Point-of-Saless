@@ -10,16 +10,13 @@ class RiwayatController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil tanggal awal dan akhir dari request
         $startDate = $request->input('start_date', now()->subWeek()->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
 
-        // Format tanggal untuk query
         $startDate = date('Y-m-d 00:00:00', strtotime($startDate));
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
-        // Ambil data riwayat penjualan dengan relasi pelanggan dan detail penjualan
-        $riwayat = LaporanPenjualan::with(['pelanggan', 'detail.produk'])
+        $riwayat = LaporanPenjualan::with(['pelanggan'])
             ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
             ->get();
 

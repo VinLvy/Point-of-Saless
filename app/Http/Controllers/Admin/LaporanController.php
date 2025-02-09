@@ -19,7 +19,7 @@ class LaporanController extends Controller
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
         // Ambil data laporan penjualan dengan relasi pelanggan dan detail penjualan
-        $laporan = LaporanPenjualan::with(['pelanggan', 'detail.produk'])
+        $laporan = LaporanPenjualan::with(['pelanggan'])
             ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
             ->get();
 

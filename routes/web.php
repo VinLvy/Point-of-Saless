@@ -25,7 +25,7 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rute untuk admin
+// Route untuk admin
 Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('petugas', PetugasController::class);
@@ -37,7 +37,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::resource('logs', ActivityLogController::class);
 });
 
-// Rute untuk kasir
+// Route untuk kasir
 Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
     Route::get('pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
