@@ -62,18 +62,25 @@ class PembelianController extends Controller
                 ];
             }
 
+            // Menghitung diskon dan total akhir
             $diskonPersen = $request->diskon ?? 0;
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
             $totalAkhir = ($totalBelanja - $diskonNominal) * 1.12;
 
             if ($request->uang_dibayar < $totalAkhir) {
                 return redirect()->back()
-                    ->withInput($request->all()) // Menyimpan input sebelumnya
+                    ->withInput($request->all())
                     ->with('warning', 'Uang tidak cukup!');
-            }            
+            }
 
             $kembalian = $request->uang_dibayar - $totalAkhir;
 
+            // Menghitung poin membership (2% dari total belanja sebelum diskon dan pajak)
+            $poinDidapat = in_array($pelanggan->tipe_pelanggan, ['tipe 1', 'tipe 2'])
+                ? floor($totalBelanja * 0.02)
+                : 0;
+
+            // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => auth()->id(),
@@ -81,6 +88,7 @@ class PembelianController extends Controller
                 'total_belanja' => $totalBelanja,
                 'diskon' => $diskonPersen,
                 'poin_digunakan' => 0,
+                'poin_didapat' => $poinDidapat,
                 'total_akhir' => $totalAkhir,
                 'uang_dibayar' => $request->uang_dibayar,
                 'kembalian' => $kembalian,
@@ -89,10 +97,16 @@ class PembelianController extends Controller
             $laporan->save();
             $laporan->detail()->createMany($items);
 
+            // Update stok produk
             foreach ($request->produk_id as $index => $produkId) {
                 $produk = ItemBarang::findOrFail($produkId);
                 $produk->stok -= $request->jumlah[$index];
                 $produk->save();
+            }
+
+            // Tambahkan poin ke akun pelanggan
+            if ($poinDidapat > 0) {
+                $pelanggan->increment('poin_membership', $poinDidapat);
             }
 
             DB::commit();

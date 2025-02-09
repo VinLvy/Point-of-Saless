@@ -100,7 +100,8 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+
+document.addEventListener("DOMContentLoaded", function () {
     let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
     let diskonInput = document.querySelector("#diskon");
     let konfirmasiDiskonBtn = document.querySelector("#konfirmasi_diskon");
@@ -145,12 +146,12 @@
         document.querySelector("#total_akhir").value = totalAkhir;
     }
 
-        document.querySelector("#uang_dibayar").addEventListener("input", function () {
+    document.querySelector("#uang_dibayar").addEventListener("input", function () {
         let uangDibayar = parseFloat(this.value) || 0;
         let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
         let kembalian = uangDibayar - totalAkhir;
 
-        document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
+    document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
 
         let submitButton = document.querySelector("#proses-transaksi");
         if (uangDibayar < totalAkhir) {
