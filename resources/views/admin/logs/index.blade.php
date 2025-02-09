@@ -14,6 +14,7 @@
             <option value="tambah" {{ request('action') == 'tambah' ? 'selected' : '' }}> Tambah</option>
             <option value="edit" {{ request('action') == 'edit' ? 'selected' : '' }}> Edit</option>
             <option value="hapus" {{ request('action') == 'hapus' ? 'selected' : '' }}> Hapus</option>
+            <option value="transaksi" {{ request('action') == 'transaksi' ? 'selected' : '' }}> Transaksi</option>
         </select>
     </form>
 
@@ -43,7 +44,8 @@
                                 'logout' => 'danger',
                                 'tambah' => 'primary',
                                 'edit' => 'warning',
-                                'hapus' => 'danger'
+                                'hapus' => 'danger',
+                                'transaksi' => 'info',
                             ];
                             $badgeClass = $badgeClasses[$action] ?? 'secondary';
                         @endphp

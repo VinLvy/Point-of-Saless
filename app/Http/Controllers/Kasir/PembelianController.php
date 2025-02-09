@@ -8,7 +8,8 @@ use App\Models\Pelanggan;
 use App\Models\ItemBarang;
 use App\Models\LaporanPenjualan;
 use App\Models\DetailLaporanPenjualan;
-use Illuminate\Support\Carbon;
+use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PembelianController extends Controller
@@ -74,8 +75,6 @@ class PembelianController extends Controller
             }
 
             $kembalian = $request->uang_dibayar - $totalAkhir;
-
-            // Menghitung poin membership (2% dari total belanja sebelum diskon dan pajak)
             $poinDidapat = in_array($pelanggan->tipe_pelanggan, ['tipe 1', 'tipe 2'])
                 ? floor($totalBelanja * 0.02)
                 : 0;
@@ -83,7 +82,7 @@ class PembelianController extends Controller
             // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
-                'petugas_id' => auth()->id(),
+                'petugas_id' => Auth::id(),
                 'tipe_pelanggan' => $pelanggan->tipe_pelanggan,
                 'total_belanja' => $totalBelanja,
                 'diskon' => $diskonPersen,
@@ -109,11 +108,29 @@ class PembelianController extends Controller
                 $pelanggan->increment('poin_membership', $poinDidapat);
             }
 
+            // Simpan log aktivitas
+            $this->logActivity('transaksi', $laporan, null, $laporan->toArray());
+
             DB::commit();
             return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    // Fungsi untuk mencatat aktivitas
+    private function logActivity($action, $model, $oldData, $newData)
+    {
+        ActivityLog::create([
+            'petugas_id' => Auth::id(),
+            'action' => $action,
+            'model' => class_basename($model),
+            'model_id' => $model->id,
+            'old_data' => $oldData,
+            'new_data' => $newData,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent'),
+        ]);
     }
 }

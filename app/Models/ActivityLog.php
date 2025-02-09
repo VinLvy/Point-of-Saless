@@ -35,15 +35,22 @@ class ActivityLog extends Model
         $petugas = $this->petugas->nama_petugas ?? 'Petugas Tidak Diketahui';
         $model = ucwords(str_replace('_', ' ', $this->model ?? '-'));
         $model_id = $this->model_id ?? '-';
-        
-            // Ambil nama dari new_data atau old_data jika aksi adalah "hapus"
+
+        // Ambil nama dari new_data atau old_data jika aksi adalah "hapus"
         $nama_data = $this->new_data['nama_barang'] ?? $this->old_data['nama_barang']
-        ?? $this->new_data['nama_kategori'] ?? $this->old_data['nama_kategori']
-        ?? $this->new_data['nama_pelanggan'] ?? $this->old_data['nama_pelanggan']
-        ?? $this->new_data['nama_petugas'] ?? $this->old_data['nama_petugas']
-        ?? 'Data';
+            ?? $this->new_data['nama_kategori'] ?? $this->old_data['nama_kategori']
+            ?? $this->new_data['nama_pelanggan'] ?? $this->old_data['nama_pelanggan']
+            ?? $this->new_data['nama_petugas'] ?? $this->old_data['nama_petugas']
+            ?? $this->new_data['total_belanja']
+            ?? 'Data';
+
+        if (isset($this->new_data['total_akhir']) || isset($this->old_data['total_belanja'])) {
+            $nama_data = 'Rp ' . number_format($nama_data, 0, ',', '.');
+        }
 
         switch ($this->action) {
+            case 'transaksi':
+                return "$petugas melakukan transaksi penjualan sebesar $nama_data";
             case 'tambah':
                 return "$petugas menambahkan $nama_data pada $model";
             case 'edit':
