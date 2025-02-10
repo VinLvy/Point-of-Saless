@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="{{ route('admin.pelanggan.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('kasir.member.index') }}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-success">
