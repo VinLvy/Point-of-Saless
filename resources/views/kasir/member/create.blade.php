@@ -61,7 +61,7 @@
                         class="form-control @error('tipe_pelanggan') is-invalid @enderror" required>
                         <option value="tipe 1">Tipe 1</option>
                         <option value="tipe 2">Tipe 2</option>
-                        <option value="tipe 3">Tipe 3 (Non membership)</option>
+                        {{-- <option value="tipe 3">Tipe 3 (Non membership)</option> --}}
                     </select>
                     @error('tipe_pelanggan')
                         <div class="invalid-feedback">{{ $message }}</div>
