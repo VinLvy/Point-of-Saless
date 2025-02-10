@@ -82,7 +82,7 @@
         <a href="{{ route('kasir.pembelian.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
         <a href="{{ route('kasir.member.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
         <a href="{{ route('kasir.riwayat.index') }}"><i class="bi bi-file-earmark-text"></i> Riwayat Penjualan</a>
-        
+        <a href="{{ route('kasir.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
         <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>

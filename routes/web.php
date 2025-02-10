@@ -13,6 +13,7 @@ use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
 use App\Http\Controllers\Kasir\MemberController;
 use App\Http\Controllers\Kasir\RiwayatController;
+use App\Http\Controllers\Kasir\BarangController;
 use App\Models\ActivityLog;
 
 // Redirect ke halaman login saat mengakses root URL
@@ -44,4 +45,5 @@ Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->grou
     Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
     Route::resource('member', MemberController::class);
     Route::resource('riwayat', RiwayatController::class);
+    Route::resource('barang', BarangController::class);
 });
