@@ -27,7 +27,6 @@
                     <th>Petugas</th>
                     <th>Aksi</th>
                     <th>Deskripsi Aktivitas</th>
-                    <th>IP Address</th>
                     <th>Waktu</th>
                     <th>Aksi</th>
                 </tr>
@@ -55,7 +54,6 @@
                         </span>
                     </td>
                     <td>{{ $log->getDeskripsi() }}</td>
-                    <td>{{ $log->ip_address }}</td>
                     <td>{{ $log->created_at->format('d-m-Y H:i:s') }}</td>
                     <td>
                         <a href="{{ route('admin.logs.show', $log->id) }}" class="btn btn-info btn-sm">Detail</a>

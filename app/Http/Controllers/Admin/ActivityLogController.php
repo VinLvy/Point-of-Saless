@@ -34,11 +34,13 @@ class ActivityLogController extends Controller
         ];
         $badgeClass = $badgeClasses[$log->action] ?? 'secondary';
 
-        // Ambil hanya data yang berubah
+        // Ambil hanya data yang berubah (kecuali timestamps)
+        $excludedFields = ['created_at', 'updated_at'];
         $changedData = [];
+
         if ($log->action === 'edit' && is_array($log->old_data) && is_array($log->new_data)) {
             foreach ($log->new_data as $key => $newValue) {
-                if (!isset($log->old_data[$key]) || $log->old_data[$key] !== $newValue) {
+                if (!in_array($key, $excludedFields) && (!isset($log->old_data[$key]) || $log->old_data[$key] !== $newValue)) {
                     $changedData[$key] = [
                         'old' => $log->old_data[$key] ?? null,
                         'new' => $newValue,

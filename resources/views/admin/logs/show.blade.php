@@ -15,10 +15,14 @@
             <p><strong>Perubahan Data :</strong></p>
 
             @php
+                $excludedFields = ['created_at', 'updated_at']; // Kolom yang tidak ditampilkan
                 $changes = array_diff_assoc($log->new_data ?? [], $log->old_data ?? []);
+                $filteredChanges = array_filter($changes, function ($key) use ($excludedFields) {
+                    return !in_array($key, $excludedFields);
+                }, ARRAY_FILTER_USE_KEY);
             @endphp
 
-            @if (!empty($changes))
+            @if (!empty($filteredChanges))
                 <table class="table table-bordered mt-3">
                     <thead class="table-dark">
                         <tr>
@@ -28,7 +32,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($changes as $key => $newValue)
+                        @foreach ($filteredChanges as $key => $newValue)
                             <tr>
                                 <td class="fw-bold">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
                                 <td>{{ $log->old_data[$key] ?? '-' }}</td>
