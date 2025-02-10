@@ -79,7 +79,7 @@
     <div class="sidebar">
         <h2><i class="bi bi-speedometer2"></i> Kasir Panel</h2>
         <a href="{{ route('kasir.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
-        <a href="{{ route('kasir.pembelian.index') }}"><i class="bi bi-person-badge"></i> Transaksi</a>
+        <a href="{{ route('kasir.pembelian.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
         <a href="{{ route('kasir.member.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
         <a href="{{ route('kasir.riwayat.index') }}"><i class="bi bi-file-earmark-text"></i> Riwayat Penjualan</a>
         
