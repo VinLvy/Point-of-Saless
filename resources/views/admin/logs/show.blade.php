@@ -12,37 +12,41 @@
             <p><strong>IP Address :</strong> {{ $log->ip_address }}</p>
             <p><strong>Waktu :</strong> {{ $log->created_at->format('d-m-Y H:i:s') }}</p>
             
-            <p><strong>Perubahan Data :</strong></p>
+            @if ($log->model !== 'LaporanPenjualan')
+                <p><strong>Perubahan Data :</strong></p>
 
-            @php
-                $excludedFields = ['created_at', 'updated_at']; // Kolom yang tidak ditampilkan
-                $changes = array_diff_assoc($log->new_data ?? [], $log->old_data ?? []);
-                $filteredChanges = array_filter($changes, function ($key) use ($excludedFields) {
-                    return !in_array($key, $excludedFields);
-                }, ARRAY_FILTER_USE_KEY);
-            @endphp
+                @php
+                    $excludedFields = ['created_at', 'updated_at', 'poin_digunakan'];
+                    $changes = array_diff_assoc($log->new_data ?? [], $log->old_data ?? []);
+                    $filteredChanges = array_filter($changes, function ($key) use ($excludedFields) {
+                        return !in_array($key, $excludedFields);
+                    }, ARRAY_FILTER_USE_KEY);
+                @endphp
 
-            @if (!empty($filteredChanges))
-                <table class="table table-bordered mt-3">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Kolom</th>
-                            <th>Data Lama</th>
-                            <th>Data Baru</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($filteredChanges as $key => $newValue)
+                @if (!empty($filteredChanges))
+                    <table class="table table-bordered mt-3">
+                        <thead class="table-dark">
                             <tr>
-                                <td class="fw-bold">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
-                                <td>{{ $log->old_data[$key] ?? '-' }}</td>
-                                <td class="text-success">{{ $newValue }}</td>
+                                <th>Kolom</th>
+                                <th>Data Lama</th>
+                                <th>Data Baru</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($filteredChanges as $key => $newValue)
+                                <tr>
+                                    <td class="fw-bold">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
+                                    <td>{{ $log->old_data[$key] ?? '-' }}</td>
+                                    <td class="text-success">{{ $newValue }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <p class="text-muted">Tidak ada perubahan data.</p>
+                @endif
             @else
-                <p class="text-muted">Tidak ada perubahan data.</p>
+                <p class="text-muted">Detail perubahan data tidak ditampilkan untuk model ini.</p>
             @endif
 
             <a href="{{ route('admin.logs.index') }}" class="btn btn-secondary mt-3">Kembali</a>
