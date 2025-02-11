@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\LaporanPenjualan;
+use App\Models\DetailLaporanPenjualan;
 use Illuminate\Http\Request;
 
 class RiwayatController extends Controller
@@ -23,12 +24,14 @@ class RiwayatController extends Controller
         return view('kasir.riwayat.index', compact('riwayat', 'startDate', 'endDate'));
     }
 
-    // public function show($id)
-    // {
-    //     // Ambil detail riwayat penjualan berdasarkan ID dengan relasi pelanggan dan detail penjualan
-    //     $riwayat = riwayatPenjualan::with(['pelanggan', 'detail.produk', 'Petugas'])
-    //         ->findOrFail($id);
+    public function show($kode_transaksi)
+    {
+        $laporan = LaporanPenjualan::where('kode_transaksi', $kode_transaksi)
+            ->with(['pelanggan'])
+            ->firstOrFail();
 
-    //     return view('kasir.riwayat.detail', compact('riwayat'));
-    // }
+            $detailTransaksi = DetailLaporanPenjualan::where('laporan_penjualan_id', $laporan->id)->get();
+
+        return view('kasir.riwayat.nota', compact('laporan', 'detailTransaksi'));
+    }
 }

@@ -30,7 +30,7 @@
                 <th>Diskon</th>
                 <th>Total Akhir (PPN: 12%)</th>
                 <th>Tanggal</th>
-                {{-- <th>Aksi</th> --}}
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -43,9 +43,11 @@
                 <td>{{ number_format($item->diskon, 0, ',', '.') }}%</td>
                 <td>{{ number_format($item->total_akhir, 0, ',', '.') }}</td>
                 <td>{{ $item->created_at->format('d-m-Y H:i') }}</td>
-                {{-- <td>
-                    <a href="{{ route('admin.riwayat.show', $item->id) }}" class="btn btn-sm btn-info">Detail</a>
-                </td> --}}
+                <td>
+                    <a href="{{ route('kasir.riwayat.show', $item->kode_transaksi) }}" class="btn btn-sm btn-info">
+                        Lihat Nota
+                    </a>
+                </td>
             </tr>
             @endforeach
         </tbody>

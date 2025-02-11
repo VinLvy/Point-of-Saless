@@ -30,7 +30,7 @@
         </div>
 
         <div class="card-footer no-print">
-            <a href="{{ route('kasir.pembelian.index') }}" class="btn btn-primary">Kembali</a>
+            <a href="{{ route('kasir.riwayat.index') }}" class="btn btn-primary">Kembali</a>
             <button onclick="window.print()" class="btn btn-success">Cetak Nota</button>
         </div>
     </div>
