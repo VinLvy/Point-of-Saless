@@ -17,7 +17,7 @@
         
         <div class="mb-3">
             <label for="pelanggan_id" class="form-label">Pilih Pelanggan</label>
-            <select name="pelanggan_id" id="pelanggan_id" class="form-control" required>
+            <select name="pelanggan_id" id="pelanggan_id" class="form-control select2" required>
                 <option value="">-- Pilih Pelanggan --</option>
                 @foreach($pelanggan as $p)
                     <option value="{{ $p->id }}" data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}">
@@ -123,6 +123,13 @@
 </div>
 
 <script>
+    $(document).ready(function() {
+        $('#pelanggan_id').select2({
+            placeholder: "-- Pilih Pelanggan --",
+            allowClear: true,
+            width: '100%'
+        });
+    });
 
 document.addEventListener("DOMContentLoaded", function () {
     let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
