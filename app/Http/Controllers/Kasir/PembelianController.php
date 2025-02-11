@@ -18,7 +18,10 @@ class PembelianController extends Controller
     {
         $pelanggan = Pelanggan::all();
         $produk = ItemBarang::all();
-        return view('kasir.pembelian.index', compact('pelanggan', 'produk'));
+        $kode_transaksi = session('kode_transaksi'); // Ambil kode transaksi dari session
+        session()->forget('kode_transaksi'); // Hapus session agar tidak tampil terus
+
+        return view('kasir.pembelian.index', compact('pelanggan', 'produk', 'kode_transaksi'));
     }
 
     public function store(Request $request)
@@ -111,12 +114,24 @@ class PembelianController extends Controller
             // Simpan log aktivitas
             $this->logActivity('transaksi', $laporan, null, $laporan->toArray());
 
+            // Simpan kode transaksi ke session untuk digunakan di modal
+            session(['kode_transaksi' => $laporan->kode_transaksi]);
+
             DB::commit();
-            return redirect()->route('kasir.pembelian.index')->with('success', 'Transaksi berhasil!');
+            return redirect()->route('kasir.pembelian.nota', ['kode_transaksi' => $laporan->kode_transaksi])
+                ->with('success', 'Transaksi berhasil!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('kasir.pembelian.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function nota($kode_transaksi)
+    {
+        $laporan = LaporanPenjualan::where('kode_transaksi', $kode_transaksi)->firstOrFail();
+        $detailTransaksi = DetailLaporanPenjualan::where('laporan_penjualan_id', $laporan->id)->get();
+
+        return view('kasir.pembelian.nota', compact('laporan', 'detailTransaksi'));
     }
 
     // Fungsi untuk mencatat aktivitas

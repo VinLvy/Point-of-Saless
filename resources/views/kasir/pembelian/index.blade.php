@@ -92,11 +92,34 @@
             <small id="error-uang-dibayar" class="text-danger d-block mt-2"></small>
         </div>
         
-        <div class="mb-3">
-            <button id="proses-transaksi" class="btn btn-success mt-2 w-100" disabled>Proses Transaksi</button>
-        </div>
+        <!-- Tombol untuk membuka modal -->
+        <button id="proses-transaksi" class="btn btn-success mt-2 w-100" disabled data-bs-toggle="modal" data-bs-target="#konfirmasiModal">
+            Proses Transaksi
+        </button>
                
     </form>
+</div>
+
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Konfirmasi Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin memproses transaksi ini?</p>
+                <p><strong>Total Akhir:</strong> <span id="modal_total_akhir">Rp 0</span></p>
+                <p><strong>Uang Dibayarkan:</strong> <span id="modal_uang_dibayar">Rp 0</span></p>
+                <p><strong>Kembalian:</strong> <span id="modal_kembalian">Rp 0</span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-primary" id="konfirmasiProses">Ya, Proses</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -105,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
     let diskonInput = document.querySelector("#diskon");
     let konfirmasiDiskonBtn = document.querySelector("#konfirmasi_diskon");
-
+    
     function formatRupiah(angka) {
         return new Intl.NumberFormat("id-ID", {
             style: "currency",
@@ -154,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
 
         let submitButton = document.querySelector("#proses-transaksi");
+        
         if (uangDibayar < totalAkhir) {
             document.querySelector("#uang_dibayar").classList.add("is-invalid");
             document.querySelector("#error-uang-dibayar").innerText = "Uang yang dibayarkan tidak mencukupi!";
@@ -278,6 +302,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     checkProduk();
+
+    let prosesTransaksiBtn = document.querySelector("#proses-transaksi");
+    let modalTotalAkhir = document.querySelector("#modal_total_akhir");
+    let modalUangDibayar = document.querySelector("#modal_uang_dibayar");
+    let modalKembalian = document.querySelector("#modal_kembalian");
+
+    prosesTransaksiBtn.addEventListener("click", function () {
+        modalTotalAkhir.innerText = document.querySelector("#total_akhir_display").innerText;
+        modalUangDibayar.innerText = document.querySelector("#uang_dibayar").value ? formatRupiah(document.querySelector("#uang_dibayar").value) : "Rp 0";
+        modalKembalian.innerText = document.querySelector("#kembalian_display").innerText;
+    });
 });
 
 </script>

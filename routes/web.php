@@ -46,4 +46,5 @@ Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->grou
     Route::resource('member', MemberController::class);
     Route::resource('riwayat', RiwayatController::class);
     Route::resource('barang', BarangController::class);
+    Route::get('/nota/{kode_transaksi}', [PembelianController::class, 'nota'])->name('pembelian.nota');
 });
