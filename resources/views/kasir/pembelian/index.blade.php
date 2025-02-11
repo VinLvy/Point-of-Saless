@@ -257,7 +257,8 @@ document.addEventListener("DOMContentLoaded", function () {
             let jumlah = parseInt(jumlahInput.value) || 0;
 
             if (jumlah > stokTersedia) {
-                jumlahInput.value = stokTersedia;
+                alert("Stok barang tidak cukup!");
+                jumlahInput.value = 0;
             }
             updateTotal();
         }
