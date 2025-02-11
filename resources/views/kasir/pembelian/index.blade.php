@@ -265,6 +265,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelector("#pelanggan_id").addEventListener("change", function () {
         document.querySelector("#produk-list").innerHTML = "";
+        document.querySelector("#diskon").value = "";
+        document.querySelector("#diskon").disabled = true;
+        document.querySelector("#total_diskon_display").innerText = "";
+        document.querySelector("#total_akhir_display").innerText = "";
+        document.querySelector("#total_diskon").value = 0; 
+        document.querySelector("#total_akhir").value = 0;
+        document.querySelector("#uang_dibayar").value = "";
+        document.querySelector("#kembalian_display").innerText = "Rp 0";
         updateTotal();
         checkProduk();
     });
