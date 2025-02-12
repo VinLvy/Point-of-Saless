@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (jumlah > stokTersedia) {
                 alert("Stok barang tidak cukup!");
-                jumlahInput.value = 0;
+                jumlahInput.value = stokTersedia;
             }
             updateTotal();
         }

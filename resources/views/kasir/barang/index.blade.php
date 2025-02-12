@@ -18,7 +18,22 @@
                 </div>
             @endif
 
-            {{-- Tabel Barang --}}
+            {{-- Form Search dan Filter --}}
+            <form method="GET" action="{{ route('kasir.barang.index') }}" class="mb-3 d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="Cari barang..." value="{{ request('search') }}">
+            
+                <select name="kategori" class="form-select">
+                    <option value="">Semua Kategori</option>
+                    @foreach ($kategori as $kat)
+                        <option value="{{ $kat->id }}" {{ request('kategori') == $kat->id ? 'selected' : '' }}>
+                            {{ $kat->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+            </form>            
+
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark text-center text-white">
@@ -75,7 +90,6 @@
     </div>
 </div>
 
-{{-- Script untuk fade-out alert --}}
 <script>
     setTimeout(() => {
         let alert = document.querySelector('.alert');
