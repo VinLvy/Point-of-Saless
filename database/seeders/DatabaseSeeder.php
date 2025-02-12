@@ -12,7 +12,6 @@ class DatabaseSeeder extends Seeder
             PelangganSeeder::class,      // Seeder pelanggan harus dijalankan terlebih dahulu
             PetugasSeeder::class,        // Seeder petugas
             ProdukSeeder::class,         // Seeder produk
-            ItemBarangSeeder::class,
         ]);
     }
 }
