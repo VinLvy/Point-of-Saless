@@ -7,13 +7,29 @@
             <h4 class="mb-0"><i class="bi bi-receipt"></i> Laporan Barang Terjual</h4>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ route('admin.terjual.index') }}" class="mb-3 d-flex gap-2">
-                <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan kode transaksi atau nama barang..." value="{{ request('search') }}">
-                <input type="date" name="start_date" class="form-control" value="{{ request('start_date', now()->subWeek()->toDateString()) }}">
-                <input type="date" name="end_date" class="form-control" value="{{ request('end_date', now()->toDateString()) }}">
-                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+            <!-- Form Filter Pencarian -->
+            <form method="GET" action="{{ route('admin.terjual.index') }}" class="mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                        <label for="search" class="form-label fw-bold">Cari Transaksi / Barang</label>
+                        <input type="text" id="search" name="search" class="form-control"
+                            placeholder="Masukkan kode transaksi atau nama barang..."
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label fw-bold">Pilih Tanggal</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control"
+                            value="{{ request('start_date', today()->toDateString()) }}">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                </div>
             </form>
 
+            <!-- Tabel Data Penjualan -->
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark text-center text-white">
@@ -37,7 +53,7 @@
                                     $totalHarga += $detail->total_harga;
                                 @endphp
                                 <tr>
-                                    <td class="fw-bold">{{ $item->kode_transaksi }}</td>
+                                    <td class="fw-bold text-center">{{ $item->kode_transaksi }}</td>
                                     <td>{{ $detail->itemBarang->nama_barang ?? 'Tidak Diketahui' }}</td>
                                     <td class="text-center">{{ $detail->jumlah }}</td>
                                     <td class="text-end">Rp{{ number_format($detail->total_harga, 0, ',', '.') }}</td>

@@ -13,9 +13,9 @@ class LaporanBarangTerjualController extends Controller
     {
         $query = LaporanPenjualan::with('detail.itemBarang');
 
-        // Filter berdasarkan rentang tanggal
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
+        // Filter berdasarkan tanggal transaksi
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal_transaksi', '=', $request->start_date);
         }
 
         // Filter berdasarkan pencarian kode transaksi atau nama barang
