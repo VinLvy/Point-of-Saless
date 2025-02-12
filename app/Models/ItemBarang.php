@@ -13,13 +13,11 @@ class ItemBarang extends Model
     protected $fillable = [
         'kode_barang',
         'nama_barang',
-        'tanggal_kedaluarsa',
-        'tanggal_pembelian',
         'harga_beli',
         'harga_jual_1',
         'harga_jual_2',
         'harga_jual_3',
-        'stok',
+        'harga_per_pack',
         'minimal_stok',
         'kategori_id',
     ];
@@ -28,25 +26,25 @@ class ItemBarang extends Model
     {
         parent::boot();
 
-        // Event creating akan dipanggil sebelum data disimpan ke database
+        // Event creating untuk mengisi kode_barang otomatis
         static::creating(function ($item) {
-            // Ambil kode barang terakhir
             $lastItem = self::orderBy('id', 'desc')->first();
             $lastCode = $lastItem ? $lastItem->kode_barang : 'BRG000';
 
-            // Generate kode barang baru
-            $number = (int) substr($lastCode, 3) + 1; // Ambil angka dari kode terakhir dan tambahkan 1
-            $item->kode_barang = 'BRG' . str_pad($number, 3, '0', STR_PAD_LEFT); // Format kode barang
+            $number = (int) substr($lastCode, 3) + 1;
+            $item->kode_barang = 'BRG' . str_pad($number, 3, '0', STR_PAD_LEFT);
         });
     }
 
+    // Relasi ke kategori
     public function kategori()
     {
         return $this->belongsTo(KategoriBarang::class, 'kategori_id');
     }
 
-    public function detailLaporanPenjualan()
+    // Relasi ke stok
+    public function stok()
     {
-        return $this->hasMany(DetailLaporanPenjualan::class, 'produk_id');
+        return $this->hasMany(Stok::class, 'item_id');
     }
 }
