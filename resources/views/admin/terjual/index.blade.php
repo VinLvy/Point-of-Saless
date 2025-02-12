@@ -19,7 +19,7 @@
                     <div class="col-md-4">
                         <label for="start_date" class="form-label fw-bold">Pilih Tanggal</label>
                         <input type="date" id="start_date" name="start_date" class="form-control"
-                            value="{{ request('start_date', today()->toDateString()) }}">
+                            value="{{ request('start_date') ? request('start_date') : '' }}" placeholder="DD/MM/YYYY">
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-primary w-100">
