@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h1 class="mb-4 text-center">📄 Detail Laporan Penjualan</h1>
+    <h1 class="mb-4 text-center">📄 Detail Laporan Transaksi</h1>
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">
@@ -41,7 +41,7 @@
                 @foreach ($laporan->detail as $detail)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $detail->produk->nama_barang }}</td>
+                    <td>{{ $detail->itemBarang->nama_barang }}</td>
                     <td>{{ $detail->jumlah }}</td>
                     <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
                     <td class="text-success fw-bold">Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</td>

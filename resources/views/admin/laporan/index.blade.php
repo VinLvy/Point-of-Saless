@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Laporan Penjualan</h1>
+    <h1>Laporan Transaksi</h1>
 
     <form method="GET" action="{{ route('admin.laporan.index') }}">
         <div class="row mb-3">

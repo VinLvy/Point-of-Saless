@@ -81,7 +81,8 @@
         <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
         <a href="{{ route('admin.petugas.index') }}"><i class="bi bi-person-badge"></i> Petugas</a>
         <a href="{{ route('admin.pelanggan.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
-        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan</a>
+        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan Transaksi</a>
+        <a href="{{ route('admin.terjual.index') }}"><i class="bi bi-file-earmark-spreadsheet"></i> Laporan Penjualan</a>
         <a href="{{ route('admin.kategori.index') }}"><i class="bi bi bi-journal-check"></i> Kategori Barang</a>
         <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
         <a href="{{ route('admin.logs.index') }}"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
