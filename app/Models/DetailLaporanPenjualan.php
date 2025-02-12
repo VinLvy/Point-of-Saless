@@ -23,7 +23,7 @@ class DetailLaporanPenjualan extends Model
         return $this->belongsTo(LaporanPenjualan::class, 'laporan_penjualan_id');
     }
 
-    public function produk()
+    public function itemBarang()
     {
         return $this->belongsTo(ItemBarang::class, 'produk_id');
     }

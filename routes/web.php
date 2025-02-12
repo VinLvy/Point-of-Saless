@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\LaporanBarangTerjualController;
 use App\Http\Controllers\Admin\KategoriBarangController;
 use App\Http\Controllers\Admin\ItemBarangController;
 use App\Http\Controllers\Admin\ActivityLogController;
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::resource('kategori', KategoriBarangController::class);
     Route::resource('barang', ItemBarangController::class);
     Route::resource('logs', ActivityLogController::class);
+    Route::resource('terjual', LaporanBarangTerjualController::class);
 });
 
 // Route untuk kasir
