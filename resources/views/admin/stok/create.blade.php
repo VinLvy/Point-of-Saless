@@ -3,6 +3,24 @@
 @section('content')
 <div class="container">
     <h2 class="mb-4">Tambah Stok Barang</h2>
+
+    {{-- Notifikasi Error dengan SweetAlert2 --}}
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: `
+                    <ul style='text-align: left;'>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+            });
+        </script>
+    @endif
+
     <form action="{{ route('admin.stok.store') }}" method="POST">
         @csrf
         <div class="mb-3">
