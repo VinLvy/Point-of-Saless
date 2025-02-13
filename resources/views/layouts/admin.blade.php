@@ -85,6 +85,7 @@
         <a href="{{ route('admin.terjual.index') }}"><i class="bi bi-file-earmark-spreadsheet"></i> Laporan Penjualan</a>
         <a href="{{ route('admin.kategori.index') }}"><i class="bi bi bi-journal-check"></i> Kategori Barang</a>
         <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
+        <a href="{{ route('admin.stok.index') }}"><i class="bi bi-box-seam-fill"></i> Stok</a>
         <a href="{{ route('admin.logs.index') }}"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
         <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="bi bi-box-arrow-right"></i> Logout

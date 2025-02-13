@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\LaporanBarangTerjualController;
 use App\Http\Controllers\Admin\KategoriBarangController;
 use App\Http\Controllers\Admin\ItemBarangController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\StokController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
 use App\Http\Controllers\Kasir\MemberController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
     Route::resource('barang', ItemBarangController::class);
     Route::resource('logs', ActivityLogController::class);
     Route::resource('terjual', LaporanBarangTerjualController::class);
+    Route::resource('stok', StokController::class);
 });
 
 // Route untuk kasir
