@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Middleware\PreventBackHistory;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
@@ -24,12 +25,12 @@ Route::get('/', function () {
 });
 
 // Halaman login
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.process');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route untuk admin
-Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('petugas', PetugasController::class);
     Route::resource('pelanggan', PelangganController::class);
@@ -43,7 +44,7 @@ Route::middleware(['auth', 'role:administrator'])->prefix('admin')->name('admin.
 });
 
 // Route untuk kasir
-Route::middleware(['auth', 'role:kasir'])->prefix('kasir')->name('kasir.')->group(function () {
+Route::middleware(['auth', 'role:kasir', 'prevent-back-history'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
     Route::get('pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
     Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
