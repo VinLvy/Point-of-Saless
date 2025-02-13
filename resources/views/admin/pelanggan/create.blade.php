@@ -49,7 +49,7 @@
                 <div class="mb-3">
                     <label for="poin_membership" class="form-label">Poin Membership</label>
                     <input type="number" name="poin_membership" id="poin_membership" 
-                        class="form-control @error('poin_membership') is-invalid @enderror" value="0" min="0">
+                        class="form-control @error('poin_membership') is-invalid @enderror" value="0" min="0" disabled>
                     @error('poin_membership')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

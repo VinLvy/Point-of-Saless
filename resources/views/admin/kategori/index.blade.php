@@ -15,6 +15,16 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             {{-- Form Tambah Kategori --}}
             <div class="mb-4 p-3 bg-light border rounded">
                 <h5> Tambah Kategori</h5>
@@ -55,13 +65,9 @@
                                         <a href="{{ route('admin.kategori.edit', $item->id) }}" class="btn btn-primary btn-sm">
                                             <i class="bi bi-pencil-square"></i> Edit
                                         </a>
-                                        <form action="{{ route('admin.kategori.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Hapus
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $item->id }}" data-nama="{{ $item->nama_kategori }}">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -77,14 +83,52 @@
     </div>
 </div>
 
-{{-- Script untuk fade-out alert --}}
+{{-- Modal Konfirmasi Hapus --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus <strong id="namaBarang"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Script untuk mengisi form dalam modal --}}
 <script>
-    setTimeout(() => {
-        let alert = document.querySelector('.alert');
-        if (alert) {
-            alert.classList.add('fade');
-            setTimeout(() => alert.remove(), 500);
-        }
-    }, 3000);
+    document.addEventListener("DOMContentLoaded", function() {
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var nama = button.getAttribute('data-nama');
+            var form = document.getElementById('deleteForm');
+            var namaBarang = document.getElementById('namaBarang');
+
+            form.action = "/admin/kategori/" + id;
+            namaBarang.textContent = nama;
+        });
+
+        // Fade out alert otomatis setelah 3 detik
+        setTimeout(() => {
+            let alert = document.querySelector('.alert');
+            if (alert) {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    });
 </script>
 @endsection

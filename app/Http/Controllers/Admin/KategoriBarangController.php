@@ -20,6 +20,8 @@ class KategoriBarangController extends Controller
     {
         $request->validate([
             'nama_kategori' => 'required|unique:kategori_barang,nama_kategori|max:255',
+        ], [
+            'nama_kategori.unique' => 'Nama Kategori sudah ada. Silakan gunakan nama lain.'
         ]);
 
         $kategori = KategoriBarang::create([
@@ -41,6 +43,8 @@ class KategoriBarangController extends Controller
     {
         $request->validate([
             'nama_kategori' => 'required|unique:kategori_barang,nama_kategori,' . $id . '|max:255',
+        ], [
+            'nama_kategori.unique' => 'Nama Kategori sudah ada. Silakan gunakan nama lain.'
         ]);
 
         $kategori = KategoriBarang::findOrFail($id);

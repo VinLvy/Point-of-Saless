@@ -4,6 +4,16 @@
 <div class="container">
     <h1 class="my-4 text-center">Tambah Petugas</h1>
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             Form Tambah Petugas
@@ -29,7 +39,14 @@
                         <option value="kasir">Kasir</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Tambah Petugas</button>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary w-50">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary w-50">
+                        <i class="bi bi-plus-circle"></i> Tambah Petugas
+                    </button>
+                </div>
             </form>
         </div>
     </div>

@@ -25,11 +25,15 @@ class PetugasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_petugas' => 'required|string|max:255',
+            'nama_petugas' => 'required|string|max:255|unique:petugas,nama_petugas',
             'email' => 'required|email|unique:petugas,email',
             'password' => 'required|min:6',
             'role' => 'required|in:kasir',
+        ],[
+            'nama_petugas.unique' => 'Nama petugas sudah digunakan. Silakan gunakan nama lain.',
+            'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.'
         ]);
+
 
         $petugas = Petugas::create([
             'nama_petugas' => $request->nama_petugas,
