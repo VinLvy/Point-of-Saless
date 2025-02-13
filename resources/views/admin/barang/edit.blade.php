@@ -41,16 +41,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Tanggal Kedaluarsa</label>
-                            <input type="date" name="tanggal_kedaluarsa" class="form-control" value="{{ $barang->tanggal_kedaluarsa }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tanggal Pembelian</label>
-                            <input type="date" name="tanggal_pembelian" class="form-control" value="{{ $barang->tanggal_pembelian }}" required>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Harga Beli</label>
                             <input type="number" name="harga_beli" id="harga_beli" class="form-control" value="{{ $barang->harga_beli }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Minimal Stok</label>
+                            <input type="number" name="minimal_stok" class="form-control" value="{{ $barang->minimal_stok }}" required>
                         </div>
                     </div>
 
@@ -66,14 +62,6 @@
                         <div class="mb-3">
                             <label class="form-label">Harga Jual 3 (+30%)</label>
                             <input type="number" name="harga_jual_3" id="harga_jual_3" class="form-control" value="{{ $barang->harga_jual_3 }}" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stok</label>
-                            <input type="number" name="stok" class="form-control" value="{{ $barang->stok }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Minimal Stok</label>
-                            <input type="number" name="minimal_stok" class="form-control" value="{{ $barang->minimal_stok }}" required>
                         </div>
                     </div>
                 </div>

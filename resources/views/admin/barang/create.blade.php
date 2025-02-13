@@ -30,7 +30,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Kategori</label>
-                            <select name="kategori_id" class="form-select" required>
+                            <select name="kategori_id" class="form-select select2" required>
                                 <option value="">-- Pilih Kategori --</option>
                                 @foreach ($kategori as $kat)
                                     <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
@@ -38,18 +38,15 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Tanggal Kedaluarsa</label>
-                            <input type="date" name="tanggal_kedaluarsa" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Tanggal Beli</label>
-                            <input type="date" name="tanggal_pembelian" class="form-control">
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Harga Beli</label>
                             <input type="number" name="harga_beli" id="harga_beli" class="form-control" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Minimal Stok</label>
+                            <input type="number" name="minimal_stok" class="form-control" required>
+                        </div>
                     </div>
+                    
 
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -63,14 +60,6 @@
                         <div class="mb-3">
                             <label class="form-label">Harga Jual 3 (+30%)</label>
                             <input type="number" name="harga_jual_3" id="harga_jual_3" class="form-control" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stok</label>
-                            <input type="number" name="stok" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Minimal Stok</label>
-                            <input type="number" name="minimal_stok" class="form-control" required>
                         </div>
                     </div>
                 </div>
@@ -90,6 +79,18 @@
         document.getElementById('harga_jual_1').value = Math.round(hargaBeli * 1.1);
         document.getElementById('harga_jual_2').value = Math.round(hargaBeli * 1.2);
         document.getElementById('harga_jual_3').value = Math.round(hargaBeli * 1.3);
+    });
+</script>
+
+{{-- Skrip untuk select2 --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Pilih Kategori",
+            allowClear: true
+        });
     });
 </script>
 @endsection
