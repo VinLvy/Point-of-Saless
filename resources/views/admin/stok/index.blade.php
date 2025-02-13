@@ -24,7 +24,8 @@
                 <td>{{ $item->expired_date }}</td>
                 <td>{{ $item->buy_date }}</td>
                 <td>
-                    <form action="{{ route('stok.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok ini?');">
+                    <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="{{ route('admin.stok.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus stok ini?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
