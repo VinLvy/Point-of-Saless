@@ -11,7 +11,7 @@
                 icon: 'error',
                 title: 'Oops...',
                 html: `
-                    <ul style='text-align: left;'>
+                    <ul style='text-align: center;'>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -25,13 +25,13 @@
         @csrf
         <div class="mb-3">
             <label for="item_id" class="form-label">Nama Barang</label>
-            <select name="item_id" id="item_id" class="form-control" required>
+            <select name="item_id" id="item_id" class="form-control select2" required>
                 <option value="">Pilih Barang</option>
                 @foreach($items as $barang)
                     <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
                 @endforeach
             </select>
-        </div>
+        </div>        
         <div class="mb-3">
             <label for="jumlah_stok" class="form-label">Jumlah Stok</label>
             <input type="number" name="jumlah_stok" id="jumlah_stok" class="form-control" required>
@@ -50,4 +50,14 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#item_id').select2({
+            placeholder: "Pilih Barang",
+            allowClear: true
+        });
+    });
+</script>
+
 @endsection
