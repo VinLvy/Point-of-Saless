@@ -40,6 +40,6 @@ class StokController extends Controller
             'buy_date' => $request->buy_date,
         ]);
 
-        return redirect()->route('admin.stok.create')->with('success', 'Stok berhasil ditambahkan.');
+        return redirect()->route('admin.stok.index')->with('success', 'Stok berhasil ditambahkan.');
     }
 }
