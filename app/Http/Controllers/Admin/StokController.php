@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ItemBarang;
 use App\Models\Stok;
+use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Auth;
 
 class StokController extends Controller
 {
@@ -32,7 +34,6 @@ class StokController extends Controller
             'expired_date.after' => 'Tanggal kedaluwarsa harus setelah tanggal pembelian.',
         ]);
 
-        // Pastikan expired_date minimal seminggu setelah buy_date
         $buyDate = strtotime($request->buy_date);
         $minExpiredDate = strtotime('+7 days', $buyDate);
 
@@ -40,7 +41,8 @@ class StokController extends Controller
             return redirect()->back()->withErrors(['expired_date' => 'Tanggal kedaluwarsa minimal harus seminggu setelah tanggal pembelian.'])->withInput();
         }
 
-        Stok::create($request->only(['item_id', 'jumlah_stok', 'expired_date', 'buy_date']));
+        $stok = Stok::create($request->only(['item_id', 'jumlah_stok', 'expired_date', 'buy_date']));
+        $this->logActivity('tambah', 'stok', $stok->id, null, $stok->toArray());
 
         return redirect()->route('admin.stok.index')->with('success', 'Stok berhasil ditambahkan.');
     }
@@ -60,10 +62,9 @@ class StokController extends Controller
             'expired_date' => 'required|date|after:buy_date',
             'buy_date' => 'required|date',
         ], [
-            'expired_date.after' => 'Tanggal kedaluwarsa sudah terlewat sebelum tanggal pembelian.',
+            'expired_date.after' => 'Tanggal kedaluwarsa harus setelah tanggal pembelian.',
         ]);
 
-        // Pastikan expired_date minimal seminggu setelah buy_date
         $buyDate = strtotime($request->buy_date);
         $minExpiredDate = strtotime('+7 days', $buyDate);
 
@@ -72,7 +73,10 @@ class StokController extends Controller
         }
 
         $stok = Stok::findOrFail($id);
+        $oldData = $stok->toArray();
+        
         $stok->update($request->only(['item_id', 'jumlah_stok', 'expired_date', 'buy_date']));
+        $this->logActivity('edit', 'stok', $stok->id, $oldData, $stok->toArray());
 
         return redirect()->route('admin.stok.index')->with('success', 'Stok berhasil diperbarui.');
     }
@@ -80,8 +84,25 @@ class StokController extends Controller
     public function destroy($id)
     {
         $stok = Stok::findOrFail($id);
+        $oldData = $stok->toArray();
         $stok->delete();
-
+        
+        $this->logActivity('hapus', 'stok', $id, $oldData, null);
+        
         return redirect()->route('admin.stok.index')->with('success', 'Stok berhasil dihapus.');
+    }
+
+    private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)
+    {
+        ActivityLog::create([
+            'petugas_id' => Auth::id(),
+            'action' => $action,
+            'model' => $model,
+            'model_id' => $model_id,
+            'old_data' => $oldData,
+            'new_data' => $newData,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent'),
+        ]);
     }
 }

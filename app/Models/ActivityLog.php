@@ -52,6 +52,10 @@ class ActivityLog extends Model
             case 'transaksi':
                 return "$petugas melakukan transaksi penjualan sebesar $nama_data";
             case 'tambah':
+                // Cek apakah stok bertambah dan tampilkan nama barangnya
+                if (!empty($this->new_data['stok'])) {
+                    return "$petugas menambahkan stok untuk barang $nama_data";
+                }
                 return "$petugas menambahkan $nama_data pada $model";
             case 'edit':
                 return "$petugas mengedit $nama_data pada $model";
