@@ -12,7 +12,7 @@
         <div class="alert alert-warning">{{ session('warning') }}</div>
     @endif
 
-    <form action="{{ route('kasir.pembelian.store') }}" method="POST">
+    <form id="form-transaksi" action="{{ route('kasir.pembelian.store') }}" method="POST">
         @csrf
         
         <div class="mb-3">
@@ -93,9 +93,10 @@
         </div>
         
         <!-- Tombol untuk membuka modal -->
-        <button id="proses-transaksi" class="btn btn-success mt-2 w-100" disabled data-bs-toggle="modal" data-bs-target="#konfirmasiModal">
+        <button id="proses-transaksi" type="button" class="btn btn-success mt-2 w-100" disabled data-bs-toggle="modal" data-bs-target="#konfirmasiModal">
             Proses Transaksi
         </button>
+
                
     </form>
 </div>
@@ -116,7 +117,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary" id="konfirmasiProses">Ya, Proses</button>
+                <button type="button" class="btn btn-primary" id="konfirmasiProses" data-url="{{ route('kasir.pembelian.store') }}">
+                    Ya, Proses
+                </button>                
             </div>
         </div>
     </div>
@@ -124,117 +127,109 @@
 
 <script>
     $(document).ready(function() {
+        // Inisialisasi Select2 pada elemen dengan id pelanggan_id
         $('#pelanggan_id').select2({
             placeholder: "-- Pilih Pelanggan --",
             allowClear: true,
             width: '100%'
         });
+
+        // Inisialisasi Select2 pada elemen dengan class produk-select
+        $('.produk-select').select2({
+            placeholder: "-- Pilih Produk --",
+            allowClear: true,
+            width: '100%'
+        });
     });
 
-document.addEventListener("DOMContentLoaded", function () {
-    let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
-    let diskonInput = document.querySelector("#diskon");
-    let konfirmasiDiskonBtn = document.querySelector("#konfirmasi_diskon");
-    
-    function formatRupiah(angka) {
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-        }).format(angka);
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
+        let diskonInput = document.querySelector("#diskon");
+        let konfirmasiDiskonBtn = document.querySelector("#konfirmasi_diskon");
 
-    function checkProduk() {
-        let adaProduk = document.querySelector("#produk-list tr") !== null;
-        diskonInput.disabled = !adaProduk;
-    }
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+            }).format(angka);
+        }
 
-    function updateTotal() {
-        let totalBayar = 0;
-        document.querySelectorAll("#produk-list tr").forEach(function(row) {
-            let jumlah = parseFloat(row.querySelector(".jumlah").value) || 0;
-            let harga = parseFloat(row.querySelector(".harga").dataset.harga) || 0;
-            let total = jumlah * harga;
+        function checkProduk() {
+            let adaProduk = document.querySelector("#produk-list tr") !== null;
+            diskonInput.disabled = !adaProduk;
+        }
 
-            row.querySelector(".harga").innerText = formatRupiah(harga);
-            row.querySelector(".total").innerText = formatRupiah(total);
-            totalBayar += total;
+        function updateTotal() {
+            let totalBayar = 0;
+            document.querySelectorAll("#produk-list tr").forEach(function(row) {
+                let jumlah = parseFloat(row.querySelector(".jumlah").value) || 0;
+                let harga = parseFloat(row.querySelector(".harga").dataset.harga) || 0;
+                let total = jumlah * harga;
+
+                row.querySelector(".harga").innerText = formatRupiah(harga);
+                row.querySelector(".total").innerText = formatRupiah(total);
+                totalBayar += total;
+            });
+
+            let diskonPersen = parseFloat(document.querySelector("#diskon").value) || 0;
+            let diskonNominal = (diskonPersen / 100) * totalBayar;
+            let totalSetelahDiskon = totalBayar - diskonNominal;
+
+            let totalAkhir = totalSetelahDiskon * 1.12;
+
+            document.querySelector("#total_bayar_display").innerText = formatRupiah(totalBayar);
+            document.querySelector("#total_diskon_display").innerText = formatRupiah(diskonNominal);
+            document.querySelector("#total_akhir_display").innerText = formatRupiah(totalAkhir);
+
+            document.querySelector("#total_bayar").value = totalBayar;
+            document.querySelector("#total_diskon").value = diskonNominal;
+            document.querySelector("#total_akhir").value = totalAkhir;
+        }
+
+        document.querySelector("#uang_dibayar").addEventListener("input", function () {
+            let uangDibayar = parseFloat(this.value) || 0;
+            let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
+            let kembalian = uangDibayar - totalAkhir;
+
+            document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
+
+            let submitButton = document.querySelector("#proses-transaksi");
+
+            if (uangDibayar < totalAkhir) {
+                document.querySelector("#uang_dibayar").classList.add("is-invalid");
+                document.querySelector("#error-uang-dibayar").innerText = "Uang yang dibayarkan tidak mencukupi!";
+                submitButton.setAttribute("disabled", "disabled");
+            } else {
+                document.querySelector("#uang_dibayar").classList.remove("is-invalid");
+                document.querySelector("#error-uang-dibayar").innerText = "";
+                submitButton.removeAttribute("disabled");
+            }
         });
 
-        let diskonPersen = parseFloat(document.querySelector("#diskon").value) || 0;
-        let diskonNominal = (diskonPersen / 100) * totalBayar;
-        let totalSetelahDiskon = totalBayar - diskonNominal;
+        konfirmasiDiskonBtn.addEventListener("click", function () {
+            let adaProduk = document.querySelector("#produk-list tr") !== null;
+            if (!adaProduk) {
+                alert("Tambahkan produk terlebih dahulu sebelum memberikan diskon!");
+                return;
+            }
 
-        let totalAkhir = totalSetelahDiskon * 1.12;
-
-        document.querySelector("#total_bayar_display").innerText = formatRupiah(totalBayar);
-        document.querySelector("#total_diskon_display").innerText = formatRupiah(diskonNominal);
-        document.querySelector("#total_akhir_display").innerText = formatRupiah(totalAkhir);
-
-        document.querySelector("#total_bayar").value = totalBayar;
-        document.querySelector("#total_diskon").value = diskonNominal;
-        document.querySelector("#total_akhir").value = totalAkhir;
-    }
-
-    document.querySelector("#uang_dibayar").addEventListener("input", function () {
-        let uangDibayar = parseFloat(this.value) || 0;
-        let totalAkhir = parseFloat(document.querySelector("#total_akhir").value) || 0;
-        let kembalian = uangDibayar - totalAkhir;
-
-    document.querySelector("#kembalian_display").innerText = formatRupiah(Math.max(kembalian, 0));
-
-        let submitButton = document.querySelector("#proses-transaksi");
-        
-        if (uangDibayar < totalAkhir) {
-            document.querySelector("#uang_dibayar").classList.add("is-invalid");
-            document.querySelector("#error-uang-dibayar").innerText = "Uang yang dibayarkan tidak mencukupi!";
-            submitButton.setAttribute("disabled", "disabled");
-        } else {
-            document.querySelector("#uang_dibayar").classList.remove("is-invalid");
-            document.querySelector("#error-uang-dibayar").innerText = "";
-            submitButton.removeAttribute("disabled");
-        }
-    });
-
-
-    konfirmasiDiskonBtn.addEventListener("click", function () {
-        let adaProduk = document.querySelector("#produk-list tr") !== null;
-        if (!adaProduk) {
-            alert("Tambahkan produk terlebih dahulu sebelum memberikan diskon!");
-            return;
-        }
-
-        let diskonPersen = parseFloat(diskonInput.value) || 0;
-        if (diskonPersen < 0 || diskonPersen > 100) {
-            alert("Diskon harus antara 0% - 100%");
-            return;
-        }
-        updateTotal();
-    });
-
-    document.addEventListener("change", function(event) {
-        let pelangganSelect = document.querySelector("#pelanggan_id");
-        let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
-        let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
-
-        // Jika yang diubah adalah produk yang dipilih
-        if (event.target.matches(".produk-select")) {
-            let row = event.target.closest("tr");
-            let produkId = event.target.value;
-
-            let tipeHarga = pelangganTipe;
-            let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
-            let stok = hargaProduk[produkId]?.stok?.reduce((total, item) => total + item.jumlah_stok, 0) || 0;
-
-            row.querySelector(".harga").dataset.harga = harga;
-            row.querySelector(".stok-terpakai").innerText = stok;
-            row.querySelector(".jumlah").setAttribute("max", stok);
+            let diskonPersen = parseFloat(diskonInput.value) || 0;
+            if (diskonPersen < 0 || diskonPersen > 100) {
+                alert("Diskon harus antara 0% - 100%");
+                return;
+            }
             updateTotal();
-        }
+        });
 
-        // Jika pelanggan berubah, update semua harga produk yang dipilih
-        if (event.target.matches("#pelanggan_id")) {
-            document.querySelectorAll(".produk-select").forEach(select => {
+        document.addEventListener("change", function(event) {
+            let pelangganSelect = document.querySelector("#pelanggan_id");
+            let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
+            let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
+
+            // Jika pelanggan berubah, update semua harga produk yang dipilih
+            if (event.target.matches("#pelanggan_id")) {
+                document.querySelectorAll(".produk-select").forEach(select => {
                 let row = select.closest("tr");
                 let produkId = select.value;
 
@@ -250,79 +245,111 @@ document.addEventListener("DOMContentLoaded", function () {
             updateTotal();
         }
 
-        if (event.target.matches(".jumlah")) {
-            let row = event.target.closest("tr");
-            let jumlahInput = event.target;
-            let stokTersedia = parseInt(row.querySelector(".stok-terpakai").innerText) || 0;
-            let jumlah = parseInt(jumlahInput.value) || 0;
+            if (event.target.matches(".jumlah")) {
+                let row = event.target.closest("tr");
+                let jumlahInput = event.target;
+                let stokTersedia = parseInt(row.querySelector(".stok-terpakai").innerText) || 0;
+                let jumlah = parseInt(jumlahInput.value) || 0;
 
-            if (jumlah > stokTersedia) {
-                alert("Stok barang tidak cukup!");
-                jumlahInput.value = stokTersedia;
+                if (jumlah > stokTersedia) {
+                    alert("Stok barang tidak cukup!");
+                    jumlahInput.value = stokTersedia;
+                }
+                updateTotal();
             }
-            updateTotal();
-        }
-    });
+        });
 
-    document.addEventListener("click", function(event) {
-        if (event.target.matches(".remove-row")) {
-            event.target.closest("tr").remove();
+        // Gunakan event `select2:select` untuk produk yang dipilih
+        $(document).on("select2:select", ".produk-select", function(event) {
+            let row = event.target.closest("tr");
+            let produkId = event.target.value;
+
+            let pelangganSelect = document.querySelector("#pelanggan_id");
+            let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
+            let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
+
+            let tipeHarga = pelangganTipe;
+            let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
+            let stok = hargaProduk[produkId]?.stok?.reduce((total, item) => total + item.jumlah_stok, 0) || 0;
+
+            row.querySelector(".harga").dataset.harga = harga;
+            row.querySelector(".stok-terpakai").innerText = stok;
+            row.querySelector(".jumlah").setAttribute("max", stok);
+            updateTotal();
+        });
+
+
+        document.addEventListener("click", function(event) {
+            if (event.target.matches(".remove-row")) {
+                event.target.closest("tr").remove();
+                updateTotal();
+                checkProduk();
+            }
+        });
+
+        document.querySelector("#tambah-produk").addEventListener("click", function() {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <select name="produk_id[]" class="form-control produk-select select2" required>
+                        <option value="">-- Pilih Produk --</option>
+                        @foreach($produk as $pr)
+                            <option value="{{ $pr->id }}" data-stok="{{ $pr->stok->sum('jumlah_stok') }}">
+                                {{ $pr->nama_barang }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td class="stok-terpakai">-</td>
+                <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
+                <td class="harga" data-harga="0">0</td>
+                <td class="total">0</td>
+                <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
+            `;
+            document.querySelector("#produk-list").appendChild(row);
+
+            // Inisialisasi Select2 pada elemen select yang baru ditambahkan
+            $(row).find('.produk-select').select2({
+                placeholder: "-- Pilih Produk --",
+                allowClear: true,
+                width: '100%'
+            });
+
+            checkProduk();
+        });
+
+        $('#pelanggan_id').on('select2:select', function () {
+            document.querySelector("#produk-list").innerHTML = "";
+            document.querySelector("#diskon").value = "";
+            document.querySelector("#diskon").disabled = true;
+            document.querySelector("#total_diskon_display").innerText = "";
+            document.querySelector("#total_akhir_display").innerText = "";
+            document.querySelector("#total_diskon").value = 0; 
+            document.querySelector("#total_akhir").value = 0;
+            document.querySelector("#uang_dibayar").value = "";
+            document.querySelector("#kembalian_display").innerText = "Rp 0";
             updateTotal();
             checkProduk();
-        }
-    });
+        });
 
-    document.querySelector("#tambah-produk").addEventListener("click", function() {
-    let row = document.createElement("tr");
-    row.innerHTML = `
-        <td>
-            <select name="produk_id[]" class="form-control produk-select select2" required>
-                <option value="">-- Pilih Produk --</option>
-                @foreach($produk as $pr)
-                    <option value="{{ $pr->id }}" data-stok="{{ $pr->stok->sum('jumlah_stok') }}">
-                        {{ $pr->nama_barang }}
-                    </option>
-                @endforeach
-            </select>
-        </td>
-        <td class="stok-terpakai">-</td>
-        <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
-        <td class="harga" data-harga="0">0</td>
-        <td class="total">0</td>
-        <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
-    `;
-    document.querySelector("#produk-list").appendChild(row);
-    
-    checkProduk();
-});
 
-    document.querySelector("#pelanggan_id").addEventListener("change", function () {
-        document.querySelector("#produk-list").innerHTML = "";
-        document.querySelector("#diskon").value = "";
-        document.querySelector("#diskon").disabled = true;
-        document.querySelector("#total_diskon_display").innerText = "";
-        document.querySelector("#total_akhir_display").innerText = "";
-        document.querySelector("#total_diskon").value = 0; 
-        document.querySelector("#total_akhir").value = 0;
-        document.querySelector("#uang_dibayar").value = "";
-        document.querySelector("#kembalian_display").innerText = "Rp 0";
-        updateTotal();
         checkProduk();
+
+        let prosesTransaksiBtn = document.querySelector("#proses-transaksi");
+        let modalTotalAkhir = document.querySelector("#modal_total_akhir");
+        let modalUangDibayar = document.querySelector("#modal_uang_dibayar");
+        let modalKembalian = document.querySelector("#modal_kembalian");
+
+        prosesTransaksiBtn.addEventListener("click", function () {
+            modalTotalAkhir.innerText = document.querySelector("#total_akhir_display").innerText;
+            modalUangDibayar.innerText = document.querySelector("#uang_dibayar").value ? formatRupiah(document.querySelector("#uang_dibayar").value) : "Rp 0";
+            modalKembalian.innerText = document.querySelector("#kembalian_display").innerText;
+        });
+
+        document.querySelector("#konfirmasiProses").addEventListener("click", function () {
+            let form = document.querySelector("#form-transaksi"); // Pastikan form memiliki ID ini
+            form.submit();
+        });
     });
-
-    checkProduk();
-
-    let prosesTransaksiBtn = document.querySelector("#proses-transaksi");
-    let modalTotalAkhir = document.querySelector("#modal_total_akhir");
-    let modalUangDibayar = document.querySelector("#modal_uang_dibayar");
-    let modalKembalian = document.querySelector("#modal_kembalian");
-
-    prosesTransaksiBtn.addEventListener("click", function () {
-        modalTotalAkhir.innerText = document.querySelector("#total_akhir_display").innerText;
-        modalUangDibayar.innerText = document.querySelector("#uang_dibayar").value ? formatRupiah(document.querySelector("#uang_dibayar").value) : "Rp 0";
-        modalKembalian.innerText = document.querySelector("#kembalian_display").innerText;
-    });
-});
-
 </script>
 @endsection
