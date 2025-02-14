@@ -12,7 +12,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $member = Pelanggan::where('nama_pelanggan', '!=', 'Non Membership')->get();
+        $member = Pelanggan::where('nama_pelanggan', '!=', 'Non Member')->get();
         return view('kasir.member.index', compact('member'));
     }
 

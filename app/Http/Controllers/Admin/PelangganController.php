@@ -12,7 +12,7 @@ class PelangganController extends Controller
 {
     public function index()
     {
-        $pelanggan = Pelanggan::all();
+        $member = Pelanggan::where('nama_pelanggan', '!=', 'Non Member')->get();
         return view('admin.pelanggan.index', compact('pelanggan'));
     }
 
