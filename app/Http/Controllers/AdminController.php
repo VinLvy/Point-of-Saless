@@ -3,36 +3,52 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\ItemBarang;
+use App\Models\Stok;
+use App\Models\Petugas;
+use App\Models\Pelanggan;
+use App\Models\LaporanPenjualan;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Tanggal awal dan akhir minggu ini
-        $startDate = Carbon::now()->startOfWeek();
-        $endDate = Carbon::now()->endOfWeek();
+        $jumlah_barang = ItemBarang::count();
+        $total_petugas = Petugas::where('role', '!=', 'administrator')->count();
+        $total_pelanggan = Pelanggan::count();
 
-        // Ambil data total pendapatan per hari dalam minggu ini
-        $incomeData = DB::table('laporan_penjualan')
-            ->join('detail_laporan_penjualan', 'laporan_penjualan.id', '=', 'detail_laporan_penjualan.laporan_penjualan_id')
-            ->selectRaw('DATE(laporan_penjualan.tanggal_transaksi) as date, SUM(detail_laporan_penjualan.total_harga) as total_income')
-            ->whereBetween('laporan_penjualan.tanggal_transaksi', [$startDate, $endDate])
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total_income', 'date')
-            ->toArray();
+        // Total income hari ini
+        $total_income_hari_ini = LaporanPenjualan::whereDate('created_at', Carbon::today())->sum('total_akhir');
 
-        // Jika tidak ada data, set array kosong
-        if (empty($incomeData)) {
-            $incomeData = [];
+        // Barang yang hampir habis stoknya
+        $barang_kurang_stok = ItemBarang::with('stok')->get()->filter(function ($item) {
+            $total_stok = $item->stok->sum('jumlah_stok'); // Hitung stok di sini
+            return $total_stok <= $item->minimal_stok; // Pastikan kondisi ≤ bukan hanya <
+        });
+        
+
+        // Data pendapatan dalam 1 minggu terakhir untuk chart
+        $labels_pendapatan = [];
+        $data_pendapatan = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $tanggal = Carbon::today()->subDays($i)->format('Y-m-d');
+            $labels_pendapatan[] = Carbon::parse($tanggal)->format('d M');
+            $data_pendapatan[] = LaporanPenjualan::whereDate('created_at', $tanggal)->sum('total_akhir');
         }
 
-        // Generate labels (tanggal) dan data (total pendapatan)
-        $labels = array_keys($incomeData);
-        $data = array_values($incomeData);
+        $petugas = Auth::user()->nama_petugas ?? 'Tidak Diketahui';
 
-        return view('admin.dashboard', compact('labels', 'data'));
+        return view('admin.dashboard', compact(
+            'jumlah_barang', 
+            'total_petugas', 
+            'total_pelanggan', 
+            'total_income_hari_ini', 
+            'barang_kurang_stok', 
+            'petugas',
+            'labels_pendapatan',
+            'data_pendapatan'
+        ));
     }
 }

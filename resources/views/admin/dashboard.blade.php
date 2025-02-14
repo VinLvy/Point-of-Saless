@@ -1,92 +1,102 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h1>Selamat Datang di Dashboard Admin</h1>
-    
-    <p>Grafik Pendapatan Mingguan:</p>
+<div class="container mt-4">
+    <h1 class="mb-4">Selamat Datang, {{ $petugas }}!</h1>
 
-    <div style="max-width: 800px; margin: 0 auto;">
-        <canvas id="incomeChart"></canvas>
+    <!-- Cards Informasi -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-cash-stack text-success" style="font-size: 2rem;"></i>
+                    <h5 class="fw-bold mt-2">Total Income Hari Ini</h5>
+                    <h3 class="text-success fw-bold">Rp {{ number_format($total_income_hari_ini, 0, ',', '.') }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge text-primary" style="font-size: 2rem;"></i>
+                    <h5 class="fw-bold mt-2">Total Petugas</h5>
+                    <h3 class="fw-bold">{{ $total_petugas }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-warning" style="font-size: 2rem;"></i>
+                    <h5 class="fw-bold mt-2">Total Pelanggan</h5>
+                    <h3 class="fw-bold">{{ $total_pelanggan }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-box-seam text-danger" style="font-size: 2rem;"></i>
+                    <h5 class="fw-bold mt-2">Jumlah Barang</h5>
+                    <h3 class="fw-bold">{{ $jumlah_barang }}</h3>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        var ctx = document.getElementById('incomeChart').getContext('2d');
-        var incomeChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($labels ?? []) !!},
-                datasets: [{
-                    label: 'Total Pendapatan',
-                    data: {!! json_encode($data ?? []) !!},
-                    backgroundColor: 'rgba(54, 162, 235, 0.1)', // Warna background lebih transparan
-                    borderColor: 'rgba(54, 162, 235, 1)', // Warna garis
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Warna titik
-                    pointBorderColor: '#fff', // Warna border titik
-                    pointHoverBackgroundColor: '#fff', // Warna titik saat dihover
-                    pointHoverBorderColor: 'rgba(54, 162, 235, 1)', // Warna border titik saat dihover
-                    fill: true // Mengisi area bawah garis
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: '#333', // Warna teks legend
-                            font: {
-                                size: 14 // Ukuran font legend
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Warna background tooltip
-                        titleColor: '#fff', // Warna judul tooltip
-                        bodyColor: '#fff', // Warna teks tooltip
-                        borderColor: 'rgba(255, 255, 255, 0.1)', // Warna border tooltip
-                        borderWidth: 1,
-                        padding: 10,
-                        displayColors: false // Sembunyikan warna di tooltip
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false // Sembunyikan grid lines pada sumbu X
-                        },
-                        ticks: {
-                            color: '#666', // Warna teks sumbu X
-                            font: {
-                                size: 12 // Ukuran font sumbu X
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)', // Warna grid lines sumbu Y
-                            borderDash: [5, 5] // Garis putus-putus
-                        },
-                        ticks: {
-                            color: '#666', // Warna teks sumbu Y
-                            font: {
-                                size: 12 // Ukuran font sumbu Y
-                            },
-                            callback: function(value) {
-                                return 'Rp ' + value.toLocaleString(); // Format angka dengan separator
-                            }
-                        }
-                    }
-                },
-                animation: {
-                    duration: 1000, // Durasi animasi
-                    easing: 'easeInOutQuart' // Efek animasi
-                }
-            }
-        });
-    </script>
+    @if ($barang_kurang_stok->count() > 0)
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="fw-bold"><i class="bi bi-exclamation-triangle-fill text-warning"></i> Barang dengan Stok Rendah</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-warning">
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Stok Saat Ini</th>
+                            <th>Minimal Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($barang_kurang_stok as $index => $barang)
+                            <tr>
+                                <td>{{ $barang->nama_barang }}</td>
+                                <td class="text-danger fw-bold">{{ $barang->stok->sum('jumlah_stok') }}</td>
+                                <td class="fw-bold">{{ $barang->minimal_stok }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Grafik Pendapatan Mingguan -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="fw-bold text-center">Total Pendapatan 1 Minggu Terakhir</h5>
+            <canvas id="incomeChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Script Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('incomeChart').getContext('2d');
+    var incomeChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @json($labels_pendapatan),
+            datasets: [{
+                label: 'Pendapatan (Rp)',
+                data: @json($data_pendapatan),
+                borderColor: 'blue',
+                borderWidth: 2,
+                fill: false,
+            }]
+        }
+    });
+</script>
 @endsection
