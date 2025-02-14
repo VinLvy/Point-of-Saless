@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->string('kode_kategori')->unique();
             $table->string('nama_kategori')->unique();
             $table->timestamps();
+            $table->softDeletes(); // Soft Delete
         });
 
         // Tabel item barang
@@ -28,6 +29,7 @@ return new class extends Migration {
             $table->integer('minimal_stok');
             $table->foreignId('kategori_id')->constrained('kategori_barang')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes(); // Soft Delete
         });
 
         // Tabel stok barang
@@ -38,6 +40,7 @@ return new class extends Migration {
             $table->date('expired_date');
             $table->date('buy_date');
             $table->timestamps();
+            $table->softDeletes(); // Soft Delete
         });
     }
 
