@@ -14,7 +14,7 @@
 
             @foreach ($detailTransaksi as $detail)
                 <div class="nota-item">
-                    <span class="nama-produk">{{ $detail->produk->nama_barang }}</span>
+                    <span class="nama-produk">{{ $detail->itemBarang->nama_barang }}</span>
                     <span class="harga-satuan">Rp {{ number_format($detail->harga, 0, ',', '.') }}</span>
                     <span class="jumlah">x{{ $detail->jumlah }}</span>
                     <span class="total-harga">Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</span>
@@ -22,6 +22,8 @@
             @endforeach
             <hr>
 
+            <p><strong>Poin Yang Digunakan:</strong> {{ $laporan->poin_digunakan }}</p>
+            <p><strong>Poin Yang Didapat:</strong> {{ $laporan->poin_didapat }}</p>
             <p><strong>Total Belanja:</strong> Rp {{ number_format($laporan->total_belanja, 0, ',', '.') }}</p>
             <p><strong>Diskon:</strong> {{ $laporan->diskon }}%</p>
             <p><strong>Total Akhir (PPN 12%):</strong> Rp {{ number_format($laporan->total_akhir, 0, ',', '.') }}</p>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
 use App\Models\ItemBarang;
+use App\Models\Stok;
 use App\Models\LaporanPenjualan;
 use App\Models\DetailLaporanPenjualan;
 use App\Models\ActivityLog;
@@ -17,9 +18,9 @@ class PembelianController extends Controller
     public function create()
     {
         $pelanggan = Pelanggan::all();
-        $produk = ItemBarang::all();
-        $kode_transaksi = session('kode_transaksi'); // Ambil kode transaksi dari session
-        session()->forget('kode_transaksi'); // Hapus session agar tidak tampil terus
+        $produk = ItemBarang::with('stok')->get();
+        $kode_transaksi = session('kode_transaksi');
+        session()->forget('kode_transaksi');
 
         return view('kasir.pembelian.index', compact('pelanggan', 'produk', 'kode_transaksi'));
     }
@@ -42,10 +43,11 @@ class PembelianController extends Controller
             $items = [];
 
             foreach ($request->produk_id as $index => $produkId) {
-                $produk = ItemBarang::findOrFail($produkId);
+                $produk = ItemBarang::with('stok')->findOrFail($produkId);
                 $jumlah = $request->jumlah[$index];
+                $totalStok = $produk->stok->sum('jumlah_stok');
 
-                if ($produk->stok < $jumlah) {
+                if ($totalStok < $jumlah) {
                     return redirect()->route('kasir.pembelian.index')->with('error', "Stok barang '{$produk->nama_barang}' tidak mencukupi!");
                 }
 
@@ -57,7 +59,6 @@ class PembelianController extends Controller
 
                 $totalHarga = $hargaJual * $jumlah;
                 $totalBelanja += $totalHarga;
-
                 $items[] = [
                     'produk_id' => $produk->id,
                     'jumlah' => $jumlah,
@@ -66,7 +67,6 @@ class PembelianController extends Controller
                 ];
             }
 
-            // Menghitung diskon dan total akhir
             $diskonPersen = $request->diskon ?? 0;
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
             $totalAkhir = ($totalBelanja - $diskonNominal) * 1.12;
@@ -82,7 +82,6 @@ class PembelianController extends Controller
                 ? floor($totalBelanja * 0.02)
                 : 0;
 
-            // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => Auth::id(),
@@ -99,22 +98,28 @@ class PembelianController extends Controller
             $laporan->save();
             $laporan->detail()->createMany($items);
 
-            // Update stok produk
             foreach ($request->produk_id as $index => $produkId) {
-                $produk = ItemBarang::findOrFail($produkId);
-                $produk->stok -= $request->jumlah[$index];
+                $produk = ItemBarang::with('stok')->findOrFail($produkId);
+                $jumlahDibeli = $request->jumlah[$index];
+                
+                foreach ($produk->stok()->orderBy('expired_date')->get() as $stok) {
+                    if ($stok->jumlah_stok >= $jumlahDibeli) {
+                        $stok->decrement('jumlah_stok', $jumlahDibeli);
+                        break;
+                    } else {
+                        $jumlahDibeli -= $stok->jumlah_stok;
+                        $stok->update(['jumlah_stok' => 0]);
+                    }
+                    
+                }
                 $produk->save();
             }
 
-            // Tambahkan poin ke akun pelanggan
             if ($poinDidapat > 0) {
                 $pelanggan->increment('poin_membership', $poinDidapat);
             }
 
-            // Simpan log aktivitas
             $this->logActivity('transaksi', $laporan, null, $laporan->toArray());
-
-            // Simpan kode transaksi ke session untuk digunakan di modal
             session(['kode_transaksi' => $laporan->kode_transaksi]);
 
             DB::commit();

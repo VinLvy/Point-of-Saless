@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let tipeHarga = pelangganTipe;
             let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
-            let stok = hargaProduk[produkId]?.stok || 0;
+            let stok = hargaProduk[produkId]?.stok?.reduce((total, item) => total + item.jumlah_stok, 0) || 0;
 
             row.querySelector(".harga").dataset.harga = harga;
             row.querySelector(".stok-terpakai").innerText = stok;
@@ -273,27 +273,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.querySelector("#tambah-produk").addEventListener("click", function() {
-        let row = document.createElement("tr");
-        row.innerHTML = `
-            <td>
-                <select name="produk_id[]" class="form-control produk-select" required>
-                    <option value="">-- Pilih Produk --</option>
-                    @foreach($produk as $pr)
-                        <option value="{{ $pr->id }}" data-stok="{{ $pr->stok }}">
-                            {{ $pr->nama_barang }}
-                        </option>
-                    @endforeach
-                </select>
-            </td>
-            <td class="stok-terpakai">-</td>
-            <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
-            <td class="harga" data-harga="0">0</td>
-            <td class="total">0</td>
-            <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
-        `;
-        document.querySelector("#produk-list").appendChild(row);
-        checkProduk();
-    });
+    let row = document.createElement("tr");
+    row.innerHTML = `
+        <td>
+            <select name="produk_id[]" class="form-control produk-select select2" required>
+                <option value="">-- Pilih Produk --</option>
+                @foreach($produk as $pr)
+                    <option value="{{ $pr->id }}" data-stok="{{ $pr->stok->sum('jumlah_stok') }}">
+                        {{ $pr->nama_barang }}
+                    </option>
+                @endforeach
+            </select>
+        </td>
+        <td class="stok-terpakai">-</td>
+        <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
+        <td class="harga" data-harga="0">0</td>
+        <td class="total">0</td>
+        <td><button type="button" class="btn btn-danger remove-row">Hapus</button></td>
+    `;
+    document.querySelector("#produk-list").appendChild(row);
+    
+    checkProduk();
+});
 
     document.querySelector("#pelanggan_id").addEventListener("change", function () {
         document.querySelector("#produk-list").innerHTML = "";
