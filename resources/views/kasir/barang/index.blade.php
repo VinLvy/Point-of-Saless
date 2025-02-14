@@ -5,12 +5,8 @@
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="bi bi-box"></i> Daftar Barang</h4>
-            {{-- <a href="{{ route('admin.barang.create') }}" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-circle"></i> Tambah Barang
-            </a> --}}
         </div>
         <div class="card-body">
-            {{-- Alert pesan sukses --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="bi bi-check-circle"></i> {{ session('success') }}
@@ -18,11 +14,10 @@
                 </div>
             @endif
 
-            {{-- Form Search dan Filter --}}
             <form method="GET" action="{{ route('kasir.barang.index') }}" class="mb-3 d-flex gap-2">
-                <input type="text" name="search" class="form-control" placeholder="Cari barang..." value="{{ request('search') }}">
+                <input type="text" name="search" class="form-control flex-grow-1 h-100" placeholder="Cari barang..." value="{{ request('search') }}">
             
-                <select name="kategori" class="form-select">
+                <select name="kategori" class="form-select select2 h-100" style="min-width: 200px;">
                     <option value="">Semua Kategori</option>
                     @foreach ($kategori as $kat)
                         <option value="{{ $kat->id }}" {{ request('kategori') == $kat->id ? 'selected' : '' }}>
@@ -31,8 +26,9 @@
                     @endforeach
                 </select>
             
-                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
-            </form>            
+                <button type="submit" class="btn btn-primary h-100"><i class="bi bi-search"></i> Cari</button>
+            </form>
+            
 
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
@@ -42,12 +38,13 @@
                             <th>Kode</th>
                             <th>Nama Barang</th>
                             <th>Kategori</th>
-                            <th>Exp Date</th>
                             <th>Harga Beli</th>
                             <th>Harga Jual 1</th>
                             <th>Harga Jual 2</th>
                             <th>Harga Jual 3</th>
+                            <th>Minimal Stok</th>
                             <th>Stok</th>
+                            <th>Exp Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,26 +54,15 @@
                                 <td class="fw-bold">{{ $item->kode_barang }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td>{{ $item->kategori->nama_kategori }}</td>
-                                <td>{{ date('d M Y', strtotime($item->tanggal_kedaluarsa)) }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_beli, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_1, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_2, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_3, 0, ',', '.') }}</td>
-                                <td class="text-center {{ $item->stok < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
-                                    {{ $item->stok }}
+                                <td class="text-center">{{ $item->minimal_stok }}</td>
+                                <td class="text-center {{ $item->stok->sum('jumlah_stok') < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
+                                    {{ $item->stok->sum('jumlah_stok') }}
                                 </td>
-                                {{-- <td class="text-center">
-                                    <a href="{{ route('admin.barang.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form action="{{ route('admin.barang.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus barang ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td> --}}
+                                <td>{{ optional($item->stok->sortBy('expired_date')->first())->expired_date ? date('d M Y', strtotime($item->stok->sortBy('expired_date')->first()->expired_date)) : '-' }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -98,5 +84,12 @@
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
+
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Pilih Kategori",
+            allowClear: true
+        });
+    });
 </script>
 @endsection

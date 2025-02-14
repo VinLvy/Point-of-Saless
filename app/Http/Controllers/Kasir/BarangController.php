@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Kasir;
 use App\Http\Controllers\Controller;
 use App\Models\ItemBarang;
 use App\Models\KategoriBarang;
+use App\Models\Stok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,7 @@ class BarangController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ItemBarang::with('kategori');
+        $query = ItemBarang::with(['kategori', 'stok']);
 
         // Filter berdasarkan pencarian nama barang atau kode barang
         if ($request->filled('search')) {
