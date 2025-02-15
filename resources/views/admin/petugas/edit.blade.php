@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container">
-    <h1 class="my-4 text-center">Edit Data Petugas</h1>
+<div class="container mt-4">
+    {{-- <h1 class="my-4 text-center">Edit Data Petugas</h1> --}}
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -16,7 +16,7 @@
 
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            Form Edit Petugas
+            <h4 class="mb-0 bi bi-pencil-square"> Edit Data Petugas</h4>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.petugas.update', $petugas->id) }}" method="POST">

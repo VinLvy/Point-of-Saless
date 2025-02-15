@@ -1,19 +1,15 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container">
-    <h1 class="my-4">Manajemen Petugas</h1>
-    
-    <div class="mb-3">
-        <a href="{{ route('admin.petugas.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Tambah Petugas
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0"><i class="bi bi-person-badge"></i> Data Petugas</h1>
+        <a href="{{ route('admin.petugas.create') }}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Tambah Petugas
         </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
-            Daftar Petugas
-        </div>
+    <div class="card shadow-sm rounded-3">
         <div class="card-body">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -22,9 +18,9 @@
                 </div>
             @endif
 
-            <div class="table-responsive" style="border-radius: 8px;">
-                <table class="table table-hover table-bordered">
-                    <thead class="table-dark">
+            <div class="table-responsive">
+                <table class="table table-hover text-center rounded-3 overflow-hidden">
+                    <thead class="bg-secondary text-white">
                         <tr>
                             <th>Nama</th>
                             <th>Email</th>
@@ -32,22 +28,22 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-light">
                         @foreach($petugas as $p)
                             <tr>
                                 <td>{{ $p->nama_petugas }}</td>
                                 <td>{{ $p->email }}</td>
                                 <td>
-                                    <span class="badge bg-info">{{ ucfirst($p->role) }}</span>
+                                    <span class="badge bg-info text-dark">{{ ucfirst($p->role) }}</span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.petugas.edit', $p->id) }}" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-pencil"></i> Edit
+                                    <a href="{{ route('admin.petugas.edit', $p->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ $p->id }}, '{{ $p->nama_petugas }}')">
-                                        <i class="bi bi-trash"></i> Hapus
+                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $p->id }}, '{{ $p->nama_petugas }}')">
+                                        <i class="bi bi-trash"></i>
                                     </button>
-                                </td>                                
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -64,7 +60,7 @@
 {{-- Modal Konfirmasi Hapus --}}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content rounded-3">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -94,11 +90,11 @@
 
     // Fade out alert otomatis setelah 3 detik
     setTimeout(() => {
-            let alert = document.querySelector('.alert');
-            if (alert) {
-                alert.classList.add('fade');
-                setTimeout(() => alert.remove(), 500);
-            }
-        }, 3000);
+        let alert = document.querySelector('.alert');
+        if (alert) {
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 3000);
 </script>
 @endsection

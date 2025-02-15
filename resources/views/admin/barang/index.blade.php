@@ -50,7 +50,7 @@
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_1, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_2, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_3, 0, ',', '.') }}</td>
-                                <td class="text-center {{ $totalStok < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
+                                <td class="text-center {{ $totalStok <= $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
                                     {{ $totalStok }}
                                 </td>
                                 <td class="text-center">{{ $item->minimal_stok }}</td>

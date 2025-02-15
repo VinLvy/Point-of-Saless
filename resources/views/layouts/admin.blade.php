@@ -89,6 +89,23 @@
 </head>
 <body>
 
+    {{-- Notifikasi Error dengan SweetAlert2 --}}
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: `
+                    <ul style='text-align: left;'>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+            });
+        </script>
+    @endif
+
     <div class="sidebar">
         <h2><i class="bi bi-speedometer2"></i> Admin Panel</h2>
         <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
