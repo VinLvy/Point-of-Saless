@@ -28,8 +28,9 @@ class LaporanBarangTerjualController extends Controller
                     });
             });
         }
+        $query->orderBy('created_at', 'desc');
 
-        $laporan = $query->get();
+        $laporan = $query->paginate(10);
 
         return view('admin.terjual.index', compact('laporan'));
     }
