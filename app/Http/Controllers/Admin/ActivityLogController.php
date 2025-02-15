@@ -10,6 +10,13 @@ class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
+        // Jika tombol hapus diklik, hapus 10 log terlama
+        if ($request->has('delete_oldest')) {
+            ActivityLog::oldest()->limit(10)->delete();
+            return redirect()->route('admin.logs.index')->with('success', '10 data log terlama telah dihapus.');
+        }
+
+        // Filter dan tampilkan data seperti biasa
         $query = ActivityLog::with('petugas')->latest();
 
         if ($request->filled('action')) {

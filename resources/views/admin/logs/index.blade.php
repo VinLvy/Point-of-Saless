@@ -18,6 +18,13 @@
         </select>
     </form>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <!-- Tabel -->
     <div class="table-responsive">
         <table class="table table-hover table-bordered shadow-sm">
@@ -73,5 +80,23 @@
         {{ $logs->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
     </div>
 
+    <!-- Tombol Hapus 10 Data Terlama -->
+    <a href="{{ route('admin.logs.index', ['delete_oldest' => 1]) }}" 
+        class="btn btn-danger shadow position-fixed bottom-0 end-0 m-4">
+        <i class="bi bi-trash"></i> Hapus 10 Data Terlama
+    </a> 
+
 </div>
+
+<script>
+    // Fade out alert otomatis setelah 3 detik
+    setTimeout(() => {
+            let alert = document.querySelector('.alert');
+            if (alert) {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+</script>
+
 @endsection
