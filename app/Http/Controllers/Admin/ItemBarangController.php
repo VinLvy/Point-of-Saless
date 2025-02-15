@@ -27,11 +27,11 @@ class ItemBarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang' => 'required|string|max:255|unique:item_barang,nama_barang',
+            'nama_barang' => 'required|string|max:255|unique:item_barang,nama_barang,NULL,id,deleted_at,NULL',
             'harga_beli' => 'required|integer|min:0',
             'minimal_stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_barang,id',
-        ],[
+        ], [
             'nama_barang.unique' => 'Nama barang sudah digunakan. Silakan gunakan nama lain.'
         ]);
 
@@ -40,7 +40,11 @@ class ItemBarangController extends Controller
         $harga_jual_2 = round($harga_beli * 1.2);
         $harga_jual_3 = round($harga_beli * 1.3);
 
+        $lastBarang = ItemBarang::withTrashed()->orderBy('kode_barang', 'desc')->first();
+        $nextKode = $lastBarang ? 'BRG' . str_pad((int) substr($lastBarang->kode_barang, 3) + 1, 3, '0', STR_PAD_LEFT) : 'BRG001';
+
         $barang = ItemBarang::create([
+            'kode_barang' => $nextKode,
             'nama_barang' => $request->nama_barang,
             'harga_beli' => $harga_beli,
             'harga_jual_1' => $harga_jual_1,
@@ -49,7 +53,6 @@ class ItemBarangController extends Controller
             'minimal_stok' => $request->minimal_stok,
             'kategori_id' => $request->kategori_id,
         ]);
-
 
         $this->logActivity('tambah', 'item_barang', $barang->id, null, $barang->toArray());
 
@@ -70,7 +73,7 @@ class ItemBarangController extends Controller
             'harga_beli' => 'required|integer|min:0',
             'minimal_stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_barang,id',
-        ],[
+        ], [
             'nama_barang.unique' => 'Nama barang sudah digunakan. Silakan gunakan nama lain.'
         ]);
 

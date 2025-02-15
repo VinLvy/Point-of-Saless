@@ -26,8 +26,6 @@ class KategoriBarang extends Model
         });
     }
 
-
-
     public function itemBarang()
     {
         return $this->hasMany(ItemBarang::class, 'kategori_id');
