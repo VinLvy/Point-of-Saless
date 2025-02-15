@@ -62,16 +62,22 @@ class KategoriBarangController extends Controller
     public function destroy($id)
     {
         $kategori = KategoriBarang::findOrFail($id);
+
+        // Periksa apakah kategori digunakan oleh barang
+        if ($kategori->itemBarang()->exists()) {
+            return redirect()->route('admin.kategori.index')->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh barang.');
+        }
+
         $oldData = $kategori->toArray(); // Simpan data sebelum dihapus
         $namaKategori = $kategori->nama_kategori; // Simpan nama kategori sebelum dihapus
-    
+
         $kategori->delete();
-    
+
         // Kirimkan $namaKategori sebagai bagian dari old_data agar tetap bisa diakses
         $this->logActivity('hapus', 'kategori_barang', $id, ['nama_kategori' => $namaKategori], null);
-    
+
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dihapus!');
-    }    
+    }
 
     private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)
     {

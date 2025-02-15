@@ -21,15 +21,11 @@ class KategoriBarang extends Model
         parent::boot();
 
         static::creating(function ($kategori) {
-            // Ambil kode kategori terakhir
-            $lastKategori = self::orderBy('id', 'desc')->first();
-            $lastCode = $lastKategori ? $lastKategori->kode_kategori : 'KTG000';
-
-            // Generate kode kategori baru
-            $number = (int) substr($lastCode, 3) + 1;
-            $kategori->kode_kategori = 'KTG' . str_pad($number, 3, '0', STR_PAD_LEFT);
+            // Generate kode kategori baru dengan 5 angka random
+            $kategori->kode_kategori = 'KTG' . mt_rand(10000, 99999);
         });
     }
+
 
 
     public function itemBarang()
