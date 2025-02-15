@@ -7,17 +7,9 @@
             <h4 class="mb-0"><i class="bi bi-journal-check"></i> Daftar Kategori Barang</h4>
         </div>
         <div class="card-body">
-            {{-- Alert pesan sukses --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="bi bi-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle"></i> {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -32,7 +24,6 @@
                 </div>
             @endif
 
-            {{-- Form Tambah Kategori --}}
             <div class="mb-4 p-3 bg-light border rounded">
                 <h5> Tambah Kategori</h5>
                 <form action="{{ route('admin.kategori.store') }}" method="POST">
@@ -48,8 +39,7 @@
                 </form>
             </div>
 
-            {{-- Tabel Kategori Barang --}}
-            <div class="table-responsive" style="border-radius: 8px;">
+            <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-primary text-center">
                         <tr>
@@ -69,9 +59,11 @@
                                 <td>{{ $item->created_at->format('d M Y') }}</td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ route('admin.kategori.edit', $item->id) }}" class="btn btn-primary btn-sm">
+                                        <button type="button" class="btn btn-primary btn-sm edit-kategori" 
+                                            data-bs-toggle="modal" data-bs-target="#editModal"
+                                            data-id="{{ $item->id }}" data-nama="{{ $item->nama_kategori }}">
                                             <i class="bi bi-pencil-square"></i> Edit
-                                        </a>
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ $item->id }}" data-nama="{{ $item->nama_kategori }}">
                                             <i class="bi bi-trash"></i> Hapus
                                         </button>
@@ -90,52 +82,54 @@
     </div>
 </div>
 
-{{-- Modal Konfirmasi Hapus --}}
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+{{-- Modal Edit Kategori --}}
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editModalLabel"><i class="bi bi-pencil-square"></i> Edit Kategori</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus <strong id="namaBarang"></strong>?</p>
-            </div>
-            <div class="modal-footer">
-                <form id="deleteForm" method="POST">
+                <form id="editForm" method="POST">
                     @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label for="editNamaKategori" class="form-label">Nama Kategori</label>
+                        <input type="text" class="form-control" id="editNamaKategori" name="nama_kategori" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-{{-- Script untuk mengisi form dalam modal --}}
+{{-- Script untuk mengisi form dalam modal edit --}}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var id = button.getAttribute('data-id');
-            var nama = button.getAttribute('data-nama');
-            var form = document.getElementById('deleteForm');
-            var namaBarang = document.getElementById('namaBarang');
-
-            form.action = "/admin/kategori/" + id;
-            namaBarang.textContent = nama;
+        document.querySelectorAll(".edit-kategori").forEach(button => {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+                let nama = this.getAttribute("data-nama");
+                
+                let form = document.getElementById("editForm");
+                form.action = `/admin/kategori/${id}`;
+                document.getElementById("editNamaKategori").value = nama;
+            });
         });
+    });
 
-        // Fade out alert otomatis setelah 3 detik
-        setTimeout(() => {
+    // Fade out alert otomatis setelah 3 detik
+    setTimeout(() => {
             let alert = document.querySelector('.alert');
             if (alert) {
                 alert.classList.add('fade');
                 setTimeout(() => alert.remove(), 500);
             }
         }, 3000);
-    });
 </script>
 @endsection

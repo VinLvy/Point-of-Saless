@@ -33,10 +33,31 @@ class KategoriBarangController extends Controller
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    // public function edit($id)
+    // {
+    //     $kategori = KategoriBarang::findOrFail($id);
+    //     return view('admin.kategori.edit', compact('kategori'));
+    // }
+
+    public function updateAjax(Request $request)
     {
-        $kategori = KategoriBarang::findOrFail($id);
-        return view('admin.kategori.edit', compact('kategori'));
+        $request->validate([
+            'id' => 'required|exists:kategori_barang,id',
+            'nama_kategori' => 'required|unique:kategori_barang,nama_kategori,' . $request->id . '|max:255',
+        ], [
+            'nama_kategori.unique' => 'Nama Kategori sudah ada. Silakan gunakan nama lain.'
+        ]);
+
+        $kategori = KategoriBarang::findOrFail($request->id);
+        $oldData = $kategori->toArray();
+
+        $kategori->update([
+            'nama_kategori' => $request->nama_kategori,
+        ]);
+
+        $this->logActivity('edit', 'kategori_barang', $kategori->id, $oldData, $kategori->toArray());
+
+        return response()->json(['success' => 'Kategori berhasil diperbarui!']);
     }
 
     public function update(Request $request, $id)
