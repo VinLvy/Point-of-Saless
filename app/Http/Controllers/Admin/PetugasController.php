@@ -29,7 +29,7 @@ class PetugasController extends Controller
             'email' => 'required|email|unique:petugas,email',
             'password' => 'required|min:6',
             'role' => 'required|in:kasir',
-        ],[
+        ], [
             'nama_petugas.unique' => 'Nama petugas sudah digunakan. Silakan gunakan nama lain.',
             'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.'
         ]);
@@ -57,14 +57,14 @@ class PetugasController extends Controller
     public function update(Request $request, $id)
     {
         $petugas = Petugas::findOrFail($id);
-        
+
         $request->validate([
             'nama_petugas' => 'required|string|max:255',
             'email' => 'required|email|unique:petugas,email,' . $petugas->id,
             'password' => 'nullable|min:6',
             'role' => 'required|in:kasir',
         ]);
-        
+
         $oldData = $petugas->toArray();
         $petugas->update([
             'nama_petugas' => $request->nama_petugas,
@@ -72,7 +72,7 @@ class PetugasController extends Controller
             'role' => $request->role,
             'password' => $request->password ? Hash::make($request->password) : $petugas->password,
         ]);
-        
+
         // Simpan log aktivitas
         $this->logActivity('edit', $petugas, $oldData, $petugas->toArray());
 

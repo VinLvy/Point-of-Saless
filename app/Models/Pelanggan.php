@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pelanggan extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'pelanggan';
     protected $fillable = [
@@ -23,4 +24,6 @@ class Pelanggan extends Model
     {
         return $this->hasMany(LaporanPenjualan::class, 'pelanggan_id');
     }
+
+    protected $dates = ['deleted_at'];
 }

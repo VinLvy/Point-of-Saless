@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ItemBarang extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'item_barang';
     protected $fillable = [
@@ -47,4 +48,6 @@ class ItemBarang extends Model
     {
         return $this->hasMany(Stok::class, 'item_id');
     }
+
+    protected $dates = ['deleted_at'];
 }
