@@ -16,7 +16,10 @@
         </div>
         <div class="card-body">
             @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             @endif
 
             <div class="table-responsive">
@@ -88,5 +91,14 @@
         document.getElementById('namaPetugas').textContent = nama;
         new bootstrap.Modal(document.getElementById('deleteModal')).show();
     }
+
+    // Fade out alert otomatis setelah 3 detik
+    setTimeout(() => {
+            let alert = document.querySelector('.alert');
+            if (alert) {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
 </script>
 @endsection

@@ -60,7 +60,7 @@
                     <select name="tipe_pelanggan" id="tipe_pelanggan" class="form-control @error('tipe_pelanggan') is-invalid @enderror" required>
                         <option value="tipe 1" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 1' ? 'selected' : '' }}>Tipe 1</option>
                         <option value="tipe 2" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 2' ? 'selected' : '' }}>Tipe 2</option>
-                        <option value="tipe 3" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 3' ? 'selected' : '' }}>Tipe 3</option>
+                        {{-- <option value="tipe 3" {{ old('tipe_pelanggan', $pelanggan->tipe_pelanggan) == 'tipe 3' ? 'selected' : '' }}>Tipe 3</option> --}}
                     </select>
                     @error('tipe_pelanggan')
                         <div class="invalid-feedback">{{ $message }}</div>

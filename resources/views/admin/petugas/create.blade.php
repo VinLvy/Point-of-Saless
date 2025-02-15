@@ -35,9 +35,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Role</label>
-                    <select name="role" class="form-select">
-                        <option value="kasir">Kasir</option>
-                    </select>
+                    <input type="text" class="form-control" value="Kasir" disabled>
+                    <input type="hidden" name="role" value="kasir">
                 </div>
                 <div class="d-flex gap-2">
                     <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary w-50">
