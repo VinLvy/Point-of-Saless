@@ -42,7 +42,7 @@
             </div>
 
             {{-- Tabel Kategori Barang --}}
-            <div class="table-responsive">
+            <div class="table-responsive" style="border-radius: 8px;">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-primary text-center">
                         <tr>

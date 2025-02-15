@@ -33,7 +33,7 @@
             </form>
 
             <!-- Tabel Data Penjualan -->
-            <div class="table-responsive">
+            <div class="table-responsive" style="border-radius: 8px;">
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark text-center text-white">
                         <tr>

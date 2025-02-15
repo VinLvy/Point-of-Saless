@@ -7,9 +7,9 @@
         <i class="fas fa-plus"></i> Tambah Stok
     </a>
     
-    <div class="table-responsive">
+    <div class="table-responsive" style="border-radius: 8px;">
         <table class="table table-striped table-hover table-bordered">
-            <thead class="table-dark text-center">
+            <thead class="table-primary text-center">
                 <tr>
                     <th>Kode Barang</th>
                     <th>Nama Barang</th>

@@ -10,21 +10,27 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil tanggal awal dan akhir dari request
         $startDate = $request->input('start_date', now()->subWeek()->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
+        $search = $request->input('search');
 
-        // Format tanggal untuk query
         $startDate = date('Y-m-d 00:00:00', strtotime($startDate));
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
-        // Ambil data laporan penjualan dengan relasi pelanggan dan detail penjualan
-        $laporan = LaporanPenjualan::with(['pelanggan'])
-            ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
-            ->get();
+        // Query laporan penjualan
+        $query = LaporanPenjualan::with('pelanggan')
+            ->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
 
-        return view('admin.laporan.index', compact('laporan', 'startDate', 'endDate'));
+        // Jika ada pencarian kode transaksi
+        if (!empty($search)) {
+            $query->where('kode_transaksi', 'like', "%$search%");
+        }
+
+        $laporan = $query->orderBy('tanggal_transaksi', 'desc')->get();
+
+        return view('admin.laporan.index', compact('laporan', 'startDate', 'endDate', 'search'));
     }
+
 
     public function show($id)
     {

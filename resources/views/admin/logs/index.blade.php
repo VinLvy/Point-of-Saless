@@ -26,7 +26,7 @@
     @endif
 
     <!-- Tabel -->
-    <div class="table-responsive">
+    <div class="table-responsive" style="border-radius: 8px;">
         <table class="table table-hover table-bordered shadow-sm">
             <thead class="table-dark">
                 <tr>
