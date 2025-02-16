@@ -25,7 +25,7 @@ class AuthController extends Controller
         // Cek apakah email ada di tabel pelanggan
         $pelanggan = Pelanggan::where('email', $credentials['email'])->first();
         if ($pelanggan) {
-            return back()->withErrors(['email' => 'Akses ditolak. Anda tidak memiliki izin untuk masuk.']);
+            return back()->withErrors(['email' => 'Akses ditolak. Anda tidak memiliki izin untuk masuk.'])->withInput();
         }
 
         // Jika email tidak ada di pelanggan, lanjutkan dengan autentikasi petugas
@@ -45,7 +45,7 @@ class AuthController extends Controller
             }
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
     }
 
     public function logout()

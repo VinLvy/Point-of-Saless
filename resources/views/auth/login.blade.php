@@ -65,6 +65,7 @@
         .error {
             color: red;
             font-size: 0.9em;
+            margin-top: 5px;
         }
         .extra-links {
             margin-top: 15px;
@@ -88,21 +89,22 @@
             @csrf
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-                @error('email')
-                    <p class="error">{{ $message }}</p>
-                @enderror
+                <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" class="form-control" required>
-                @error('password')
-                    <p class="error">{{ $message }}</p>
-                @enderror
             </div>
+            
+            <!-- Semua Error Ditampilkan di Sini -->
+            <div class="error">
+                @error('email') <p>{{ $message }}</p> @enderror
+                @error('password') <p>{{ $message }}</p> @enderror
+            </div>
+    
             <button type="submit" class="btn btn-login">Login</button>
         </form>
-    </div>
+    </div>    
 
 </body>
 </html>
