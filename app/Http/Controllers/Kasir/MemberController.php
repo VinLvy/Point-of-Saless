@@ -24,12 +24,23 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:255',
+            'nama_pelanggan' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^(?:[A-Z][a-z]*)(?: [A-Z][a-z]*)*$/',
+            ],
             'email' => 'nullable|email|unique:pelanggan,email',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|numeric|digits_between:8,20|unique:pelanggan,no_hp',
             'alamat' => 'nullable|string',
             'poin_membership' => 'integer|min:0',
             'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
+        ], [
+            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital.',
+            'email.unique' => 'Email ini sudah digunakan, silakan gunakan email lain.',
+            'no_hp.numeric' => 'Nomor HP hanya boleh mengandung angka.',
+            'no_hp.digits_between' => 'Nomor HP harus memiliki panjang antara 8 hingga 20 digit.',
+            'no_hp.unique' => 'Nomor HP ini sudah digunakan, silakan gunakan nomor lain.'
         ]);        
 
         $member = Pelanggan::create($request->only([
@@ -50,12 +61,23 @@ class MemberController extends Controller
     public function update(Request $request, Pelanggan $member)
     {
         $request->validate([
-            'nama_pelanggan' => 'required|string|max:255',
+            'nama_pelanggan' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^(?:[A-Z][a-z]*)(?: [A-Z][a-z]*)*$/',
+            ],
             'email' => 'nullable|email|unique:pelanggan,email,' . $member->id,
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'required|numeric|digits_between:8,20|unique:pelanggan,no_hp,' . $member->id,
             'alamat' => 'nullable|string',
             'poin_membership' => 'integer|min:0',
             'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
+        ], [
+            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital.',
+            'email.unique' => 'Email ini sudah digunakan, silakan gunakan email lain.',
+            'no_hp.numeric' => 'Nomor HP hanya boleh mengandung angka.',
+            'no_hp.digits_between' => 'Nomor HP harus memiliki panjang antara 8 hingga 20 digit.',
+            'no_hp.unique' => 'Nomor HP ini sudah digunakan, silakan gunakan nomor lain.'
         ]);
 
         $oldData = $member->toArray();
