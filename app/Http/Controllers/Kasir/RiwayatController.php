@@ -21,6 +21,8 @@ class RiwayatController extends Controller
             ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
             ->get();
 
+        $riwayat = LaporanPenjualan::orderBy('created_at', 'desc')->paginate(10);
+
         return view('kasir.riwayat.index', compact('riwayat', 'startDate', 'endDate'));
     }
 

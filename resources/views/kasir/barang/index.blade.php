@@ -14,27 +14,28 @@
                 </div>
             @endif
 
-            <form method="GET" action="{{ route('kasir.barang.index') }}" class="mb-3 d-flex gap-2">
-                <input type="text" name="search" class="form-control flex-grow-1 h-100" placeholder="Cari barang..." value="{{ request('search') }}">
+            <form method="GET" action="{{ route('kasir.barang.index') }}" class="mb-3">
+                <div class="d-flex flex-column gap-2">
+                    <input type="text" name="search" class="form-control" placeholder="Cari barang..." value="{{ request('search') }}">
             
-                <select name="kategori" class="form-select select2 h-100" style="min-width: 200px;">
-                    <option value="">Semua Kategori</option>
-                    @foreach ($kategori as $kat)
-                        <option value="{{ $kat->id }}" {{ request('kategori') == $kat->id ? 'selected' : '' }}>
-                            {{ $kat->nama_kategori }}
-                        </option>
-                    @endforeach
-                </select>
+                    <select name="kategori" class="form-select select2" style="width: 100%;">
+                        <option value="">Semua Kategori</option>
+                        @foreach ($kategori as $kat)
+                            <option value="{{ $kat->id }}" {{ request('kategori') == $kat->id ? 'selected' : '' }}>
+                                {{ $kat->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
             
-                <button type="submit" class="btn btn-primary h-100"><i class="bi bi-search"></i> Cari</button>
-            </form>
-            
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+                </div>
+            </form>            
 
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered rounded-3 overflow-hidden">
                     <thead class="table-dark text-center text-white">
                         <tr>
-                            <th>#</th>
+                            <th>No.</th>
                             <th>Kode</th>
                             <th>Nama Barang</th>
                             <th>Kategori</th>
@@ -44,13 +45,19 @@
                             <th>Harga Jual 3</th>
                             <th>Minimal Stok</th>
                             <th>Stok</th>
+                            <th>Buy Date</th>
                             <th>Exp Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($barang as $index => $item)
+                            @php
+                                $totalStok = $item->stok->sum('jumlah_stok');
+                                $expDateTercepat = optional($item->stok->sortBy('expired_date')->first())->expired_date ? date('d M Y', strtotime($item->stok->sortBy('expired_date')->first()->expired_date)) : '-';
+                                $buyDateTerlama = optional($item->stok->sortBy('buy_date')->first())->buy_date ? date('d M Y', strtotime($item->stok->sortBy('buy_date')->first()->buy_date)) : '-';
+                            @endphp
                             <tr>
-                                <td class="text-center">{{ $index + 1 }}</td>
+                                <td class="text-center">{{ $barang->firstItem() + $index }}</td>
                                 <td class="fw-bold">{{ $item->kode_barang }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td>{{ $item->kategori->nama_kategori }}</td>
@@ -59,18 +66,23 @@
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_2, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_3, 0, ',', '.') }}</td>
                                 <td class="text-center">{{ $item->minimal_stok }}</td>
-                                <td class="text-center {{ $item->stok->sum('jumlah_stok') < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
-                                    {{ $item->stok->sum('jumlah_stok') }}
+                                <td class="text-center {{ $totalStok < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
+                                    {{ $totalStok }}
                                 </td>
-                                <td>{{ optional($item->stok->sortBy('expired_date')->first())->expired_date ? date('d M Y', strtotime($item->stok->sortBy('expired_date')->first()->expired_date)) : '-' }}</td>
+                                <td class="text-center">{{ $buyDateTerlama }}</td>
+                                <td class="text-center">{{ $expDateTercepat }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11" class="text-center text-muted">Belum ada data barang.</td>
+                                <td colspan="12" class="text-center text-muted">Belum ada data barang.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+            </div>            
+
+            <div class="d-flex justify-content-center mt-3 d-print-none">
+                {{ $barang->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
             </div>
         </div>
     </div>

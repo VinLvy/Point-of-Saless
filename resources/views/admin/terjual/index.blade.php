@@ -78,10 +78,10 @@
                 </table>
             </div>
 
-            <!-- Pagination (Disembunyikan Saat Print) -->
+            {{-- <!-- Pagination (Disembunyikan Saat Print) -->
             <div class="d-flex justify-content-center mt-3 d-print-none">
                 {{ $laporan->appends(request()->query())->links('vendor.pagination.bootstrap-4') }}
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>

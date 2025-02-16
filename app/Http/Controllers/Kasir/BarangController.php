@@ -28,8 +28,7 @@ class BarangController extends Controller
             $query->where('kategori_id', $request->kategori);
         }
 
-        // Ambil hasil dengan urutan kode barang
-        $barang = $query->orderBy('kode_barang', 'asc')->get();
+        $barang = $query->orderBy('kode_barang', 'asc')->paginate(10);
         $kategori = KategoriBarang::orderBy('nama_kategori', 'asc')->get();
 
         return view('kasir.barang.index', compact('barang', 'kategori'));

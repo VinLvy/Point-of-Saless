@@ -19,7 +19,7 @@
             @endif
             <div class="table-responsive">
                 <table class="table table-hover text-center rounded-3 overflow-hidden table-striped">
-                    <thead class="bg-primary text-white">
+                    <thead class="table-secondary text-white">
                         <tr>
                             <th>Nama</th>
                             <th>Email</th>
