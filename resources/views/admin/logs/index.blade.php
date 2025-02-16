@@ -27,7 +27,7 @@
 
     <!-- Tabel -->
     <div class="table-responsive" style="border-radius: 8px;">
-        <table class="table table-hover table-bordered shadow-sm">
+        <table class="table table-hover table-bordered shadow-sm table-striped">
             <thead class="table-dark">
                 <tr>
                     <th>#</th>

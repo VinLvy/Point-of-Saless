@@ -20,7 +20,7 @@
 
             {{-- Tabel Barang --}}
             <div class="table-responsive" style="border-radius: 8px;">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle table-striped">
                     <thead class="table-primary text-center text-white">
                         <tr>
                             <th>#</th>
@@ -33,6 +33,8 @@
                             <th>Harga Jual 3</th>
                             <th>Stok</th>
                             <th>Min. Stok</th>
+                            <th>Buy Date</th>
+                            <th>Exp. Date</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -40,6 +42,8 @@
                         @forelse ($barang as $index => $item)
                             @php
                                 $totalStok = $item->stok->sum('jumlah_stok');
+                                $expDateTercepat = $item->stok->min('expired_date') ?? '-';
+                                $buyDateTerlama = $item->stok->min('buy_date') ?? '-';
                             @endphp
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
@@ -54,6 +58,8 @@
                                     {{ $totalStok }}
                                 </td>
                                 <td class="text-center">{{ $item->minimal_stok }}</td>
+                                <td class="text-center">{{ $buyDateTerlama }}</td>
+                                <td class="text-center">{{ $expDateTercepat }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('admin.barang.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil-square"></i>
@@ -65,12 +71,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11" class="text-center text-muted">Belum ada data barang.</td>
+                                <td colspan="13" class="text-center text-muted">Belum ada data barang.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

@@ -34,7 +34,7 @@
 
             <!-- Tabel Data Penjualan -->
             <div class="table-responsive" style="border-radius: 8px;">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle table-striped">
                     <thead class="table-secondary text-center text-white">
                         <tr>
                             <th>Kode Transaksi</th>

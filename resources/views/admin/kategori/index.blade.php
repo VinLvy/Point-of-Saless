@@ -47,7 +47,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle table-striped">
                     <thead class="table-primary text-center">
                         <tr>
                             <th>#</th>

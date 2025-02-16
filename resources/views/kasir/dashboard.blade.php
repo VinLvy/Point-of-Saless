@@ -49,7 +49,7 @@
         <div class="card-body">
             <h5 class="fw-bold"><i class="bi bi-exclamation-triangle-fill text-warning"></i> Barang dengan Stok Rendah</h5>
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped">
                     <thead class="table-warning">
                         <tr>
                             <th>Nama Barang</th>
