@@ -19,11 +19,33 @@ class KategoriBarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kategori' => 'required|unique:kategori_barang,nama_kategori|max:255',
+            'nama_kategori' => [
+                'required',
+                'max:255',
+                'regex:/^[A-Z][a-z\s]*$/'
+            ],
         ], [
-            'nama_kategori.unique' => 'Nama Kategori sudah ada. Silakan gunakan nama lain.'
+            'nama_kategori.regex' => 'Nama kategori harus diawali huruf kapital dan tidak boleh mengandung huruf kapital di tengah.',
         ]);
 
+        // Periksa apakah kategori sudah ada termasuk yang dihapus secara soft delete
+        $kategori = KategoriBarang::withTrashed()
+            ->where('nama_kategori', $request->nama_kategori)
+            ->first();
+
+        if ($kategori) {
+            if ($kategori->trashed()) {
+                // Jika kategori ada tapi dihapus, lakukan restore
+                $kategori->restore();
+                $this->logActivity('restore', 'kategori_barang', $kategori->id, null, $kategori->toArray());
+                return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil dikembalikan!');
+            } else {
+                // Jika kategori ada dan tidak terhapus, tampilkan error
+                return redirect()->route('admin.kategori.index')->with('error', 'Nama Kategori sudah ada. Silakan gunakan nama lain.');
+            }
+        }
+
+        // Jika tidak ada kategori dengan nama yang sama, buat baru
         $kategori = KategoriBarang::create([
             'nama_kategori' => $request->nama_kategori,
         ]);

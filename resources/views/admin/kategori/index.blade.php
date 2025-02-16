@@ -24,6 +24,13 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             <div class="mb-4 p-3 bg-light border rounded">
                 <h5> Tambah Kategori</h5>
                 <form action="{{ route('admin.kategori.store') }}" method="POST">
@@ -108,6 +115,29 @@
     </div>
 </div>
 
+{{-- Modal Konfirmasi Hapus --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-3">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus <strong id="namakategori"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Script untuk mengisi form dalam modal edit --}}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -119,6 +149,18 @@
                 let form = document.getElementById("editForm");
                 form.action = `/admin/kategori/${id}`;
                 document.getElementById("editNamaKategori").value = nama;
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".btn-danger[data-bs-target='#deleteModal']").forEach(button => {
+            button.addEventListener("click", function() {
+                let id = this.getAttribute("data-id");
+                let nama = this.getAttribute("data-nama");
+
+                document.getElementById("namakategori").textContent = nama;
+                document.getElementById("deleteForm").action = `/admin/kategori/${id}`;
             });
         });
     });

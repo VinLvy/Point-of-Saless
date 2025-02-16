@@ -21,8 +21,18 @@ class KategoriBarang extends Model
         parent::boot();
 
         static::creating(function ($kategori) {
-            // Generate kode kategori baru dengan 5 angka random
-            $kategori->kode_kategori = 'KTG' . mt_rand(10000, 99999);
+            $latestKategori = KategoriBarang::withTrashed()
+                ->orderByRaw("CAST(SUBSTRING(kode_kategori, 4) AS UNSIGNED) DESC")
+                ->first();
+
+            if ($latestKategori) {
+                $lastNumber = (int) substr($latestKategori->kode_kategori, 3); // Ambil angka dari KTGXXX
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+
+            $kategori->kode_kategori = 'KTG' . str_pad($newNumber, 3, '0', STR_PAD_LEFT); // Format KTGXXX
         });
     }
 
