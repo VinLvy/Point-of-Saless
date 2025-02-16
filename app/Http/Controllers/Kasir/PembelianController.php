@@ -67,7 +67,21 @@ class PembelianController extends Controller
                 ];
             }
 
-            $diskonPersen = $request->diskon ?? 0;
+            // Logika diskon berdasarkan total belanja dan poin membership
+            $poinDipakai = 0;
+            $diskonPersen = 0;
+
+            if ($totalBelanja >= 300000 && $pelanggan->poin_membership >= 20000) {
+                $diskonPersen = 20;
+                $poinDipakai = 20000;
+            } elseif ($totalBelanja >= 100000 && $pelanggan->poin_membership >= 10000) {
+                $diskonPersen = 10;
+                $poinDipakai = 10000;
+            } elseif ($totalBelanja >= 50000 && $pelanggan->poin_membership >= 5000) {
+                $diskonPersen = 5;
+                $poinDipakai = 5000;
+            }
+
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;
             $totalAkhir = ($totalBelanja - $diskonNominal) * 1.12;
 
@@ -82,13 +96,14 @@ class PembelianController extends Controller
                 ? floor($totalBelanja * 0.02)
                 : 0;
 
+            // Simpan transaksi
             $laporan = new LaporanPenjualan([
                 'pelanggan_id' => $pelanggan->id,
                 'petugas_id' => Auth::id(),
                 'tipe_pelanggan' => $pelanggan->tipe_pelanggan,
                 'total_belanja' => $totalBelanja,
                 'diskon' => $diskonPersen,
-                'poin_digunakan' => 0,
+                'poin_digunakan' => $poinDipakai,
                 'poin_didapat' => $poinDidapat,
                 'total_akhir' => $totalAkhir,
                 'uang_dibayar' => $request->uang_dibayar,
@@ -101,7 +116,7 @@ class PembelianController extends Controller
             foreach ($request->produk_id as $index => $produkId) {
                 $produk = ItemBarang::with('stok')->findOrFail($produkId);
                 $jumlahDibeli = $request->jumlah[$index];
-                
+
                 foreach ($produk->stok()->orderBy('expired_date')->get() as $stok) {
                     if ($stok->jumlah_stok >= $jumlahDibeli) {
                         $stok->decrement('jumlah_stok', $jumlahDibeli);
@@ -110,11 +125,16 @@ class PembelianController extends Controller
                         $jumlahDibeli -= $stok->jumlah_stok;
                         $stok->update(['jumlah_stok' => 0]);
                     }
-                    
                 }
                 $produk->save();
             }
 
+            // Kurangi poin yang digunakan
+            if ($poinDipakai > 0) {
+                $pelanggan->decrement('poin_membership', $poinDipakai);
+            }
+
+            // Tambah poin yang didapat
             if ($poinDidapat > 0) {
                 $pelanggan->increment('poin_membership', $poinDidapat);
             }

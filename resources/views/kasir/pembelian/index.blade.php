@@ -20,12 +20,19 @@
             <select name="pelanggan_id" id="pelanggan_id" class="form-control select2" required>
                 <option value="">-- Pilih Pelanggan --</option>
                 @foreach($pelanggan as $p)
-                    <option value="{{ $p->id }}" data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}">
+                    <option value="{{ $p->id }}" 
+                        data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}" 
+                        data-poin="{{ $p->poin_membership }}">
                         {{ $p->nama_pelanggan }} (Pelanggan {{ $p->tipe_pelanggan }})
                     </option>
                 @endforeach
             </select>
         </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Poin Membership</label>
+            <input type="text" id="poin_pelanggan" class="form-control" value="0" readonly>
+        </div>        
         
         <input type="hidden" id="harga_produk_json" 
                value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
@@ -97,7 +104,6 @@
             Proses Transaksi
         </button>
 
-               
     </form>
 </div>
 
@@ -222,41 +228,49 @@
             updateTotal();
         });
 
-        document.addEventListener("change", function(event) {
-            let pelangganSelect = document.querySelector("#pelanggan_id");
-            let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
-            let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
+        $(document).ready(function () {
+            $('#pelanggan_id').select2();
 
-            // Jika pelanggan berubah, update semua harga produk yang dipilih
-            if (event.target.matches("#pelanggan_id")) {
-                document.querySelectorAll(".produk-select").forEach(select => {
-                let row = select.closest("tr");
-                let produkId = select.value;
+            // Event listener untuk perubahan pelanggan di Select2
+            $('#pelanggan_id').on('select2:select', function (event) {
+                let pelangganSelect = event.params.data.element;
+                let pelangganTipe = $(pelangganSelect).data("tipe") || "tipe_3";
+                let pelangganPoin = $(pelangganSelect).data("poin") || 0;
+                let hargaProduk = JSON.parse($("#harga_produk_json").val());
 
-                let tipeHarga = pelangganTipe;
-                let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
-                let stok = hargaProduk[produkId]?.stok || 0;
+                // Update poin pelanggan saat pelanggan dipilih
+                $("#poin_pelanggan").val(pelangganPoin);
 
-                row.querySelector(".harga").dataset.harga = harga;
-                row.querySelector(".stok-terpakai").innerText = stok;
-                row.querySelector(".jumlah").setAttribute("max", stok);
+                // Update harga produk yang dipilih
+                $(".produk-select").each(function () {
+                    let row = $(this).closest("tr");
+                    let produkId = $(this).val();
+
+                    let tipeHarga = pelangganTipe;
+                    let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
+                    let stok = hargaProduk[produkId]?.stok || 0;
+
+                    row.find(".harga").data("harga", harga);
+                    row.find(".stok-terpakai").text(stok);
+                    row.find(".jumlah").attr("max", stok);
+                });
+
+                updateTotal();
             });
 
-            updateTotal();
-        }
-
-            if (event.target.matches(".jumlah")) {
-                let row = event.target.closest("tr");
-                let jumlahInput = event.target;
-                let stokTersedia = parseInt(row.querySelector(".stok-terpakai").innerText) || 0;
-                let jumlah = parseInt(jumlahInput.value) || 0;
+            // Event listener untuk jumlah produk
+            $(document).on("change", ".jumlah", function () {
+                let row = $(this).closest("tr");
+                let jumlahInput = $(this);
+                let stokTersedia = parseInt(row.find(".stok-terpakai").text()) || 0;
+                let jumlah = parseInt(jumlahInput.val()) || 0;
 
                 if (jumlah > stokTersedia) {
                     alert("Stok barang tidak cukup!");
-                    jumlahInput.value = stokTersedia;
+                    jumlahInput.val(stokTersedia);
                 }
                 updateTotal();
-            }
+            });
         });
 
         // Gunakan event `select2:select` untuk produk yang dipilih
