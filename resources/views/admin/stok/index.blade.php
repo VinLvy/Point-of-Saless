@@ -20,27 +20,30 @@
 
             {{-- Tabel Stok --}}
             <div class="table-responsive" style="border-radius: 8px;">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle table-striped">
                     <thead class="table-primary text-center text-white">
                         <tr>
-                            <th>#</th>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Jumlah Stok</th>
-                            <th>Tanggal Kedaluwarsa</th>
                             <th>Tanggal Pembelian</th>
+                            <th>Tanggal Kedaluwarsa</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($stok->sortBy('itemBarang.kode_barang') as $index => $item)
+                            @php
+                                $expiredDate = $item->expired_date ? \Carbon\Carbon::parse($item->expired_date) : null;
+                                $buyDate = $item->buy_date ? \Carbon\Carbon::parse($item->buy_date) : null;
+                            @endphp
+
                             <tr>
-                                <td class="text-center">{{ $index + 1 }}</td>
                                 <td class="fw-bold">{{ $item->itemBarang->kode_barang }}</td>
                                 <td>{{ $item->itemBarang->nama_barang }}</td>
                                 <td class="text-center text-success fw-bold">{{ $item->jumlah_stok }}</td>
-                                <td class="text-center">{{ \Carbon\Carbon::parse($item->expired_date)->format('d M Y') }}</td>
-                                <td class="text-center">{{ \Carbon\Carbon::parse($item->buy_date)->format('d M Y') }}</td>
+                                <td class="text-center">{{ $buyDate ? $buyDate->format('d M Y') : '-' }}</td>
+                                <td class="text-center">{{ $expiredDate ? $expiredDate->format('d M Y') : '-' }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil-square"></i>
@@ -52,7 +55,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">Belum ada data stok.</td>
+                                <td colspan="6" class="text-center text-muted">Belum ada data stok.</td>
                             </tr>
                         @endforelse
                     </tbody>

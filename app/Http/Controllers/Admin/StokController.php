@@ -14,6 +14,7 @@ class StokController extends Controller
     public function index()
     {
         $this->hapusStokKadaluarsa();
+        $this->hapusStokHabis();
         $stok = Stok::with('itemBarang')->get();
         return view('admin.stok.index', compact('stok'));
     }
@@ -99,6 +100,18 @@ class StokController extends Controller
         $expiredStok = Stok::where('expired_date', '<', $today)->get();
 
         foreach ($expiredStok as $stok) {
+            $oldData = $stok->toArray();
+            $stok->delete();
+
+            $this->logActivity('hapus', 'stok', $stok->id, $oldData, null);
+        }
+    }
+
+    private function hapusStokHabis()
+    {
+        $stokHabis = Stok::where('jumlah_stok', '<=', 0)->get();
+
+        foreach ($stokHabis as $stok) {
             $oldData = $stok->toArray();
             $stok->delete();
 

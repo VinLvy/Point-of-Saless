@@ -58,6 +58,9 @@
                         <a href="{{ route('admin.laporan.show', $item->id) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-eye"></i> Detail
                         </a>
+                        <a href="{{ route('admin.laporan.nota', $item->kode_transaksi) }}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-receipt"></i> Nota
+                        </a>
                     </td>
                 </tr>
                 @empty

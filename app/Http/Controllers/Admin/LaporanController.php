@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LaporanPenjualan;
+use App\Models\DetailLaporanPenjualan;
 use Illuminate\Http\Request;
 
 class LaporanController extends Controller
@@ -31,7 +32,6 @@ class LaporanController extends Controller
         return view('admin.laporan.index', compact('laporan', 'startDate', 'endDate', 'search'));
     }
 
-
     public function show($id)
     {
         // Ambil detail laporan penjualan berdasarkan ID dengan relasi pelanggan dan detail penjualan
@@ -39,5 +39,18 @@ class LaporanController extends Controller
             ->findOrFail($id);
 
         return view('admin.laporan.detail', compact('laporan'));
+    }
+
+    public function nota($kode_transaksi)
+    {
+        // Ambil laporan berdasarkan kode transaksi dengan relasi pelanggan
+        $laporan = LaporanPenjualan::where('kode_transaksi', $kode_transaksi)
+            ->with(['pelanggan'])
+            ->firstOrFail();
+
+        // Ambil detail transaksi berdasarkan laporan penjualan
+        $detailTransaksi = DetailLaporanPenjualan::where('laporan_penjualan_id', $laporan->id)->get();
+
+        return view('admin.laporan.nota', compact('laporan', 'detailTransaksi'));
     }
 }
