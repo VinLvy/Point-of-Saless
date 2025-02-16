@@ -13,6 +13,7 @@ class StokController extends Controller
 {
     public function index()
     {
+        $this->hapusStokKadaluarsa();
         $stok = Stok::with('itemBarang')->get();
         return view('admin.stok.index', compact('stok'));
     }
@@ -74,7 +75,7 @@ class StokController extends Controller
 
         $stok = Stok::findOrFail($id);
         $oldData = $stok->toArray();
-        
+
         $stok->update($request->only(['item_id', 'jumlah_stok', 'expired_date', 'buy_date']));
         $this->logActivity('edit', 'stok', $stok->id, $oldData, $stok->toArray());
 
@@ -86,10 +87,23 @@ class StokController extends Controller
         $stok = Stok::findOrFail($id);
         $oldData = $stok->toArray();
         $stok->delete();
-        
+
         $this->logActivity('hapus', 'stok', $id, $oldData, null);
-        
+
         return redirect()->route('admin.stok.index')->with('success', 'Stok berhasil dihapus.');
+    }
+
+    private function hapusStokKadaluarsa()
+    {
+        $today = now()->toDateString();
+        $expiredStok = Stok::where('expired_date', '<', $today)->get();
+
+        foreach ($expiredStok as $stok) {
+            $oldData = $stok->toArray();
+            $stok->delete();
+
+            $this->logActivity('hapus', 'stok', $stok->id, $oldData, null);
+        }
     }
 
     private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)

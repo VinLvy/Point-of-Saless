@@ -35,7 +35,7 @@
             <!-- Tabel Data Penjualan -->
             <div class="table-responsive" style="border-radius: 8px;">
                 <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark text-center text-white">
+                    <thead class="table-secondary text-center text-white">
                         <tr>
                             <th>Kode Transaksi</th>
                             <th>Nama Barang</th>
@@ -68,7 +68,7 @@
                             </tr>
                         @endforelse
                     </tbody>  
-                    <tfoot class="table-dark text-white">
+                    <tfoot class="table-secondary text-white">
                         <tr>
                             <td colspan="2" class="text-center fw-bold">Total</td>
                             <td class="text-center fw-bold">{{ $totalJumlah }}</td>
