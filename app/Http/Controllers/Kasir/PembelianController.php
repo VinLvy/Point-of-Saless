@@ -77,9 +77,9 @@ class PembelianController extends Controller
             } elseif ($totalBelanja >= 100000 && $pelanggan->poin_membership >= 10000) {
                 $diskonPersen = 10;
                 $poinDipakai = 10000;
-            } elseif ($totalBelanja >= 50000 && $pelanggan->poin_membership >= 5000) {
-                $diskonPersen = 5;
-                $poinDipakai = 5000;
+            } elseif ($totalBelanja >= 500000 && $pelanggan->poin_membership >= 30000) {
+                $diskonPersen = 30;
+                $poinDipakai = 30000;
             }
 
             $diskonNominal = ($diskonPersen / 100) * $totalBelanja;

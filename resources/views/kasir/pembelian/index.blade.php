@@ -62,19 +62,20 @@
             <label for="total_bayar_display" class="form-label">Total Harga</label>
             <span id="total_bayar_display" class="form-control">Rp 0</span>
         </div>
-
+        
         <div class="mt-3">
             <label for="diskon" class="form-label">Diskon (%) (Opsional)</label>
             <div class="input-group">
-                <input type="text" name="diskon" id="diskon" class="form-control" min="0" max="100" disabled>
-                <button type="button" id="konfirmasi_diskon" class="btn btn-primary">Terapkan</button>
+                <select name="diskon" id="diskon" class="form-control" disabled>
+                    <option value="0">Pilih Diskon</option>
+                </select>
             </div>
         </div>
         
         <div class="mt-3">
             <label for="total_diskon_display" class="form-label">Total Diskon</label>
             <span id="total_diskon_display" class="form-control">Rp 0</span>
-        </div>
+        </div>        
         
         <div class="mt-3">
             <label for="total_akhir_display" class="form-label">Total Akhir (PPN 12%)</label>
@@ -150,7 +151,7 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         let hargaProduk = JSON.parse(document.querySelector("#harga_produk_json").value);
-        let diskonInput = document.querySelector("#diskon");
+        let diskonSelect = document.querySelector("#diskon");
         let konfirmasiDiskonBtn = document.querySelector("#konfirmasi_diskon");
 
         function formatRupiah(angka) {
@@ -163,7 +164,25 @@
 
         function checkProduk() {
             let adaProduk = document.querySelector("#produk-list tr") !== null;
-            diskonInput.disabled = !adaProduk;
+            diskonSelect.disabled = !adaProduk;
+        }
+
+        function updateDiskonOptions(totalBayar, poinMembership) {
+            diskonSelect.innerHTML = '<option value="0">Pilih Diskon</option>';
+
+            if (totalBayar >= 100000 && poinMembership >= 10000) {
+                diskonSelect.innerHTML += '<option value="10">Diskon 10% (100k + 10k poin)</option>';
+            }
+            if (totalBayar >= 300000 && poinMembership >= 20000) {
+                diskonSelect.innerHTML += '<option value="20">Diskon 20% (300k + 20k poin)</option>';
+            }
+            if (totalBayar >= 500000 && poinMembership >= 30000) {
+                diskonSelect.innerHTML += '<option value="30">Diskon 30% (500k + 30k poin)</option>';
+            }
+
+            console.log("Dropdown diskon setelah update:", diskonSelect.innerHTML); // Cek isi dropdown
+
+            diskonSelect.disabled = diskonSelect.options.length <= 1;
         }
 
         function updateTotal() {
@@ -178,11 +197,31 @@
                 totalBayar += total;
             });
 
-            let diskonPersen = parseFloat(document.querySelector("#diskon").value) || 0;
+            let pelangganSelect = document.querySelector("#pelanggan_id");
+            let poinMembership = parseFloat(pelangganSelect.selectedOptions[0]?.dataset.poin) || 0;
+
+            // Simpan nilai diskon yang sudah dipilih sebelum memperbarui opsi
+            let selectedDiskon = diskonSelect.value;  
+
+            // Update opsi diskon berdasarkan totalBayar dan poinMembership
+            updateDiskonOptions(totalBayar, poinMembership);
+
+            // Kembalikan nilai diskon yang sebelumnya dipilih (jika masih ada dalam opsi)
+            if ([...diskonSelect.options].some(opt => opt.value === selectedDiskon)) {
+                diskonSelect.value = selectedDiskon;
+            }
+
+            // Ambil nilai diskon setelah update dropdown
+            let diskonPersen = parseFloat(diskonSelect.value) || 0;
+            console.log("Diskon Persen:", diskonPersen);
+
             let diskonNominal = (diskonPersen / 100) * totalBayar;
             let totalSetelahDiskon = totalBayar - diskonNominal;
+            let totalAkhir = totalSetelahDiskon * 1.12; // Tambahkan pajak 12%
 
-            let totalAkhir = totalSetelahDiskon * 1.12;
+            // Ambil poin yang digunakan untuk diskon
+            let poinDipakai = parseFloat(diskonSelect.selectedOptions[0]?.dataset.poin) || 0;
+            let sisaPoin = poinMembership - poinDipakai;
 
             document.querySelector("#total_bayar_display").innerText = formatRupiah(totalBayar);
             document.querySelector("#total_diskon_display").innerText = formatRupiah(diskonNominal);
@@ -213,18 +252,9 @@
             }
         });
 
-        konfirmasiDiskonBtn.addEventListener("click", function () {
-            let adaProduk = document.querySelector("#produk-list tr") !== null;
-            if (!adaProduk) {
-                alert("Tambahkan produk terlebih dahulu sebelum memberikan diskon!");
-                return;
-            }
-
-            let diskonPersen = parseFloat(diskonInput.value) || 0;
-            if (diskonPersen < 0 || diskonPersen > 100) {
-                alert("Diskon harus antara 0% - 100%");
-                return;
-            }
+        document.querySelector("#diskon").addEventListener("change", function () {
+            let diskonPersen = parseFloat(this.value) || 0;
+            console.log(diskonPersen); // Harusnya mencetak nilai yang dipilih dari dropdown
             updateTotal();
         });
 
@@ -334,7 +364,6 @@
 
         $('#pelanggan_id').on('select2:select', function () {
             document.querySelector("#produk-list").innerHTML = "";
-            document.querySelector("#diskon").value = "";
             document.querySelector("#diskon").disabled = true;
             document.querySelector("#total_diskon_display").innerText = "";
             document.querySelector("#total_akhir_display").innerText = "";
