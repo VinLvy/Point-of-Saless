@@ -27,14 +27,15 @@
                             <th>Kode</th>
                             <th>Nama Barang</th>
                             <th>Kategori</th>
+                            <th>Satuan</th>
                             <th>Harga Beli</th>
                             <th>Harga Jual 1</th>
                             <th>Harga Jual 2</th>
                             <th>Harga Jual 3</th>
-                            <th>Stok</th>
                             <th>Min. Stok</th>
-                            <th>Buy Date</th>
-                            <th>Exp. Date</th>
+                            <th>Stok</th>
+                            {{-- <th>Buy Date</th>
+                            <th>Exp. Date</th> --}}
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -50,16 +51,17 @@
                                 <td class="fw-bold">{{ $item->kode_barang }}</td>
                                 <td>{{ $item->nama_barang }}</td>
                                 <td>{{ $item->kategori->nama_kategori }}</td>
+                                <td>{{ $item->satuan }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_beli, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_1, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_2, 0, ',', '.') }}</td>
                                 <td class="text-end">Rp{{ number_format($item->harga_jual_3, 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $item->minimal_stok }}</td>
                                 <td class="text-center {{ $totalStok <= $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
                                     {{ $totalStok }}
                                 </td>
-                                <td class="text-center">{{ $item->minimal_stok }}</td>
-                                <td class="text-center">{{ $buyDateTerlama }}</td>
-                                <td class="text-center">{{ $expDateTercepat }}</td>
+                                {{-- <td class="text-center">{{ $buyDateTerlama }}</td>
+                                <td class="text-center">{{ $expDateTercepat }}</td> --}}
                                 <td class="text-center">
                                     <a href="{{ route('admin.barang.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil-square"></i>

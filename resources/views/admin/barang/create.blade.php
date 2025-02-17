@@ -38,17 +38,20 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Harga Beli</label>
-                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required>
+                            <label class="form-label">Satuan</label>
+                            <input type="text" name="satuan" class="form-control" placeholder="Contoh: kg, pcs, liter" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Minimal Stok</label>
                             <input type="number" name="minimal_stok" class="form-control" required>
                         </div>
                     </div>
-                    
 
                     <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Harga Beli</label>
+                            <input type="number" name="harga_beli" id="harga_beli" class="form-control" required>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Harga Jual 1 (+10%)</label>
                             <input type="number" name="harga_jual_1" id="harga_jual_1" class="form-control" readonly>

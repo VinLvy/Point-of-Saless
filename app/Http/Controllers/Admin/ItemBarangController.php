@@ -28,6 +28,7 @@ class ItemBarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255|unique:item_barang,nama_barang,NULL,id,deleted_at,NULL',
+            'satuan' => 'required|string|max:50',
             'harga_beli' => 'required|integer|min:0',
             'minimal_stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_barang,id',
@@ -46,6 +47,7 @@ class ItemBarangController extends Controller
         $barang = ItemBarang::create([
             'kode_barang' => $nextKode,
             'nama_barang' => $request->nama_barang,
+            'satuan' => $request->satuan,
             'harga_beli' => $harga_beli,
             'harga_jual_1' => $harga_jual_1,
             'harga_jual_2' => $harga_jual_2,
@@ -70,6 +72,7 @@ class ItemBarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255|unique:item_barang,nama_barang,' . $id,
+            'satuan' => 'required|string|max:50',
             'harga_beli' => 'required|integer|min:0',
             'minimal_stok' => 'required|integer|min:0',
             'kategori_id' => 'required|exists:kategori_barang,id',
@@ -87,6 +90,7 @@ class ItemBarangController extends Controller
 
         $barang->update([
             'nama_barang' => $request->nama_barang,
+            'satuan' => $request->satuan,
             'harga_beli' => $harga_beli,
             'harga_jual_1' => $harga_jual_1,
             'harga_jual_2' => $harga_jual_2,
