@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.kasir')
 
 @section('content')
 <div class="container mt-4">
@@ -59,7 +59,7 @@
     </div>
 
     <div class="text-center mt-4 d-print-none">
-        <a href="{{ route('admin.laporan.index') }}" class="btn btn-secondary px-4 py-2">
+        <a href="{{ route('kasir.riwayat.index') }}" class="btn btn-secondary px-4 py-2">
             Kembali ke Laporan
         </a>
     </div>

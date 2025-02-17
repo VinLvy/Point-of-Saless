@@ -55,6 +55,8 @@ Route::middleware(['auth', 'role:kasir', 'prevent-back-history'])->prefix('kasir
     Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
     Route::get('/nota/{kode_transaksi}', [PembelianController::class, 'nota'])->name('pembelian.nota');
     Route::resource('member', MemberController::class);
-    Route::resource('riwayat', RiwayatController::class);
+    Route::get('riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+    Route::get('riwayat/nota/{kode_transaksi}', [RiwayatController::class, 'nota'])->name('riwayat.nota');
+    Route::get('riwayat/{id}', [RiwayatController::class, 'show'])->name('riwayat.show');
     Route::resource('barang', BarangController::class);
 });
