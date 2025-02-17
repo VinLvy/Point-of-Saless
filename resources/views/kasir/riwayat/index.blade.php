@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-3">
-    <h1 class="mb-0"><i class="bi bi-receipt"></i> Riwayat Penjualan</h1>
+    <h1 class="mb-0"><i class="bi bi-receipt"></i> Riwayat Transaksi</h1>
 
     <form method="GET" action="{{ route('kasir.riwayat.index') }}" class="d-print-none">
         <div class="row mb-3">
