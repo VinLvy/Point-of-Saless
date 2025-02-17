@@ -2,8 +2,6 @@
 
 @section('content')
 <div class="container mt-4">
-    {{-- <h1 class="my-4 text-center">Edit Data Petugas</h1> --}}
-
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -35,9 +33,15 @@
                 
                 <div class="mb-3">
                     <label class="form-label">Password (Opsional)</label>
-                    <input type="password" name="password" class="form-control" placeholder="Kosongkan jika tidak ingin mengganti password">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password">
                 </div>
                 
+                <div class="mb-3">
+                    <label class="form-label">Konfirmasi Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Masukkan ulang password">
+                    <small id="password-match" class="text-danger d-none">Password tidak cocok!</small>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">Role</label>
                     <input type="text" class="form-control" value="Kasir" disabled>
@@ -48,7 +52,7 @@
                     <a href="{{ route('admin.petugas.index') }}" class="btn btn-secondary w-50">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
-                    <button type="submit" class="btn btn-primary w-50">
+                    <button type="submit" id="submit-button" class="btn btn-primary w-50">
                         <i class="bi bi-save"></i> Simpan Perubahan
                     </button>
                 </div>
@@ -56,4 +60,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordField = document.getElementById('password');
+        const confirmPasswordField = document.getElementById('password_confirmation');
+        const passwordMatchText = document.getElementById('password-match');
+        const submitButton = document.getElementById('submit-button');
+
+        function checkPasswordMatch() {
+            if (passwordField.value !== confirmPasswordField.value) {
+                passwordMatchText.classList.remove('d-none');
+                submitButton.disabled = true;
+            } else {
+                passwordMatchText.classList.add('d-none');
+                submitButton.disabled = false;
+            }
+
+            // Jika password kosong atau tidak diubah, enable tombol simpan perubahan
+            if (passwordField.value === '' && confirmPasswordField.value === '') {
+                submitButton.disabled = false;
+            }
+        }
+
+        passwordField.addEventListener('input', checkPasswordMatch);
+        confirmPasswordField.addEventListener('input', checkPasswordMatch);
+    });
+</script>
 @endsection
