@@ -16,21 +16,21 @@ return new class extends Migration {
             $table->softDeletes(); // Soft Delete
         });
 
-        // Tabel item barang
         Schema::create('item_barang', function (Blueprint $table) {
             $table->id();
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');
+            $table->string('satuan');
             $table->integer('harga_beli');
             $table->integer('harga_jual_1'); // HPP + 10%
             $table->integer('harga_jual_2'); // HPP + 20%
             $table->integer('harga_jual_3'); // HPP + 30%
-            $table->integer('harga_per_pack'); // Harga jual per pack
+            $table->integer('harga_per_pack');
             $table->integer('minimal_stok');
             $table->foreignId('kategori_id')->constrained('kategori_barang')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes(); // Soft Delete
-        });
+        });        
 
         // Tabel stok barang
         Schema::create('stok', function (Blueprint $table) {

@@ -14,6 +14,7 @@ class ItemBarang extends Model
     protected $fillable = [
         'kode_barang',
         'nama_barang',
+        'satuan',
         'harga_beli',
         'harga_jual_1',
         'harga_jual_2',
@@ -21,7 +22,7 @@ class ItemBarang extends Model
         'harga_per_pack',
         'minimal_stok',
         'kategori_id',
-    ];
+    ];    
 
     protected static function boot()
     {
