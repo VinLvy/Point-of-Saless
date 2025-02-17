@@ -5,61 +5,64 @@
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="bi bi-inboxes"></i> Daftar Stok Barang</h4>
-            <a href="{{ route('admin.stok.create') }}" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-circle"></i> Tambah Stok
-            </a>
+            <div>
+                <button onclick="window.print()" class="btn btn-secondary btn-sm no-print">
+                    <i class="bi bi-printer"></i> Cetak Laporan
+                </button>
+                <a href="{{ route('admin.stok.create') }}" class="btn btn-success btn-sm no-print">
+                    <i class="bi bi-plus-circle"></i> Tambah Stok
+                </a>
+            </div>
         </div>
         <div class="card-body">
             {{-- Alert pesan sukses --}}
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-success alert-dismissible fade show no-print" role="alert">
                     <i class="bi bi-check-circle"></i> {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             {{-- Tabel Stok --}}
-<div class="table-responsive" style="border-radius: 8px;">
-    <table class="table table-bordered align-middle" id="stokTable">
-        <thead class="table-primary text-center text-white">
-            <tr>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Jumlah Stok</th>
-                <th>Tanggal Pembelian</th>
-                <th>Tanggal Kedaluwarsa</th>
-                <th>Sisa Hari</th> <!-- Tambahkan kolom baru -->
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($stok->sortBy('itemBarang.kode_barang') as $index => $item)
-                <tr data-expired-date="{{ $item->expired_date ? date('Y-m-d', strtotime($item->expired_date)) : '' }}">
-                    <td class="fw-bold">{{ $item->itemBarang->kode_barang }}</td>
-                    <td>{{ $item->itemBarang->nama_barang }}</td>
-                    <td class="text-center text-success fw-bold">{{ $item->jumlah_stok }}</td>
-                    <td class="text-center">{{ $item->buy_date ? date('d M Y', strtotime($item->buy_date)) : '-' }}</td>
-                    <td class="text-center">{{ $item->expired_date ? date('d M Y', strtotime($item->expired_date)) : '-' }}</td>
-                    <td class="text-center days-diff">
-                        {{-- Tempat sisa hari yang akan diisi oleh JavaScript --}}
-                    </td>                    
-                    <td class="text-center">
-                        <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" data-nama="{{ $item->itemBarang->nama_barang }}" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted">Belum ada data stok.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+            <div class="table-responsive" style="border-radius: 8px;">
+                <table class="table table-bordered align-middle" id="stokTable">
+                    <thead class="table-primary text-center text-white">
+                        <tr>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah Stok</th>
+                            <th>Tanggal Pembelian</th>
+                            <th>Tanggal Kedaluwarsa</th>
+                            <th>Sisa Hari</th>
+                            <th class="no-print">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($stok->sortBy('itemBarang.kode_barang') as $index => $item)
+                            <tr data-expired-date="{{ $item->expired_date ? date('Y-m-d', strtotime($item->expired_date)) : '' }}">
+                                <td class="fw-bold">{{ $item->itemBarang->kode_barang }}</td>
+                                <td>{{ $item->itemBarang->nama_barang }}</td>
+                                <td class="text-center text-success fw-bold">{{ $item->jumlah_stok }}</td>
+                                <td class="text-center">{{ $item->buy_date ? date('d M Y', strtotime($item->buy_date)) : '-' }}</td>
+                                <td class="text-center">{{ $item->expired_date ? date('d M Y', strtotime($item->expired_date)) : '-' }}</td>
+                                <td class="text-center days-diff"></td>
+                                <td class="text-center no-print">
+                                    <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" data-nama="{{ $item->itemBarang->nama_barang }}" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Belum ada data stok.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -86,6 +89,34 @@
         </div>
     </div>
 </div>
+
+{{-- CSS untuk Print --}}
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+    .table-responsive {
+        overflow: visible !important; /* Pastikan tabel tidak tersembunyi */
+    }
+
+    table {
+        width: 100% !important; /* Pastikan tabel mengisi seluruh halaman */
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+
+    th, td {
+        word-break: break-word;
+    }
+
+    @page {
+        size: landscape; /* Mengubah orientasi halaman ke landscape */
+        margin: 10mm; /* Mengurangi margin agar tabel lebih muat */
+    }
+}
+</style>
 
 {{-- Script --}}
 <script>

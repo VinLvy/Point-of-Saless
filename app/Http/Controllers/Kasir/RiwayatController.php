@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\LaporanPenjualan;
 use App\Models\DetailLaporanPenjualan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class RiwayatController extends Controller
 {
@@ -17,14 +19,17 @@ class RiwayatController extends Controller
         $startDate = date('Y-m-d 00:00:00', strtotime($startDate));
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
+        $petugasId = Auth::id(); // ID petugas yang sedang login
+
         $riwayat = LaporanPenjualan::with(['pelanggan', 'petugas'])
+            ->where('petugas_id', $petugasId) // Filter berdasarkan petugas yang login
             ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('kasir.riwayat.index', compact('riwayat', 'startDate', 'endDate'));
     }
-
+    
     public function nota($kode_transaksi)
     {
         $laporan = LaporanPenjualan::where('kode_transaksi', $kode_transaksi)
