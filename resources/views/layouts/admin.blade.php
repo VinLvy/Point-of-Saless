@@ -109,6 +109,7 @@
     <div class="sidebar">
         <h2><i class="bi bi-speedometer2"></i> Admin Panel</h2>
         <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
+        <a href="{{ route('admin.transaksi.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
         <a href="{{ route('admin.petugas.index') }}"><i class="bi bi-person-badge"></i> Petugas</a>
         <a href="{{ route('admin.pelanggan.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
         <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan Transaksi</a>

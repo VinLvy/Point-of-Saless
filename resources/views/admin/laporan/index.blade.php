@@ -36,6 +36,7 @@
                 <tr>
                     <th>#</th>
                     <th>Kode Transaksi</th>
+                    <th>Petugas</th>
                     <th>Pelanggan</th>
                     <th>Total Belanja</th>
                     <th>Diskon</th>
@@ -49,6 +50,7 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td><span class="badge bg-primary">{{ $item->kode_transaksi ?? 'N/A' }}</span></td>
+                    <td>{{ $item->petugas->nama_petugas }}</td>
                     <td>{{ $item->pelanggan->nama_pelanggan ?? 'N/A' }}</td>
                     <td class="text-success fw-bold">Rp {{ number_format($item->total_belanja, 0, ',', '.') }}</td>
                     <td class="text-danger fw-bold">{{ number_format($item->diskon, 0, ',', '.') }}%</td>

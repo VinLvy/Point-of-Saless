@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\KategoriBarangController;
 use App\Http\Controllers\Admin\ItemBarangController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\StokController;
+use App\Http\Controllers\Admin\TransaksiController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\Kasir\PembelianController;
 use App\Http\Controllers\Kasir\MemberController;
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefi
     Route::resource('barang', ItemBarangController::class);
     Route::resource('logs', ActivityLogController::class);
     Route::resource('terjual', LaporanBarangTerjualController::class);
+    Route::get('transaksi', [TransaksiController::class, 'create'])->name('transaksi.index');
+    Route::post('transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/nota/{kode_transaksi}', [TransaksiController::class, 'nota'])->name('transaksi.nota');
     Route::resource('stok', StokController::class);
 });
 
@@ -49,8 +53,8 @@ Route::middleware(['auth', 'role:kasir', 'prevent-back-history'])->prefix('kasir
     Route::get('/dashboard', [KasirController::class, 'dashboard'])->name('dashboard');
     Route::get('pembelian', [PembelianController::class, 'create'])->name('pembelian.index');
     Route::post('pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::get('/nota/{kode_transaksi}', [PembelianController::class, 'nota'])->name('pembelian.nota');
     Route::resource('member', MemberController::class);
     Route::resource('riwayat', RiwayatController::class);
     Route::resource('barang', BarangController::class);
-    Route::get('/nota/{kode_transaksi}', [PembelianController::class, 'nota'])->name('pembelian.nota');
 });
