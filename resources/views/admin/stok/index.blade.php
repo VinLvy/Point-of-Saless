@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-inboxes""></i> Daftar Stok Barang</h4>
+            <h4 class="mb-0"><i class="bi bi-inboxes"></i> Daftar Stok Barang</h4>
             <a href="{{ route('admin.stok.create') }}" class="btn btn-success btn-sm">
                 <i class="bi bi-plus-circle"></i> Tambah Stok
             </a>
@@ -19,48 +19,47 @@
             @endif
 
             {{-- Tabel Stok --}}
-            <div class="table-responsive" style="border-radius: 8px;">
-                <table class="table table-hover table-bordered align-middle table-striped">
-                    <thead class="table-primary text-center text-white">
-                        <tr>
-                            <th>Kode Barang</th>
-                            <th>Nama Barang</th>
-                            <th>Jumlah Stok</th>
-                            <th>Tanggal Pembelian</th>
-                            <th>Tanggal Kedaluwarsa</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($stok->sortBy('itemBarang.kode_barang') as $index => $item)
-                            @php
-                                $expiredDate = $item->expired_date ? \Carbon\Carbon::parse($item->expired_date) : null;
-                                $buyDate = $item->buy_date ? \Carbon\Carbon::parse($item->buy_date) : null;
-                            @endphp
-
-                            <tr>
-                                <td class="fw-bold">{{ $item->itemBarang->kode_barang }}</td>
-                                <td>{{ $item->itemBarang->nama_barang }}</td>
-                                <td class="text-center text-success fw-bold">{{ $item->jumlah_stok }}</td>
-                                <td class="text-center">{{ $buyDate ? $buyDate->format('d M Y') : '-' }}</td>
-                                <td class="text-center">{{ $expiredDate ? $expiredDate->format('d M Y') : '-' }}</td>
-                                <td class="text-center">
-                                    <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" data-nama="{{ $item->itemBarang->nama_barang }}" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted">Belum ada data stok.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+<div class="table-responsive" style="border-radius: 8px;">
+    <table class="table table-bordered align-middle" id="stokTable">
+        <thead class="table-primary text-center text-white">
+            <tr>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                <th>Jumlah Stok</th>
+                <th>Tanggal Pembelian</th>
+                <th>Tanggal Kedaluwarsa</th>
+                <th>Sisa Hari</th> <!-- Tambahkan kolom baru -->
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($stok->sortBy('itemBarang.kode_barang') as $index => $item)
+                <tr data-expired-date="{{ $item->expired_date ? date('Y-m-d', strtotime($item->expired_date)) : '' }}">
+                    <td class="fw-bold">{{ $item->itemBarang->kode_barang }}</td>
+                    <td>{{ $item->itemBarang->nama_barang }}</td>
+                    <td class="text-center text-success fw-bold">{{ $item->jumlah_stok }}</td>
+                    <td class="text-center">{{ $item->buy_date ? date('d M Y', strtotime($item->buy_date)) : '-' }}</td>
+                    <td class="text-center">{{ $item->expired_date ? date('d M Y', strtotime($item->expired_date)) : '-' }}</td>
+                    <td class="text-center days-diff">
+                        {{-- Tempat sisa hari yang akan diisi oleh JavaScript --}}
+                    </td>                    
+                    <td class="text-center">
+                        <a href="{{ route('admin.stok.edit', $item->id) }}" class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" data-nama="{{ $item->itemBarang->nama_barang }}" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Belum ada data stok.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
         </div>
     </div>
 </div>
@@ -91,17 +90,45 @@
 {{-- Script --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function () {
-                const id = this.getAttribute('data-id');
-                const nama = this.getAttribute('data-nama');
-                document.getElementById('namaBarang').textContent = nama;
-                document.getElementById('deleteForm').action = `/admin/stok/${id}`;
-            });
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const nama = this.getAttribute('data-nama');
+            document.getElementById('namaBarang').textContent = nama;
+            document.getElementById('deleteForm').action = `/admin/stok/${id}`;
         });
     });
 
-    // Auto-hide alert
+    // Periksa setiap baris tabel stok
+    document.querySelectorAll("#stokTable tbody tr").forEach(row => {
+        const daysDiffCell = row.querySelector(".days-diff");
+
+        if (daysDiffCell) {
+            const expiredDate = row.getAttribute("data-expired-date");
+
+            if (expiredDate) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const expDate = new Date(expiredDate);
+                expDate.setHours(0, 0, 0, 0);
+
+                const timeDiff = expDate.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                // Set nilai dalam kolom "Sisa Hari"
+                daysDiffCell.textContent = daysDiff >= 0 ? daysDiff + " hari" : "Kedaluwarsa";
+
+                // Jika tanggal kedaluwarsa dalam 7 hari ke depan, ubah warna baris
+                if (daysDiff <= 7) {
+                    row.style.backgroundColor = "#dc3545"; // Merah
+                    row.style.color = "white";
+                }
+            }
+        }
+    });
+
+    // Auto-hide alert setelah 3 detik
     setTimeout(() => {
         let alert = document.querySelector('.alert');
         if (alert) {
@@ -109,5 +136,7 @@
             setTimeout(() => alert.remove(), 500);
         }
     }, 3000);
+});
+
 </script>
 @endsection

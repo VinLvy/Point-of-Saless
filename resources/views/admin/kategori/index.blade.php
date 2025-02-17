@@ -151,9 +151,6 @@
                 document.getElementById("editNamaKategori").value = nama;
             });
         });
-    });
-
-    document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".btn-danger[data-bs-target='#deleteModal']").forEach(button => {
             button.addEventListener("click", function() {
                 let id = this.getAttribute("data-id");

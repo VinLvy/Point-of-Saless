@@ -27,11 +27,17 @@ class PetugasController extends Controller
         $request->validate([
             'nama_petugas' => 'required|string|max:255|unique:petugas,nama_petugas',
             'email' => 'required|email|unique:petugas,email',
-            'password' => 'required|min:6',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
+            ],
             'role' => 'required|in:kasir',
         ], [
             'nama_petugas.unique' => 'Nama petugas sudah digunakan. Silakan gunakan nama lain.',
-            'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.'
+            'email.unique' => 'Email sudah digunakan. Silakan gunakan email lain.',
+            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, serta angka.'
         ]);
 
 
@@ -59,10 +65,18 @@ class PetugasController extends Controller
         $petugas = Petugas::findOrFail($id);
 
         $request->validate([
-            'nama_petugas' => 'required|string|max:255',
+            'nama_petugas' => 'required|string|max:255|unique:petugas,nama_petugas,' . $petugas->id,
             'email' => 'required|email|unique:petugas,email,' . $petugas->id,
-            'password' => 'nullable|min:6',
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
+            ],
             'role' => 'required|in:kasir',
+        ], [
+            'nama_petugas.unique' => 'Nama petugas sudah digunakan. Silakan gunakan nama lain.',
+            'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, serta angka.'
         ]);
 
         $oldData = $petugas->toArray();

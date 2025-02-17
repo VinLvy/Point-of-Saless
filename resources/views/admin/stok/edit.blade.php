@@ -43,12 +43,12 @@
 
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Tanggal Kedaluwarsa</label>
-                            <input type="date" name="expired_date" class="form-control" value="{{ $stok->expired_date }}" required>
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label">Tanggal Pembelian</label>
                             <input type="date" name="buy_date" class="form-control" value="{{ $stok->buy_date }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Kedaluwarsa</label>
+                            <input type="date" name="expired_date" class="form-control" value="{{ $stok->expired_date }}" required>
                         </div>
                     </div>
                 </div>
