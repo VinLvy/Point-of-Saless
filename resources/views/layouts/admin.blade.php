@@ -112,8 +112,8 @@
         <a href="{{ route('admin.transaksi.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
         <a href="{{ route('admin.petugas.index') }}"><i class="bi bi-person-badge"></i> Petugas</a>
         <a href="{{ route('admin.pelanggan.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
-        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan Transaksi</a>
-        <a href="{{ route('admin.terjual.index') }}"><i class="bi bi-file-earmark-spreadsheet"></i> Laporan Penjualan</a>
+        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-receipt"></i> Laporan Transaksi</a>
+        <a href="{{ route('admin.terjual.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan Penjualan</a>
         <a href="{{ route('admin.kategori.index') }}"><i class="bi bi bi-journal-check"></i> Kategori Barang</a>
         <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
         <a href="{{ route('admin.stok.index') }}"><i class="bi bi-inboxes"></i> Stok</a>

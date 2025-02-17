@@ -30,7 +30,7 @@ class LaporanBarangTerjualController extends Controller
         }
         $query->orderBy('created_at', 'desc');
 
-        $laporan = $query->paginate(10);
+        $laporan = $query->get();
 
         return view('admin.terjual.index', compact('laporan'));
     }

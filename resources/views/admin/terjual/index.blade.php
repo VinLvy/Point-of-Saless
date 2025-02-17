@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="bi bi-receipt"></i> Laporan Barang Terjual</h4>
+            <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> Laporan Barang Terjual</h4>
             <button onclick="window.print()" class="btn btn-light btn-sm d-print-none">
                 <i class="bi bi-printer"></i> Print Laporan
             </button>
