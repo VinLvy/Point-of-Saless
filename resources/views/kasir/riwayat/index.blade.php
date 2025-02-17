@@ -26,6 +26,7 @@
                 <tr>
                     <th>No.</th>
                     <th>Kode Transaksi</th>
+                    <th>Petugas</th>
                     <th>Pelanggan</th>
                     <th>Total Belanja</th>
                     <th>Diskon</th>
@@ -39,6 +40,7 @@
                 <tr>
                     <td>{{ $riwayat->firstItem() + $index }}</td>
                     <td>{{ $item->kode_transaksi ?? 'N/A' }}</td>
+                    <td>{{ $item->petugas->nama_petugas }}</td>
                     <td>{{ $item->pelanggan->nama_pelanggan ?? 'N/A' }}</td>
                     <td>{{ number_format($item->total_belanja, 0, ',', '.') }}</td>
                     <td>{{ number_format($item->diskon, 0, ',', '.') }}%</td>

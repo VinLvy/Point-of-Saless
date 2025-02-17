@@ -169,20 +169,26 @@
 
         function updateDiskonOptions(totalBayar, poinMembership) {
             diskonSelect.innerHTML = '<option value="0">Pilih Diskon</option>';
+            let diskonTersedia = false;
 
             if (totalBayar >= 100000 && poinMembership >= 10000) {
-                diskonSelect.innerHTML += '<option value="10">Diskon 10% (100k + 10k poin)</option>';
+                diskonSelect.innerHTML += '<option value="10">Diskon 10% (Minimal belanja 100k + Gunakan 10k poin)</option>';
+                diskonTersedia = true;
             }
             if (totalBayar >= 300000 && poinMembership >= 20000) {
-                diskonSelect.innerHTML += '<option value="20">Diskon 20% (300k + 20k poin)</option>';
+                diskonSelect.innerHTML += '<option value="20">Diskon 20% (Minimal belanja 300k + Gunakan 20k poin)</option>';
+                diskonTersedia = true;
             }
-            if (totalBayar >= 500000 && poinMembership >= 30000) {
-                diskonSelect.innerHTML += '<option value="30">Diskon 30% (500k + 30k poin)</option>';
+            // if (totalBayar >= 500000 && poinMembership >= 30000) {
+            //     diskonSelect.innerHTML += '<option value="30">Diskon 30% (500k + 30k poin)</option>';
+            //     diskonTersedia = true;
+            // }
+
+            if (!diskonTersedia) {
+                diskonSelect.innerHTML = '<option value="0">Persyaratan diskon belum terpenuhi</option>';
             }
 
-            console.log("Dropdown diskon setelah update:", diskonSelect.innerHTML); // Cek isi dropdown
-
-            diskonSelect.disabled = diskonSelect.options.length <= 1;
+            diskonSelect.disabled = !diskonTersedia;
         }
 
         function updateTotal() {
