@@ -136,7 +136,7 @@ class TransaksiController extends Controller
 
             // Tambah poin yang didapat
             if ($poinDidapat > 0) {
-                $pelanggan->increment('poin_membership', $poinDidapat);
+                $pelanggan->tambahPoin($poinDidapat);
             }
 
             $this->logActivity('transaksi', $laporan, null, $laporan->toArray());
