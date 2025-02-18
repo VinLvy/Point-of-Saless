@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Middleware\PreventBackHistory;
+use App\Http\Controllers\PDFController;
 use App\Http\Controllers\Admin\PetugasController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\LaporanController;
@@ -39,6 +40,7 @@ Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefi
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('laporan/nota/{kode_transaksi}', [LaporanController::class, 'nota'])->name('laporan.nota');
     Route::resource('kategori', KategoriBarangController::class);
+    Route::get('barang/laporan', [ItemBarangController::class, 'cetakLaporan'])->name('barang.laporan');
     Route::resource('barang', ItemBarangController::class);
     Route::resource('logs', ActivityLogController::class);
     Route::resource('terjual', LaporanBarangTerjualController::class);

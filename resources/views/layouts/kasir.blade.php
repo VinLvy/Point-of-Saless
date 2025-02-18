@@ -96,7 +96,7 @@
         <a href="{{ route('kasir.member.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
         <a href="{{ route('kasir.riwayat.index') }}"><i class="bi bi-file-earmark-text"></i> Riwayat Transaksi</a>
         <a href="{{ route('kasir.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
-        <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <a href="#" class="logout" onclick="confirmLogout(event)">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -107,6 +107,26 @@
     <div class="content">
         @yield('content')
     </div>
+
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>

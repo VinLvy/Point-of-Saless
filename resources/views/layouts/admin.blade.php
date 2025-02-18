@@ -118,7 +118,7 @@
         <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
         <a href="{{ route('admin.stok.index') }}"><i class="bi bi-inboxes"></i> Stok</a>
         <a href="{{ route('admin.logs.index') }}"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
-        <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <a href="#" class="logout" onclick="confirmLogout(event)">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -129,6 +129,26 @@
     <div class="content">
         @yield('content')
     </div>
+
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
