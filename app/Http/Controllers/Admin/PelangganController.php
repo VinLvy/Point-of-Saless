@@ -13,7 +13,10 @@ class PelangganController extends Controller
     public function index()
     {
         $pelanggan = Pelanggan::where('nama_pelanggan', '!=', 'Non Member')->get();
-        return view('admin.pelanggan.index', compact('pelanggan'));
+
+        $deletedPelanggan = Pelanggan::onlyTrashed()->get();
+
+        return view('admin.pelanggan.index', compact('pelanggan', 'deletedPelanggan'));
     }
 
     public function create()
@@ -115,6 +118,17 @@ class PelangganController extends Controller
         $this->logActivity('hapus', $pelanggan, $oldData, null);
 
         return redirect()->route('admin.pelanggan.index')->with('success', 'Pelanggan berhasil dihapus.');
+    }
+
+    public function restore($id)
+    {
+        $pelanggan = Pelanggan::onlyTrashed()->findOrFail($id);
+        $pelanggan->restore();
+
+        // Simpan log aktivitas
+        $this->logActivity('restore', $pelanggan, null, $pelanggan->toArray());
+
+        return redirect()->route('admin.pelanggan.index')->with('success', 'Pelanggan berhasil direstore.');
     }
 
     // Fungsi untuk mencatat aktivitas

@@ -54,6 +54,38 @@
             </div>
         </div>
     </div>
+
+    <h3 class="mt-4">Pelanggan Terhapus</h3>
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover text-center rounded-3 overflow-hidden table-striped">
+                    <thead class="table-danger text-white">
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>No HP</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-light">
+                        @foreach($deletedPelanggan as $dp)
+                        <tr>
+                            <td>{{ $dp->nama_pelanggan }}</td>
+                            <td>{{ $dp->email ?? '-' }}</td>
+                            <td>{{ $dp->no_hp }}</td>
+                            <td>
+                                <a href="{{ route('admin.pelanggan.restore', $dp->id) }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-arrow-clockwise"></i> Restore
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Modal Konfirmasi Hapus --}}

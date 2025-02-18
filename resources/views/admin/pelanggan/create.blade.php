@@ -62,7 +62,7 @@
                     <label for="tipe_pelanggan" class="form-label">Tipe Pelanggan</label>
                     <select name="tipe_pelanggan" id="tipe_pelanggan" 
                         class="form-control @error('tipe_pelanggan') is-invalid @enderror" required>
-                            <option value="tipe 1" {{ old('tipe_pelanggan') == 'tipe 1' ? 'selected' : '' }}>Tipe 1</option>
+                            {{-- <option value="tipe 1" {{ old('tipe_pelanggan') == 'tipe 1' ? 'selected' : '' }}>Tipe 1</option> --}}
                             <option value="tipe 2" {{ old('tipe_pelanggan') == 'tipe 2' ? 'selected' : '' }}>Tipe 2</option>
                     </select>
                     @error('tipe_pelanggan')

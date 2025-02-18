@@ -35,6 +35,7 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('petugas', PetugasController::class);
+    Route::get('pelanggan/{id}', [PelangganController::class, 'restore'])->name('pelanggan.restore');
     Route::resource('pelanggan', PelangganController::class);
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
