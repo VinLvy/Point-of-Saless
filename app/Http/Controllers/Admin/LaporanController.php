@@ -19,8 +19,9 @@ class LaporanController extends Controller
         $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
 
         // Query laporan penjualan
-        $query = LaporanPenjualan::with('pelanggan')
-            ->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
+        $query = LaporanPenjualan::with(['pelanggan' => function ($query) {
+            $query->withTrashed();
+        }])->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
 
         // Jika ada pencarian kode transaksi
         if (!empty($search)) {
@@ -35,8 +36,15 @@ class LaporanController extends Controller
     public function show($id)
     {
         // Ambil detail laporan penjualan berdasarkan ID dengan relasi pelanggan dan detail penjualan
-        $laporan = LaporanPenjualan::with(['pelanggan', 'detail.itemBarang', 'Petugas'])
-            ->findOrFail($id);
+        $laporan = LaporanPenjualan::with([
+            'pelanggan' => function ($query) {
+                $query->withTrashed();
+            },
+            'detail.itemBarang' => function ($query) {
+                $query->withTrashed();
+            },
+            'Petugas'
+        ])->findOrFail($id);
 
         return view('admin.laporan.detail', compact('laporan'));
     }
@@ -45,8 +53,9 @@ class LaporanController extends Controller
     {
         // Ambil laporan berdasarkan kode transaksi dengan relasi pelanggan
         $laporan = LaporanPenjualan::where('kode_transaksi', $kode_transaksi)
-            ->with(['pelanggan'])
-            ->firstOrFail();
+            ->with(['pelanggan' => function ($query) {
+                $query->withTrashed();
+            }])->firstOrFail();
 
         // Ambil detail transaksi berdasarkan laporan penjualan
         $detailTransaksi = DetailLaporanPenjualan::where('laporan_penjualan_id', $laporan->id)->get();

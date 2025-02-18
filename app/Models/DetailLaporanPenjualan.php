@@ -25,6 +25,6 @@ class DetailLaporanPenjualan extends Model
 
     public function itemBarang()
     {
-        return $this->belongsTo(ItemBarang::class, 'produk_id');
+        return $this->belongsTo(ItemBarang::class, 'produk_id')->withTrashed();
     }
 }
