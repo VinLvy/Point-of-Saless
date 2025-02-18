@@ -28,9 +28,9 @@
             background: #f8f9fa;
         }
         .sidebar {
-            width: 244px;
+            width: 230px;
             height: 100vh;
-            background: #222;
+            background: #34495e;
             color: #fff;
             padding-top: 20px;
             position: fixed;
@@ -39,26 +39,35 @@
         .sidebar h2 {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #444;
             padding-bottom: 10px;
-            font-size: 20px;
+            font-size: 18px;
         }
         .sidebar a {
             display: flex;
             align-items: center;
-            color: #ddd;
+            color: #ecf0f1;
             text-decoration: none;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             transition: background 0.3s;
         }
         .sidebar a i {
-            margin-right: 10px;
-            font-size: 18px;
+            margin-right: 8px;
+            font-size: 20px;
         }
         .sidebar a:hover, .sidebar a.active {
-            background: #007bff;
+            background: #2980b9;
             color: #fff;
+        }
+        .dropdown-menu {
+            background: #2c3e50;
+        }
+        .dropdown-menu a {
+            color: #ecf0f1;
+            font-size: 13px;
+        }
+        .dropdown-menu a:hover {
+            background: #2980b9;
         }
         .logout {
             position: absolute;
@@ -66,12 +75,11 @@
             width: 100%;
         }
         .content {
-            margin-left: 250px;
+            margin-left: 240px;
             padding: 20px;
-            width: calc(100% - 250px);
+            width: calc(100% - 240px);
             box-sizing: border-box;
         }
-        /* Responsif: Sidebar bisa ditutup di mobile */
         @media (max-width: 768px) {
             .sidebar {
                 width: 0;
@@ -82,54 +90,64 @@
                 width: 100%;
             }
             .sidebar.open {
-                width: 250px;
+                width: 230px;
             }
         }
     </style>
 </head>
 <body>
-
-    {{-- Notifikasi Error dengan SweetAlert2 --}}
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                html: `
-                    <ul style='text-align: left;'>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                `,
-            });
-        </script>
-    @endif
-
     <div class="sidebar">
         <h2><i class="bi bi-speedometer2"></i> Admin Panel</h2>
-        <a href="{{ route('admin.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
-        <a href="{{ route('admin.transaksi.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
-        <a href="{{ route('admin.petugas.index') }}"><i class="bi bi-person-badge"></i> Petugas</a>
-        <a href="{{ route('admin.pelanggan.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
-        <a href="{{ route('admin.laporan.index') }}"><i class="bi bi-receipt"></i> Laporan Transaksi</a>
-        <a href="{{ route('admin.terjual.index') }}"><i class="bi bi-file-earmark-text"></i> Laporan Penjualan</a>
-        <a href="{{ route('admin.kategori.index') }}"><i class="bi bi bi-journal-check"></i> Kategori Barang</a>
-        <a href="{{ route('admin.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
-        <a href="{{ route('admin.stok.index') }}"><i class="bi bi-inboxes"></i> Stok</a>
-        <a href="{{ route('admin.logs.index') }}"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</a>
-        <a href="#" class="logout" onclick="confirmLogout(event)">
+        <a href="{{ route('admin.dashboard') }}" class="{{ Request::routeIs('admin.dashboard') ? 'active' : '' }}">
+            <i class="bi bi-house-door"></i> Dashboard
+        </a>
+        <a href="{{ route('admin.transaksi.index') }}" class="{{ Request::routeIs('admin.transaksi.index') ? 'active' : '' }}">
+            <i class="bi bi-basket2-fill"></i> Transaksi
+        </a>
+        <a href="{{ route('admin.petugas.index') }}" class="{{ Request::routeIs('admin.petugas.index') ? 'active' : '' }}">
+            <i class="bi bi-person-badge"></i> Petugas
+        </a>
+        <a href="{{ route('admin.pelanggan.index') }}" class="{{ Request::routeIs('admin.pelanggan.index') ? 'active' : '' }}">
+            <i class="bi bi-people"></i> Pelanggan
+        </a>
+        
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle {{ Request::routeIs('admin.laporan.index', 'admin.terjual.index') ? 'active' : '' }}" data-bs-toggle="dropdown">
+                <i class="bi bi-journal-check"></i> Laporan
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item {{ Request::routeIs('admin.laporan.index') ? 'active' : '' }}" href="{{ route('admin.laporan.index') }}">Laporan Transaksi</a>
+                <a class="dropdown-item {{ Request::routeIs('admin.terjual.index') ? 'active' : '' }}" href="{{ route('admin.terjual.index') }}">Laporan Penjualan</a>
+            </div>
+        </div>
+        
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle {{ Request::routeIs('admin.kategori.index', 'admin.barang.index', 'admin.stok.index') ? 'active' : '' }}" data-bs-toggle="dropdown">
+                <i class="bi bi-box-seam-fill"></i> Barang
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item {{ Request::routeIs('admin.kategori.index') ? 'active' : '' }}" href="{{ route('admin.kategori.index') }}">Kategori Barang</a>
+                <a class="dropdown-item {{ Request::routeIs('admin.barang.index') ? 'active' : '' }}" href="{{ route('admin.barang.index') }}">Data Barang</a>
+                <a class="dropdown-item {{ Request::routeIs('admin.stok.index') ? 'active' : '' }}" href="{{ route('admin.stok.index') }}">Stok Barang</a>
+            </div>
+        </div>
+        
+        <a href="{{ route('admin.logs.index') }}" class="{{ Request::routeIs('admin.logs.index') ? 'active' : '' }}">
+            <i class="bi bi-clock-history"></i> Riwayat Aktivitas
+        </a>
+        
+        <a href="#" class="logout bg-danger text-white" onclick="confirmLogout(event)">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
-    </div>
-
+    </div>    
+    
     <div class="content">
         @yield('content')
     </div>
-
+    
     <script>
         function confirmLogout(event) {
             event.preventDefault();
@@ -149,6 +167,5 @@
             });
         }
     </script>
-
 </body>
 </html>

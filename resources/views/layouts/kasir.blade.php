@@ -28,9 +28,9 @@
             background: #f8f9fa;
         }
         .sidebar {
-            width: 244px;
+            width: 230px;
             height: 100vh;
-            background: #222;
+            background: #34495e;
             color: #fff;
             padding-top: 20px;
             position: fixed;
@@ -39,26 +39,35 @@
         .sidebar h2 {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #444;
             padding-bottom: 10px;
-            font-size: 20px;
+            font-size: 18px;
         }
         .sidebar a {
             display: flex;
             align-items: center;
-            color: #ddd;
+            color: #ecf0f1;
             text-decoration: none;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             transition: background 0.3s;
         }
         .sidebar a i {
-            margin-right: 10px;
-            font-size: 18px;
+            margin-right: 8px;
+            font-size: 20px;
         }
         .sidebar a:hover, .sidebar a.active {
-            background: #007bff;
+            background: #2980b9;
             color: #fff;
+        }
+        .dropdown-menu {
+            background: #2c3e50;
+        }
+        .dropdown-menu a {
+            color: #ecf0f1;
+            font-size: 13px;
+        }
+        .dropdown-menu a:hover {
+            background: #2980b9;
         }
         .logout {
             position: absolute;
@@ -66,12 +75,11 @@
             width: 100%;
         }
         .content {
-            margin-left: 250px;
+            margin-left: 240px;
             padding: 20px;
-            width: calc(100% - 250px);
+            width: calc(100% - 240px);
             box-sizing: border-box;
         }
-        /* Responsif: Sidebar bisa ditutup di mobile */
         @media (max-width: 768px) {
             .sidebar {
                 width: 0;
@@ -82,32 +90,36 @@
                 width: 100%;
             }
             .sidebar.open {
-                width: 250px;
+                width: 230px;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="sidebar">
         <h2><i class="bi bi-speedometer2"></i> Kasir Panel</h2>
-        <a href="{{ route('kasir.dashboard') }}"><i class="bi bi-house-door"></i> Dashboard</a>
-        <a href="{{ route('kasir.pembelian.index') }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
-        <a href="{{ route('kasir.member.index') }}"><i class="bi bi-people"></i> Pelanggan</a>
-        <a href="{{ route('kasir.riwayat.index') }}"><i class="bi bi-file-earmark-text"></i> Riwayat Transaksi</a>
-        <a href="{{ route('kasir.barang.index') }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
-        <a href="#" class="logout" onclick="confirmLogout(event)">
+        <a href="{{ route('kasir.dashboard') }}" class="{{ Request::routeIs('kasir.dashboard') ? 'active' : '' }}"><i class="bi bi-house-door"></i> Dashboard</a>
+
+        <a href="{{ route('kasir.pembelian.index') }}" class="{{ Request::routeIs('kasir.pembelian.index') ? 'active' : '' }}"><i class="bi bi-basket2-fill"></i> Transaksi</a>
+
+        <a href="{{ route('kasir.member.index') }}" class="{{ Request::routeIs('kasir.member.index') ? 'active' : '' }}"><i class="bi bi-people"></i> Pelanggan</a>
+        
+        <a href="{{ route('kasir.riwayat.index') }}" class="{{ Request::routeIs('kasir.riwayat.index') ? 'active' : '' }}"><i class="bi bi-file-earmark-text"></i> Riwayat Transaksi</a>
+        
+        <a href="{{ route('kasir.barang.index') }}" class="{{ Request::routeIs('kasir.barang.index') ? 'active' : '' }}"><i class="bi bi-box-seam-fill"></i> Barang</a>
+        
+        <a href="#" class="logout bg-danger text-white" onclick="confirmLogout(event)">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf
         </form>
     </div>
-
+    
     <div class="content">
         @yield('content')
     </div>
-
+    
     <script>
         function confirmLogout(event) {
             event.preventDefault();
@@ -127,6 +139,5 @@
             });
         }
     </script>
-
 </body>
 </html>

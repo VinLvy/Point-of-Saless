@@ -1,4 +1,4 @@
-@extends('layouts.kasir')
+@extends('layouts.admin')
 
 @section('content')
 <div class="container">
@@ -12,7 +12,7 @@
         <div class="alert alert-warning">{{ session('warning') }}</div>
     @endif
 
-    <form id="form-transaksi" action="{{ route('kasir.pembelian.store') }}" method="POST">
+    <form id="form-transaksi" action="{{ route('admin.transaksi.store') }}" method="POST">
         @csrf
         
         <div class="mb-3">
@@ -125,7 +125,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" id="konfirmasiProses" data-url="{{ route('kasir.pembelian.store') }}">
+                <button type="button" class="btn btn-primary" id="konfirmasiProses" data-url="{{ route('admin.transaksi.store') }}">
                     Ya, Proses
                 </button>                
             </div>
