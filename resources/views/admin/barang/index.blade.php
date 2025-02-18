@@ -7,7 +7,7 @@
             <h4 class="mb-0"><i class="bi bi-box"></i> Daftar Barang</h4>
             <div class="no-print">
                 <a href="{{ route('admin.barang.laporan') }}" class="btn btn-danger" target="_blank">
-                    Cetak PDF
+                    Cetak Laporan
                 </a>                
                 <a href="{{ route('admin.barang.create') }}" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle"></i> Tambah Barang
