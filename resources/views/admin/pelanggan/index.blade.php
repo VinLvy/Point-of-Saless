@@ -52,6 +52,9 @@
                     </tbody>
                 </table>
             </div>
+            @if($pelanggan->isEmpty())
+                <p class="text-center text-muted">Belum ada pelanggan yang terdaftar.</p>
+            @endif
         </div>
     </div>
 
@@ -84,6 +87,9 @@
                     </tbody>
                 </table>
             </div>
+            @if($deletedPelanggan->isEmpty())
+                <p class="text-center text-muted">Belum ada pelanggan yang terhapus.</p>
+            @endif
         </div>
     </div>
 </div>

@@ -14,7 +14,10 @@ class PetugasController extends Controller
     public function index()
     {
         $petugas = Petugas::where('role', '!=', 'administrator')->get();
-        return view('admin.petugas.index', compact('petugas'));
+
+        $deletedPetugas = Petugas::onlyTrashed()->get();
+
+        return view('admin.petugas.index', compact('petugas', 'deletedPetugas'));
     }
 
     public function create()
@@ -103,6 +106,17 @@ class PetugasController extends Controller
         $this->logActivity('hapus', $petugas, $oldData, null);
 
         return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil dihapus.');
+    }
+
+    public function restore($id)
+    {
+        $petugas = Petugas::onlyTrashed()->findOrFail($id);
+        $petugas->restore();
+
+        // Simpan log aktivitas
+        $this->logActivity('restore', $petugas, null, $petugas->toArray());
+
+        return redirect()->route('admin.petugas.index')->with('success', 'Petugas berhasil direstore.');
     }
 
     // Fungsi untuk mencatat aktivitas

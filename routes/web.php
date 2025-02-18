@@ -34,6 +34,7 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 // Route untuk admin
 Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('petugas/{id}', [PetugasController::class, 'restore'])->name('petugas.restore');
     Route::resource('petugas', PetugasController::class);
     Route::get('pelanggan/{id}', [PelangganController::class, 'restore'])->name('pelanggan.restore');
     Route::resource('pelanggan', PelangganController::class);

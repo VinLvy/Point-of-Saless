@@ -41,7 +41,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $p->id }}, '{{ $p->nama_petugas }}')">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-power"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -55,6 +55,41 @@
             @endif
         </div>
     </div>
+
+    <h3 class="mt-4">Petugas Nonaktif</h3>
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover text-center rounded-3 overflow-hidden table-striped">
+                    <thead class="table-danger text-white">
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-light">
+                        @foreach($deletedPetugas as $dP)
+                        <tr>
+                            <td>{{ $dP->nama_petugas }}</td>
+                            <td>{{ $dP->email ?? '-' }}</td>
+                            <td>{{ $dP->role }}</td>
+                            <td>
+                                <a href="{{ route('admin.petugas.restore', $dP->id) }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-arrow-clockwise"></i> Aktifkan
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @if($deletedPetugas->isEmpty())
+                <p class="text-center text-muted">Belum ada petugas yang nonaktif.</p>
+            @endif
+        </div>
+    </div>
 </div>
 
 {{-- Modal Konfirmasi Hapus --}}
@@ -62,18 +97,18 @@
     <div class="modal-dialog">
         <div class="modal-content rounded-3">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus</h5>
+                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Konfirmasi Nonaktif</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus <strong id="namaPetugas"></strong>?</p>
+                <p>Apakah Anda yakin ingin menonaktifkan <strong id="namaPetugas"></strong>?</p>
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="submit" class="btn btn-danger">Nonaktifkan</button>
                 </form>
             </div>
         </div>
