@@ -37,6 +37,7 @@
         <input type="hidden" id="harga_produk_json" 
                value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
                    'stok' => $p->stok,
+                   'satuan' => $p->satuan,
                    'tipe_1' => $p->harga_jual_1, 
                    'tipe_2' => $p->harga_jual_2, 
                    'tipe_3' => $p->harga_jual_3
@@ -219,7 +220,6 @@
 
             // Ambil nilai diskon setelah update dropdown
             let diskonPersen = parseFloat(diskonSelect.value) || 0;
-            console.log("Diskon Persen:", diskonPersen);
 
             let diskonNominal = (diskonPersen / 100) * totalBayar;
             let totalSetelahDiskon = totalBayar - diskonNominal;
@@ -260,7 +260,6 @@
 
         document.querySelector("#diskon").addEventListener("change", function () {
             let diskonPersen = parseFloat(this.value) || 0;
-            console.log(diskonPersen); // Harusnya mencetak nilai yang dipilih dari dropdown
             updateTotal();
         });
 
@@ -281,13 +280,15 @@
                 $(".produk-select").each(function () {
                     let row = $(this).closest("tr");
                     let produkId = $(this).val();
+                    let selectedOption = $(this).find(":selected");
 
                     let tipeHarga = pelangganTipe;
                     let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
                     let stok = hargaProduk[produkId]?.stok || 0;
+                    let satuan = selectedOption.data("satuan") || "";
 
                     row.find(".harga").data("harga", harga);
-                    row.find(".stok-terpakai").text(stok);
+                    row.find(".stok-satuan").text(`${stok} ${satuan}`);
                     row.find(".jumlah").attr("max", stok);
                 });
 
@@ -298,7 +299,7 @@
             $(document).on("change", ".jumlah", function () {
                 let row = $(this).closest("tr");
                 let jumlahInput = $(this);
-                let stokTersedia = parseInt(row.find(".stok-terpakai").text()) || 0;
+                let stokTersedia = parseInt(row.find(".stok-satuan").text().split(" ")[0]) || 0;
                 let jumlah = parseInt(jumlahInput.val()) || 0;
 
                 if (jumlah > stokTersedia) {
@@ -313,6 +314,7 @@
         $(document).on("select2:select", ".produk-select", function(event) {
             let row = event.target.closest("tr");
             let produkId = event.target.value;
+            let selectedOption = $(this).find(":selected");
 
             let pelangganSelect = document.querySelector("#pelanggan_id");
             let pelangganTipe = pelangganSelect.selectedOptions[0]?.dataset.tipe || "tipe_3";
@@ -321,9 +323,10 @@
             let tipeHarga = pelangganTipe;
             let harga = hargaProduk[produkId]?.[tipeHarga] || 0;
             let stok = hargaProduk[produkId]?.stok?.reduce((total, item) => total + item.jumlah_stok, 0) || 0;
+            let satuan = selectedOption.attr("data-satuan") || "";
 
             row.querySelector(".harga").dataset.harga = harga;
-            row.querySelector(".stok-terpakai").innerText = stok;
+            row.querySelector(".stok-satuan").innerText = `${stok} ${satuan}`;
             row.querySelector(".jumlah").setAttribute("max", stok);
             updateTotal();
         });
@@ -344,13 +347,13 @@
                     <select name="produk_id[]" class="form-control produk-select select2" required>
                         <option value="">-- Pilih Produk --</option>
                         @foreach($produk as $pr)
-                            <option value="{{ $pr->id }}" data-stok="{{ $pr->stok->sum('jumlah_stok') }}">
+                            <option value="{{ $pr->id }}" data-stok="{{ $pr->stok->sum('jumlah_stok') }}" data-satuan="{{ $pr->satuan }}">
                                 {{ $pr->nama_barang }}
                             </option>
                         @endforeach
                     </select>
                 </td>
-                <td class="stok-terpakai">-</td>
+                <td class="stok-satuan">-</td>
                 <td><input type="number" name="jumlah[]" class="form-control jumlah" min="1" required></td>
                 <td class="harga" data-harga="0">0</td>
                 <td class="total">0</td>
