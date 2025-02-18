@@ -17,9 +17,10 @@
                     <p><strong>Kode Transaksi:</strong> <span class="badge bg-primary">{{ $laporan->kode_transaksi }}</span></p>
                     <p><strong>Tanggal Transaksi:</strong> {{ $laporan->created_at->format('d-m-Y H:i') }}</p>
                     <p><strong>Pelanggan:</strong> {{ $laporan->pelanggan->nama_pelanggan ?? 'N/A' }}</p>
+                    <p><strong>Tipe Pelanggan:</strong> {{ $laporan->pelanggan->tipe_pelanggan ?? 'N/A' }}</p>
                     <p><strong>Petugas:</strong> {{ $laporan->petugas->nama_petugas }}</p>
                     <p><strong>Poin Digunakan:</strong> {{ $laporan->poin_digunakan }}</p>
-                    <p><strong>Poin Didapat:</strong> {{ $laporan->poin_didapat }}</p>
+
                 </div>
                 <div class="col-md-6">
                     <p><strong>Total Belanja:</strong> <span class="text-success fw-bold">Rp {{ number_format($laporan->total_belanja, 0, ',', '.') }}</span></p>
@@ -27,6 +28,7 @@
                     <p><strong>Total Akhir <span class="badge bg-warning">PPN 12%</span>:</strong> <span class="text-success fw-bold">Rp {{ number_format($laporan->total_akhir, 0, ',', '.') }}</span></p>
                     <p><strong>Uang Dibayar:</strong> <span class="text-primary fw-bold">Rp {{ number_format($laporan->uang_dibayar, 0, ',', '.') }}</span></p>
                     <p><strong>Kembalian:</strong> <span class="text-success fw-bold">Rp {{ number_format($laporan->kembalian, 0, ',', '.') }}</span></p>
+                    <p><strong>Poin Didapat:</strong> {{ $laporan->poin_didapat }}</p>
                 </div>
             </div>
         </div>
@@ -39,6 +41,7 @@
                 <tr>
                     <th>#</th>
                     <th>Nama Barang</th>
+                    <th>Satuan</th>
                     <th>Jumlah</th>
                     <th>Harga Satuan</th>
                     <th>Total Harga</th>
@@ -49,6 +52,7 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $detail->itemBarang->nama_barang }}</td>
+                    <td>{{ $detail->itemBarang->satuan }}</td>
                     <td>{{ $detail->jumlah }}</td>
                     <td>Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
                     <td class="text-success fw-bold">Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</td>
