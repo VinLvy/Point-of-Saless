@@ -5,9 +5,14 @@
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="bi bi-box"></i> Daftar Barang</h4>
-            <a href="{{ route('admin.barang.create') }}" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-circle"></i> Tambah Barang
-            </a>
+            <div class="no-print">
+                <a href="{{ route('admin.barang.laporan') }}" class="btn btn-danger" target="_blank">
+                    Cetak PDF
+                </a>                
+                <a href="{{ route('admin.barang.create') }}" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle"></i> Tambah Barang
+                </a>
+            </div>
         </div>
         <div class="card-body">
             {{-- Alert pesan sukses --}}
@@ -34,9 +39,7 @@
                             <th>Harga Jual 3</th>
                             <th>Min. Stok</th>
                             <th>Stok</th>
-                            {{-- <th>Buy Date</th>
-                            <th>Exp. Date</th> --}}
-                            <th>Aksi</th>
+                            <th class="no-print">Aksi</th> {{-- Kolom Aksi disembunyikan saat cetak --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -60,9 +63,7 @@
                                 <td class="text-center {{ $totalStok <= $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
                                     {{ $totalStok }}
                                 </td>
-                                {{-- <td class="text-center">{{ $buyDateTerlama }}</td>
-                                <td class="text-center">{{ $expDateTercepat }}</td> --}}
-                                <td class="text-center">
+                                <td class="text-center no-print"> {{-- Kolom Aksi disembunyikan saat cetak --}}
                                     <a href="{{ route('admin.barang.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
@@ -73,7 +74,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="13" class="text-center text-muted">Belum ada data barang.</td>
+                                <td colspan="12" class="text-center text-muted">Belum ada data barang.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -129,4 +130,6 @@
         }
     }, 3000);
 </script>
+
+
 @endsection

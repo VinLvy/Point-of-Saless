@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PDFController;
 use App\Models\ItemBarang;
 use App\Models\KategoriBarang;
 use App\Models\Stok;
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class ItemBarangController extends Controller
 {
@@ -116,6 +118,17 @@ class ItemBarangController extends Controller
         $this->logActivity('hapus', 'item_barang', $id, ['nama_barang' => $namaBarang], null);
 
         return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil dihapus!');
+    }
+
+    public function cetakLaporan()
+    {
+        $barang = ItemBarang::with('kategori', 'stok')->orderBy('kode_barang', 'asc')->get();
+
+        $pdf = PDF::loadView('admin.barang.laporan', compact('barang'))
+            ->setPaper('a4', 'landscape'); // Atur ukuran kertas dan orientasi
+
+        return $pdf->stream('laporan-barang.pdf'); // Untuk menampilkan langsung di browser
+        // return $pdf->download('laporan-barang.pdf'); // Jika ingin langsung didownload
     }
 
     private function logActivity($action, $model, $model_id, $oldData = null, $newData = null)
