@@ -2,111 +2,108 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Transaksi Pembelian</h2>
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-center text-primary">Transaksi Pembelian</h2>
+        
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @elseif(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @elseif(session('warning'))
+            <div class="alert alert-warning">{{ session('warning') }}</div>
+        @endif
+        
+        <form id="form-transaksi" action="{{ route('admin.transaksi.store') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label for="pelanggan_id" class="form-label fw-bold">Pilih Pelanggan</label>
+                <select name="pelanggan_id" id="pelanggan_id" class="form-select select2" required>
+                    <option value="">-- Pilih Pelanggan --</option>
+                    @foreach($pelanggan as $p)
+                        <option value="{{ $p->id }}" 
+                            data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}" 
+                            data-poin="{{ $p->poin_membership }}">
+                            {{ $p->nama_pelanggan }} (Pelanggan {{ $p->tipe_pelanggan }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Poin Membership</label>
+                <input type="text" id="poin_pelanggan" class="form-control bg-light" value="0" readonly>
+            </div>
+            
+            <input type="hidden" id="harga_produk_json" 
+                   value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
+                       'stok' => $p->stok,
+                       'satuan' => $p->satuan,
+                       'tipe_1' => $p->harga_jual_1, 
+                       'tipe_2' => $p->harga_jual_2, 
+                       'tipe_3' => $p->harga_jual_3
+                   ]])) }}">
+            
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Produk</th>
+                            <th>Stok</th>
+                            <th>Jumlah</th>
+                            <th>Harga</th>
+                            <th>Total</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produk-list"></tbody>
+                </table>
+            </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @elseif(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @elseif(session('warning'))
-        <div class="alert alert-warning">{{ session('warning') }}</div>
-    @endif
+            <button type="button" id="tambah-produk" class="btn btn-primary mt-2">Tambah Produk</button>
 
-    <form id="form-transaksi" action="{{ route('admin.transaksi.store') }}" method="POST">
-        @csrf
-        
-        <div class="mb-3">
-            <label for="pelanggan_id" class="form-label">Pilih Pelanggan</label>
-            <select name="pelanggan_id" id="pelanggan_id" class="form-control select2" required>
-                <option value="">-- Pilih Pelanggan --</option>
-                @foreach($pelanggan as $p)
-                    <option value="{{ $p->id }}" 
-                        data-tipe="{{ str_replace(' ', '_', strtolower($p->tipe_pelanggan)) }}" 
-                        data-poin="{{ $p->poin_membership }}">
-                        {{ $p->nama_pelanggan }} (Pelanggan {{ $p->tipe_pelanggan }})
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        
-        <div class="mb-3">
-            <label class="form-label">Poin Membership</label>
-            <input type="text" id="poin_pelanggan" class="form-control" value="0" readonly>
-        </div>        
-        
-        <input type="hidden" id="harga_produk_json" 
-               value="{{ json_encode($produk->mapWithKeys(fn($p) => [$p->id => [
-                   'stok' => $p->stok,
-                   'satuan' => $p->satuan,
-                   'tipe_1' => $p->harga_jual_1, 
-                   'tipe_2' => $p->harga_jual_2, 
-                   'tipe_3' => $p->harga_jual_3
-               ]])) }}">        
-
-        <table class="table table-bordered table-fixed">
-            <thead>
-                <tr>
-                    <th style="width: 30%;">Produk</th>
-                    <th style="width: 15%;">Stok Tersedia</th>
-                    <th style="width: 15%;">Jumlah</th>
-                    <th style="width: 15%;">Harga</th>
-                    <th style="width: 15%;">Total</th>
-                    <th style="width: 10%;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="produk-list"></tbody>
-        </table>
-
-        <button type="button" id="tambah-produk" class="btn btn-primary">Tambah Produk</button>
-        
-        <div class="mt-3">
-            <label for="total_bayar_display" class="form-label">Total Harga</label>
-            <span id="total_bayar_display" class="form-control">Rp 0</span>
-        </div>
-        
-        <div class="mt-3">
-            <label for="diskon" class="form-label">Diskon (%) (Opsional)</label>
-            <div class="input-group">
-                <select name="diskon" id="diskon" class="form-control" disabled>
+            <div class="mt-3">
+                <label for="total_bayar_display" class="form-label fw-bold">Total Harga</label>
+                <span id="total_bayar_display" class="form-control bg-light">Rp 0</span>
+            </div>
+            
+            <div class="mt-3">
+                <label for="diskon" class="form-label fw-bold">Diskon (%)</label>
+                <select name="diskon" id="diskon" class="form-select" disabled>
                     <option value="0">Pilih Diskon</option>
                 </select>
             </div>
-        </div>
-        
-        <div class="mt-3">
-            <label for="total_diskon_display" class="form-label">Total Diskon</label>
-            <span id="total_diskon_display" class="form-control">Rp 0</span>
-        </div>        
-        
-        <div class="mt-3">
-            <label for="total_akhir_display" class="form-label">Total Akhir (PPN 12%)</label>
-            <span id="total_akhir_display" class="form-control">Rp 0</span>
-        </div>
+            
+            <div class="mt-3">
+                <label for="total_diskon_display" class="form-label fw-bold">Total Diskon</label>
+                <span id="total_diskon_display" class="form-control bg-light">Rp 0</span>
+            </div>
+            
+            <div class="mt-3">
+                <label for="total_akhir_display" class="form-label fw-bold">Total Akhir (PPN 12%)</label>
+                <span id="total_akhir_display" class="form-control bg-light">Rp 0</span>
+            </div>
 
-        <div class="mt-3">
-            <label for="uang_dibayar" class="form-label">Uang Dibayarkan</label>
-            <input type="number" name="uang_dibayar" id="uang_dibayar" class="form-control" min="0" required>
-        </div>
-
-        <div class="mt-3">
-            <label for="kembalian_display" class="form-label">Kembalian</label>
-            <span id="kembalian_display" class="form-control">Rp 0</span>
-        </div>
-        
-        <input type="hidden" name="total_bayar" id="total_bayar">
-        <input type="hidden" name="total_diskon" id="total_diskon">
-        <input type="hidden" name="total_akhir" id="total_akhir">        
-
-        <div class="mb-3">
+            <div class="mt-3">
+                <label for="uang_dibayar" class="form-label fw-bold">Uang Dibayarkan</label>
+                <input type="number" name="uang_dibayar" id="uang_dibayar" class="form-control" min="0" required>
+            </div>
+            
+            <div class="mt-3">
+                <label for="kembalian_display" class="form-label fw-bold">Kembalian</label>
+                <span id="kembalian_display" class="form-control bg-light">Rp 0</span>
+            </div>
+            
+            <input type="hidden" name="total_bayar" id="total_bayar">
+            <input type="hidden" name="total_diskon" id="total_diskon">
+            <input type="hidden" name="total_akhir" id="total_akhir">
+            
             <small id="error-uang-dibayar" class="text-danger d-block mt-2"></small>
-        </div>
-        
-        <!-- Tombol untuk membuka modal -->
-        <button id="proses-transaksi" type="button" class="btn btn-success mt-2 w-100" disabled data-bs-toggle="modal" data-bs-target="#konfirmasiModal">
-            Proses Transaksi
-        </button>
-
-    </form>
+            
+            <button id="proses-transaksi" type="button" class="btn btn-success mt-3 w-100" disabled data-bs-toggle="modal" data-bs-target="#konfirmasiModal">
+                Proses Transaksi
+            </button>
+        </form>
+    </div>
 </div>
 
 <!-- Modal Konfirmasi -->

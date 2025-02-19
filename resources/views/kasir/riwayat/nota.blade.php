@@ -16,7 +16,7 @@
                 <div class="nota-item">
                     <span class="nama-produk">{{ $detail->itemBarang->nama_barang }}</span>
                     <span class="harga-satuan">Rp {{ number_format($detail->harga, 0, ',', '.') }}</span>
-                    <span class="jumlah">x{{ $detail->jumlah }}</span>
+                    <span class="jumlah">x{{ $detail->jumlah }} {{ $detail->itemBarang->satuan }}</span>
                     <span class="total-harga">Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</span>
                 </div>
             @endforeach
