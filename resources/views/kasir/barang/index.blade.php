@@ -45,8 +45,9 @@
                             <th>Harga Jual 3</th>
                             <th>Minimal Stok</th>
                             <th>Stok</th>
-                            <th>Buy Date</th>
-                            <th>Exp Date</th>
+                            {{-- <th>Buy Date</th>
+                            <th>Exp Date</th> --}}
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,8 +70,13 @@
                                 <td class="text-center {{ $totalStok < $item->minimal_stok ? 'text-danger fw-bold' : '' }}">
                                     {{ $totalStok }}
                                 </td>
-                                <td class="text-center">{{ $buyDateTerlama }}</td>
-                                <td class="text-center">{{ $expDateTercepat }}</td>
+                                {{-- <td class="text-center">{{ $buyDateTerlama }}</td>
+                                <td class="text-center">{{ $expDateTercepat }}</td> --}}
+                                <td>
+                                    <a href="{{ route('kasir.barang.show', $item->id) }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>

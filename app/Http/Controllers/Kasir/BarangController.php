@@ -33,4 +33,10 @@ class BarangController extends Controller
 
         return view('kasir.barang.index', compact('barang', 'kategori'));
     }
+
+    public function show($id)
+    {
+        $barang = ItemBarang::with(['kategori', 'stok'])->findOrFail($id);
+        return view('kasir.barang.detail', compact('barang'));
+    }
 }
