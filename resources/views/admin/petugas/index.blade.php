@@ -41,7 +41,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete({{ $p->id }}, '{{ $p->nama_petugas }}')">
-                                        <i class="bi bi-power"></i>
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -101,14 +101,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Apakah Anda yakin ingin menonaktifkan <strong id="namaPetugas"></strong>?</p>
+                <p>Apakah Anda yakin ingin menghapus <strong id="namaPetugas"></strong>?</p>
             </div>
             <div class="modal-footer">
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">Nonaktifkan</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
                 </form>
             </div>
         </div>
