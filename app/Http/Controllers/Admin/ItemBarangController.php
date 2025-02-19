@@ -120,6 +120,12 @@ class ItemBarangController extends Controller
         return redirect()->route('admin.barang.index')->with('success', 'Barang berhasil dihapus!');
     }
 
+    public function show($id)
+    {
+        $barang = ItemBarang::with(['kategori', 'stok'])->findOrFail($id);
+        return view('admin.barang.detail', compact('barang'));
+    }
+
     public function cetakLaporan()
     {
         $barang = ItemBarang::with('kategori', 'stok')->orderBy('kode_barang', 'asc')->get();

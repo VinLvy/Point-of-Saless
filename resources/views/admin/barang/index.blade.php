@@ -64,13 +64,16 @@
                                     {{ $totalStok }}
                                 </td>
                                 <td class="text-center no-print"> {{-- Kolom Aksi disembunyikan saat cetak --}}
+                                    <a href="{{ route('admin.barang.show', $item->id) }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
                                     <a href="{{ route('admin.barang.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" data-nama="{{ $item->nama_barang }}" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                </td>
+                                </td>                                
                             </tr>
                         @empty
                             <tr>

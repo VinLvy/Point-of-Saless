@@ -32,11 +32,10 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Kategori</label>
-                            <select name="kategori_id" class="form-select" required>
+                            <select name="kategori_id" class="form-select select2" required>
+                                <option value="">-- Pilih Kategori --</option>
                                 @foreach ($kategori as $kat)
-                                    <option value="{{ $kat->id }}" {{ $barang->kategori_id == $kat->id ? 'selected' : '' }}>
-                                        {{ $kat->nama_kategori }}
-                                    </option>
+                                    <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -85,6 +84,18 @@
         document.getElementById('harga_jual_1').value = Math.round(hargaBeli * 1.1);
         document.getElementById('harga_jual_2').value = Math.round(hargaBeli * 1.2);
         document.getElementById('harga_jual_3').value = Math.round(hargaBeli * 1.3);
+    });
+</script>
+
+{{-- Skrip untuk select2 --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Pilih Kategori",
+            allowClear: true
+        });
     });
 </script>
 @endsection

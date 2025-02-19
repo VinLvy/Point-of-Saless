@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefi
     Route::get('laporan/nota/{kode_transaksi}', [LaporanController::class, 'nota'])->name('laporan.nota');
     Route::resource('kategori', KategoriBarangController::class);
     Route::get('barang/laporan', [ItemBarangController::class, 'cetakLaporan'])->name('barang.laporan');
+    Route::get('barang/{id}/detail', [ItemBarangController::class, 'show'])->name('barang.detail');
     Route::resource('barang', ItemBarangController::class);
     Route::resource('logs', ActivityLogController::class);
     Route::resource('terjual', LaporanBarangTerjualController::class);
