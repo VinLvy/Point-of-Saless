@@ -57,6 +57,8 @@ class ActivityLog extends Model
                     return "$petugas menambahkan stok untuk barang $nama_data";
                 }
                 return "$petugas menambahkan $nama_data pada $model";
+            case 'restore':
+                return "$petugas merestore $nama_data pada $model";
             case 'edit':
                 return "$petugas mengedit $nama_data pada $model";
             case 'hapus':

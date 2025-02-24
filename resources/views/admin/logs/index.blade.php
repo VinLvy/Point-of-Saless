@@ -15,6 +15,7 @@
             <option value="edit" {{ request('action') == 'edit' ? 'selected' : '' }}> Edit</option>
             <option value="hapus" {{ request('action') == 'hapus' ? 'selected' : '' }}> Hapus</option>
             <option value="transaksi" {{ request('action') == 'transaksi' ? 'selected' : '' }}> Transaksi</option>
+            <option value="restore" {{ request('action') == 'restore' ? 'selected' : '' }}> Restore</option>
         </select>
     </form>
 

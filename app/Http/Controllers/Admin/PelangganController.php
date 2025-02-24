@@ -26,12 +26,17 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
+        // Koreksi input sebelum validasi
+        $request->merge([
+            'nama_pelanggan' => ucwords(strtolower($request->nama_pelanggan)),
+        ]);
+
         $request->validate([
             'nama_pelanggan' => [
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[A-Z][a-z ]*$/',
+                'regex:/^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/',
             ],
             'email' => 'nullable|email|unique:pelanggan,email',
             'no_hp' => 'required|numeric|digits_between:8,20|unique:pelanggan,no_hp',
@@ -39,7 +44,7 @@ class PelangganController extends Controller
             'poin_membership' => 'integer|min:0',
             'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
         ], [
-            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital dan tidak boleh ada huruf kapital lain.',
+            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital.',
             'email.unique' => 'Email ini sudah digunakan, silakan gunakan email lain.',
             'no_hp.numeric' => 'Nomor HP hanya boleh mengandung angka.',
             'no_hp.digits_between' => 'Nomor HP harus memiliki panjang antara 8 hingga 20 digit.',
@@ -72,12 +77,17 @@ class PelangganController extends Controller
 
     public function update(Request $request, Pelanggan $pelanggan)
     {
+        // Koreksi input sebelum validasi
+        $request->merge([
+            'nama_pelanggan' => ucwords(strtolower($request->nama_pelanggan)),
+        ]);
+
         $request->validate([
             'nama_pelanggan' => [
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[A-Z][a-z ]*$/',
+                'regex:/^([A-Z][a-z]+)(\s[A-Z][a-z]+)*$/',
             ],
             'email' => 'nullable|email|unique:pelanggan,email,' . $pelanggan->id,
             'no_hp' => 'required|numeric|digits_between:8,20|unique:pelanggan,no_hp,' . $pelanggan->id,
@@ -85,7 +95,7 @@ class PelangganController extends Controller
             'poin_membership' => 'integer|min:0',
             'tipe_pelanggan' => 'required|in:tipe 1,tipe 2,tipe 3'
         ], [
-            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital dan tidak boleh ada huruf kapital lain.',
+            'nama_pelanggan.regex' => 'Nama harus diawali huruf kapital.',
             'email.unique' => 'Email ini sudah digunakan, silakan gunakan email lain.',
             'no_hp.numeric' => 'Nomor HP hanya boleh mengandung angka.',
             'no_hp.digits_between' => 'Nomor HP harus memiliki panjang antara 8 hingga 20 digit.',
@@ -107,7 +117,6 @@ class PelangganController extends Controller
 
         return redirect()->route('admin.pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }
-
 
     public function destroy(Pelanggan $pelanggan)
     {
