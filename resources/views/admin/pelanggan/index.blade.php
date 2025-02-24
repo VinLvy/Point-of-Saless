@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    {{-- <h3 class="mt-4">Pelanggan Terhapus</h3>
+    <h3 class="mt-4">Pelanggan Terhapus</h3>
     <div class="card shadow-sm rounded-3">
         <div class="card-body">
             <div class="table-responsive">
@@ -91,7 +91,7 @@
                 <p class="text-center text-muted">Belum ada pelanggan yang terhapus.</p>
             @endif
         </div>
-    </div> --}}
+    </div>
 </div>
 
 {{-- Modal Konfirmasi Hapus --}}

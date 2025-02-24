@@ -34,10 +34,10 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 // Route untuk admin
 Route::middleware(['auth', 'role:administrator', 'prevent-back-history'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    // Route::get('petugas/{id}', [PetugasController::class, 'restore'])->name('petugas.restore');
-    Route::resource('petugas', PetugasController::class);
-    // Route::get('pelanggan/{id}', [PelangganController::class, 'restore'])->name('pelanggan.restore');
-    Route::resource('pelanggan', PelangganController::class);
+    Route::resource('petugas', PetugasController::class)->except(['show']);
+    Route::get('petugas/{id}', [PetugasController::class, 'restore'])->name('petugas.restore');
+    Route::resource('pelanggan', PelangganController::class)->except(['show']);
+    Route::get('pelanggan/{id}', [PelangganController::class, 'restore'])->name('pelanggan.restore');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/{id}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('laporan/nota/{kode_transaksi}', [LaporanController::class, 'nota'])->name('laporan.nota');
